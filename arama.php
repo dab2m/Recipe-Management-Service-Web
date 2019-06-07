@@ -4,8 +4,20 @@
     
     function searchKeyWord($row,$key) //ismin icerisinde $key varsa ya da aciklamanin icerisinde varsa true donuyor
     {
+        global $db;
         if (strpos($row['isim'], $key) !== false || strpos($row['aciklama'], $key) !== false)
             return true;
+        $tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = ".$row['id'];
+        $tagres = mysqli_query($db, $tagsql);
+        
+        while($tagrow = mysqli_fetch_assoc($tagres))
+        {
+            $innersql = "SELECT * FROM `tag` WHERE id = ".$tagrow['tag_id'];
+            $innerres = mysqli_query($db, $innersql);
+            $innerrow = mysqli_fetch_assoc($innerres);
+            if(strpos($innerrow['isim'], $key) !== false)
+                return true;
+        }
         return false;
     }
 
