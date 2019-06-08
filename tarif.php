@@ -7,7 +7,7 @@
         $tags = $myArray = explode(',', $tags);
         $desc = $_POST['editor1'];
         
-        if(isset($_FILES["photo"]))
+        if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
             $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
         else 
             $photoname = addslashes("fotograflar\\no.png" );
