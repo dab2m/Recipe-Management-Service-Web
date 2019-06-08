@@ -141,7 +141,7 @@
 					<ul class="page-breadcrumb">
 						<li>
 							<i class="fa fa-home"></i>
-							<a href="index.html">Anasayfa</a>
+							<a href="#">Anasayfa</a>
 						</li>
 
 					</ul>
