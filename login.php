@@ -19,11 +19,10 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<meta charset="utf-8"/>
 
 <head>
 <meta charset="utf-8"/>
-<title>Giris</title>
+<title>Login</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -82,7 +81,7 @@
 		<div class="form-actions">
 			<label class="checkbox"></label>
 			<button type="submit" class="btn green-haze pull-right">
-			Giris <i class="m-icon-swapright m-icon-white"></i>
+			Login <i class="m-icon-swapright m-icon-white"></i>
 			</button>
 		</div>
 		<div class="create-account">
@@ -92,10 +91,53 @@
 		</div>
 	</form>
 
+	<form class="register-form" action="kayit.php" method="post">
+		<h3>Sign Up</h3>
+
+		<div class="form-group">
+			<label class="control-label visible-ie8 visible-ie9">Username</label>
+			<div class="input-icon">
+				<i class="fa fa-user"></i>
+				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Username" name="username"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label visible-ie8 visible-ie9">Password</label>
+			<div class="input-icon">
+				<i class="fa fa-lock"></i>
+				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Password" name="password"/>
+			</div>
+		</div>
+		<div class="form-actions">
+			<button id="register-back-btn" type="button" class="btn">
+			<i class="m-icon-swapleft"></i> Login </button>
+			<button type="submit" id="register-submit-btn" class="btn green-haze pull-right">
+			 Register <i class="m-icon-swapright m-icon-white"></i>
+			</button>
+		</div>
+	</form>
+</div>
+
+<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+
+<script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="assets/global/plugins/select2/select2.min.js"></script>
+
+<script src="assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+<script src="assets/admin/pages/scripts/login.js" type="text/javascript"></script>
 <script>
-jQuery(document).ready(function() {     
+jQuery(document).ready(function() {    
+  Metronic.init(); 
+  Layout.init(); 
   Login.init();
-  
+  Demo.init();
 });
 </script>
 </body>
