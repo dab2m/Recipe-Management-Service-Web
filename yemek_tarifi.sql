@@ -26,6 +26,20 @@ USE yemek_tarifi;
 -- --------------------------------------------------------
 
 --
+-- Tablo için tablo yapısı `kullanici`
+--
+
+DROP TABLE IF EXISTS `kullanici`;
+CREATE TABLE IF NOT EXISTS `kullanici` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ;
+
+-- --------------------------------------------------------
+
+--
 -- Tablo için tablo yapısı `tag`
 --
 
