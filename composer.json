@@ -1,7 +1,9 @@
 {
 	"require":{
-		"phpmyadmin/phpmyadmin": "4.9.*",
-		"joshcam/mysqli-database-class": "2.9.2"
+		"ext-mbstring": "*"
+	},
+	"require-dev": {
+		"heroku/heroku-buildpack-php": "*"
 	}
 }
  
