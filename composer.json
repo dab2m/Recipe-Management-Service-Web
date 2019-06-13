@@ -1,5 +1,7 @@
 {
 	"require":{
-		"phpmyadmin/phpmyadmin": "4.9.*"
+		"phpmyadmin/phpmyadmin": "4.9.*",
+		"joshcam/mysqli-database-class": "2.9.2"
 	}
 }
+ 
