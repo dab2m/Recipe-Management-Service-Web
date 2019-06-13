@@ -1,0 +1,5 @@
+{
+	"require":{
+		"phpmyadmin/phpmyadmin": "4.9.*"
+	}
+}
