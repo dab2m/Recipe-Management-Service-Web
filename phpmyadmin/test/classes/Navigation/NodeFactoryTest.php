@@ -5,12 +5,14 @@
  *
  * @package PhpMyAdmin-test
  */
+declare(strict_types=1);
+
 namespace PhpMyAdmin\Tests\Navigation;
 
 use PhpMyAdmin\Navigation\NodeFactory;
 use PhpMyAdmin\Navigation\Nodes\Node;
 use PhpMyAdmin\Tests\PmaTestCase;
-use PhpMyAdmin\Theme;
+use PHPUnit\Framework\Exception;
 
 /**
  * Tests for NodeFactory class
@@ -24,7 +26,7 @@ class NodeFactoryTest extends PmaTestCase
      *
      * @return void
      */
-    public function setup()
+    protected function setUp(): void
     {
         $GLOBALS['server'] = 0;
     }
@@ -39,7 +41,7 @@ class NodeFactoryTest extends PmaTestCase
         $node = NodeFactory::getInstance();
         $this->assertEquals('default', $node->name);
         $this->assertEquals(Node::OBJECT, $node->type);
-        $this->assertEquals(false, $node->is_group);
+        $this->assertEquals(false, $node->isGroup);
     }
 
     /**
@@ -56,7 +58,7 @@ class NodeFactoryTest extends PmaTestCase
         );
         $this->assertEquals('default', $node->name);
         $this->assertEquals(Node::CONTAINER, $node->type);
-        $this->assertEquals(false, $node->is_group);
+        $this->assertEquals(false, $node->isGroup);
     }
 
     /**
@@ -74,7 +76,7 @@ class NodeFactoryTest extends PmaTestCase
         );
         $this->assertEquals('default', $node->name);
         $this->assertEquals(Node::CONTAINER, $node->type);
-        $this->assertEquals(true, $node->is_group);
+        $this->assertEquals(true, $node->isGroup);
     }
 
     /**
@@ -84,7 +86,7 @@ class NodeFactoryTest extends PmaTestCase
      */
     public function testFileError()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error');
+        $this->expectException(Exception::class);
         NodeFactory::getInstance('NodeDoesNotExist');
     }
 
@@ -95,7 +97,7 @@ class NodeFactoryTest extends PmaTestCase
      */
     public function testClassNameError()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error');
+        $this->expectException(Exception::class);
         NodeFactory::getInstance('Invalid');
     }
 }
