@@ -16,7 +16,7 @@
                 session_start();
                 $_SESSION['username'] = $username;
                 $_SESSION['password'] = $password;
-                header("location:anasayfa.php");
+                header("location:login.php");
             }
             else 
                 echo "<script> alert('Kaydiniz olusturulamadi...'); window.location.href='login.php'; </script>";
