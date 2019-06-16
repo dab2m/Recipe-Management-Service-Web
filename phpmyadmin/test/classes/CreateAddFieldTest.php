@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\CreateAddField;
@@ -29,7 +27,7 @@ class CreateAddFieldTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->createAddField = new CreateAddField($GLOBALS['dbi']);
     }
@@ -44,7 +42,7 @@ class CreateAddFieldTest extends TestCase
      *
      * @return void
      */
-    public function testGetPartitionsDefinition($expected, $request): void
+    public function testGetPartitionsDefinition($expected, $request)
     {
         $_POST = $request;
         $actual = $this->createAddField->getPartitionsDefinition();
@@ -59,18 +57,12 @@ class CreateAddFieldTest extends TestCase
     public function providerGetPartitionsDefinition()
     {
         return [
-            [
-                '',
-                [],
-            ],
-            [
-                ' PARTITION BY HASH (EXPR()) PARTITIONS 2',
-                [
-                    'partition_by' => 'HASH',
-                    'partition_expr' => 'EXPR()',
-                    'partition_count' => '2',
-                ],
-            ],
+            ['', []],
+            [' PARTITION BY HASH (EXPR()) PARTITIONS 2', [
+                'partition_by' => 'HASH',
+                'partition_expr' => 'EXPR()',
+                'partition_count' => '2',
+            ]],
         ];
     }
 
@@ -86,7 +78,7 @@ class CreateAddFieldTest extends TestCase
      *
      * @return void
      */
-    public function testGetTableCreationQuery($expected, $db, $table, $request): void
+    public function testGetTableCreationQuery($expected, $db, $table, $request)
     {
         $_POST = $request;
         $actual = $this->createAddField->getTableCreationQuery($db, $table);
@@ -101,19 +93,14 @@ class CreateAddFieldTest extends TestCase
     public function providerGetTableCreationQuery()
     {
         return [
-            [
-                'CREATE TABLE `db`.`table` ();',
-                'db',
-                'table',
-                [
-                    'field_name' => [],
-                    'primary_indexes' => '{}',
-                    'indexes' => '{}',
-                    'unique_indexes' => '{}',
-                    'fulltext_indexes' => '{}',
-                    'spatial_indexes' => '{}',
-                ],
-            ],
+            ['CREATE TABLE `db`.`table` ();', 'db', 'table', [
+                'field_name' => [],
+                'primary_indexes' => '{}',
+                'indexes' => '{}',
+                'unique_indexes' => '{}',
+                'fulltext_indexes' => '{}',
+                'spatial_indexes' => '{}',
+            ]],
         ];
     }
 
@@ -127,7 +114,7 @@ class CreateAddFieldTest extends TestCase
      *
      * @return void
      */
-    public function testGetNumberOfFieldsFromRequest($expected, $request): void
+    public function testGetNumberOfFieldsFromRequest($expected, $request)
     {
         $_POST = $request;
         $actual = $this->createAddField->getNumberOfFieldsFromRequest();
@@ -142,10 +129,7 @@ class CreateAddFieldTest extends TestCase
     public function providerGetNumberOfFieldsFromRequest()
     {
         return [
-            [
-                4,
-                [],
-            ],
+            [4, []],
         ];
     }
 }

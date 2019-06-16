@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
@@ -25,7 +23,7 @@ class NodeViewTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['server'] = 0;
     }
@@ -42,11 +40,11 @@ class NodeViewTest extends PmaTestCase
             'text',
             $parent->links
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'sql.php',
             $parent->links['text']
         );
-        $this->assertStringContainsString('b_props', $parent->icon);
-        $this->assertStringContainsString('view', $parent->classes);
+        $this->assertContains('b_props', $parent->icon);
+        $this->assertContains('view', $parent->classes);
     }
 }

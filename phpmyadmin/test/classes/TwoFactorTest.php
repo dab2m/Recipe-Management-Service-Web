@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\TwoFactor;
@@ -20,10 +18,7 @@ use Samyoul\U2F\U2FServer\SignRequest;
  */
 class TwoFactorTest extends PmaTestCase
 {
-    /**
-     * @return void
-     */
-    protected function setUp(): void
+    public function setUp()
     {
         $GLOBALS['server'] = 1;
         $GLOBALS['db'] = 'db';
@@ -47,7 +42,7 @@ class TwoFactorTest extends PmaTestCase
         if (! isset($config['settings'])) {
             $config['settings'] = [];
         }
-        $result = $this->getMockBuilder('PhpMyAdmin\TwoFactor')
+        $result = $this->getMockbuilder('PhpMyAdmin\TwoFactor')
             ->setMethods(['readConfig'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -56,9 +51,6 @@ class TwoFactorTest extends PmaTestCase
         return $result;
     }
 
-    /**
-     * @return void
-     */
     public function testNone()
     {
         $object = $this->getTwoFactorMock('user', ['type' => 'db']);
@@ -74,9 +66,6 @@ class TwoFactorTest extends PmaTestCase
         $this->assertEquals('', $object->setup());
     }
 
-    /**
-     * @return void
-     */
     public function testSimple()
     {
         $GLOBALS['cfg']['DBG']['simple2fa'] = true;
@@ -97,9 +86,6 @@ class TwoFactorTest extends PmaTestCase
         $this->assertEquals('', $object->setup());
     }
 
-    /**
-     * @return void
-     */
     public function testLoad()
     {
         $object = new TwoFactor('user');
@@ -107,9 +93,6 @@ class TwoFactorTest extends PmaTestCase
         $this->assertEquals('', $backend::$id);
     }
 
-    /**
-     * @return void
-     */
     public function testConfigureSimple()
     {
         $GLOBALS['cfg']['DBG']['simple2fa'] = true;
@@ -125,11 +108,11 @@ class TwoFactorTest extends PmaTestCase
         $this->assertFalse($object->configure('simple'));
     }
 
-    /**
-     * @return void
-     */
     public function testApplication()
     {
+        if (! extension_loaded('gd')) {
+            $this->markTestSkipped('GD extension missing!');
+        }
         $object = new TwoFactor('user');
         if (! in_array('application', $object->available)) {
             $this->markTestSkipped('google2fa not available');
@@ -168,9 +151,6 @@ class TwoFactorTest extends PmaTestCase
         $this->assertNotEquals('', $object->setup());
     }
 
-    /**
-     * @return void
-     */
     public function testKey()
     {
         $object = new TwoFactor('user');
@@ -209,8 +189,6 @@ class TwoFactorTest extends PmaTestCase
 
     /**
      * Test getting AppId
-     *
-     * @return void
      */
     public function testKeyAppId()
     {
@@ -234,8 +212,6 @@ class TwoFactorTest extends PmaTestCase
     /**
      * Test based on upstream test data:
      * https://github.com/Yubico/php-u2flib-server
-     *
-     * @return void
      */
     public function testKeyAuthentication()
     {
@@ -263,8 +239,7 @@ class TwoFactorTest extends PmaTestCase
             'challenge' => 'fEnc9oV79EaBgK5BoNERU5gPKM2XGYWrz4fUjgc0Q7g',
             'keyHandle' => 'CTUayZo8hCBeC-sGQJChC0wW-bBg99bmOlGCgw8XGq4dLsxO3yWh9mRYArZxocP5hBB1pEGB3bbJYiM-5acc5w',
             'appId' => 'http://demo.example.com'
-        ])
-        ];
+        ])];
         $this->assertFalse($object->check(true));
         $_POST['u2f_authentication_response'] = '{ "signatureData": "AQAAAAQwRQIhAI6FSrMD3KUUtkpiP0jpIEakql-HNhwWFngyw553pS1CAiAKLjACPOhxzZXuZsVO8im-HStEcYGC50PKhsGp_SUAng==", "clientData": "eyAiY2hhbGxlbmdlIjogImZFbmM5b1Y3OUVhQmdLNUJvTkVSVTVnUEtNMlhHWVdyejRmVWpnYzBRN2ciLCAib3JpZ2luIjogImh0dHA6XC9cL2RlbW8uZXhhbXBsZS5jb20iLCAidHlwIjogIm5hdmlnYXRvci5pZC5nZXRBc3NlcnRpb24iIH0=", "keyHandle": "CTUayZo8hCBeC-sGQJChC0wW-bBg99bmOlGCgw8XGq4dLsxO3yWh9mRYArZxocP5hBB1pEGB3bbJYiM-5acc5w", "errorCode": 0 }';
         $this->assertTrue($object->check(true));
@@ -272,8 +247,6 @@ class TwoFactorTest extends PmaTestCase
 
     /**
      * Test listing of available backends.
-     *
-     * @return void
      */
     public function testBackends()
     {

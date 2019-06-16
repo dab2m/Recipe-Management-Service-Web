@@ -4,8 +4,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Engines;
 
 use PhpMyAdmin\Engines\Binlog;
@@ -30,7 +28,7 @@ class BinlogTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['server'] = 0;
         $this->object = new Binlog('binlog');
@@ -43,7 +41,7 @@ class BinlogTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }

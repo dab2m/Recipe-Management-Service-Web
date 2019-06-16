@@ -5,15 +5,12 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Config;
 
 use PhpMyAdmin\Config;
 use PhpMyAdmin\Config\ConfigFile;
 use PhpMyAdmin\Config\ServerConfigChecks;
 use PhpMyAdmin\Tests\PmaTestCase;
-use ReflectionException;
 use ReflectionProperty;
 
 /**
@@ -21,22 +18,14 @@ use ReflectionProperty;
  *
  * @package PhpMyAdmin-test
  */
-class ServerConfigChecksTest extends PmaTestCase
+class ServeConfigChecksTest extends PmaTestCase
 {
-    /**
-     * @var string
-     */
     private $sessionID;
 
-    /**
-     * @throws ReflectionException
-     *
-     * @return void
-     */
-    protected function setUp(): void
+    public function setUp()
     {
         $GLOBALS['PMA_Config'] = new Config();
-        $GLOBALS['cfg']['AvailableCharsets'] = [];
+        $GLOBALS['cfg']['AvailableCharsets'] = array();
         $GLOBALS['cfg']['ServerDefault'] = 0;
         $GLOBALS['server'] = 0;
 
@@ -51,22 +40,20 @@ class ServerConfigChecksTest extends PmaTestCase
         unset($_SESSION[$this->sessionID]);
     }
 
-    /**
-     * @return void
-     */
     public function testManyErrors()
     {
-        $_SESSION[$this->sessionID]['Servers'] = [
-            '1' => [
+        $_SESSION[$this->sessionID]['Servers'] = array(
+            '1' => array(
                 'host' => 'localhost',
                 'ssl' => false,
+                'extension' => 'mysql',
                 'auth_type' => 'config',
                 'user' => 'username',
                 'password' => 'password',
                 'AllowRoot' => true,
                 'AllowNoPassword' => true,
-            ],
-        ];
+            )
+        );
 
         $_SESSION[$this->sessionID]['AllowArbitraryServer'] = true;
         $_SESSION[$this->sessionID]['LoginCookieValidity'] = 5000;
@@ -77,7 +64,7 @@ class ServerConfigChecksTest extends PmaTestCase
         $_SESSION[$this->sessionID]['BZipDump'] = true;
         $_SESSION[$this->sessionID]['ZipDump'] = true;
 
-        $configChecker = $this->getMockBuilder('PhpMyAdmin\Config\ServerConfigChecks')
+        $configChecker = $this->getMockbuilder('PhpMyAdmin\Config\ServerConfigChecks')
             ->setMethods(['functionExists'])
             ->setConstructorArgs([$GLOBALS['ConfigFile']])
             ->getMock();
@@ -88,7 +75,7 @@ class ServerConfigChecksTest extends PmaTestCase
         $configChecker->performConfigChecks();
 
         $this->assertEquals(
-            [
+            array(
                 'Servers/1/ssl',
                 'Servers/1/auth_type',
                 'Servers/1/AllowNoPassword',
@@ -96,35 +83,33 @@ class ServerConfigChecksTest extends PmaTestCase
                 'LoginCookieValidity',
                 'SaveDir',
                 'TempDir',
-            ],
+            ),
             array_keys($_SESSION['messages']['notice'])
         );
 
         $this->assertEquals(
-            [
+            array(
                 'LoginCookieValidity',
                 'GZipDump',
                 'BZipDump',
                 'ZipDump_import',
                 'ZipDump_export',
-            ],
+            ),
             array_keys($_SESSION['messages']['error'])
         );
     }
 
-    /**
-     * @return void
-     */
     public function testBlowfishCreate()
     {
-        $_SESSION[$this->sessionID]['Servers'] = [
-            '1' => [
+        $_SESSION[$this->sessionID]['Servers'] = array(
+            '1' => array(
                 'host' => 'localhost',
                 'ssl' => true,
+                'extension' => 'mysqli',
                 'auth_type' => 'cookie',
-                'AllowRoot' => false,
-            ],
-        ];
+                'AllowRoot' => false
+            )
+        );
 
         $_SESSION[$this->sessionID]['AllowArbitraryServer'] = false;
         $_SESSION[$this->sessionID]['LoginCookieValidity'] = -1;
@@ -139,7 +124,7 @@ class ServerConfigChecksTest extends PmaTestCase
         $configChecker->performConfigChecks();
 
         $this->assertEquals(
-            ['blowfish_secret_created'],
+            array('blowfish_secret_created'),
             array_keys($_SESSION['messages']['notice'])
         );
 
@@ -149,19 +134,17 @@ class ServerConfigChecksTest extends PmaTestCase
         );
     }
 
-    /**
-     * @return void
-     */
     public function testBlowfish()
     {
+
         $_SESSION[$this->sessionID]['blowfish_secret'] = 'sec';
 
-        $_SESSION[$this->sessionID]['Servers'] = [
-            '1' => [
+        $_SESSION[$this->sessionID]['Servers'] = array(
+            '1' => array(
                 'host' => 'localhost',
-                'auth_type' => 'cookie',
-            ],
-        ];
+                'auth_type' => 'cookie'
+            )
+        );
 
         $configChecker = new ServerConfigChecks($GLOBALS['ConfigFile']);
         $configChecker->performConfigChecks();

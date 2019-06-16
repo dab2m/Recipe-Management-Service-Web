@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Export;
 
 use PhpMyAdmin\DatabaseInterface;
@@ -31,14 +29,14 @@ class ExportXmlTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['output_kanji_conversion'] = false;
         $GLOBALS['buffer_needed'] = false;
         $GLOBALS['asfile'] = false;
         $GLOBALS['save_on_server'] = false;
-        $GLOBALS['plugin_param'] = [];
+        $GLOBALS['plugin_param'] = array();
         $GLOBALS['plugin_param']['export_type'] = 'table';
         $GLOBALS['plugin_param']['single_table'] = false;
         $GLOBALS['cfgRelation']['relation'] = true;
@@ -51,7 +49,7 @@ class ExportXmlTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->object);
     }
@@ -220,17 +218,14 @@ class ExportXmlTest extends PmaTestCase
         $GLOBALS['crlf'] = "\n";
         $GLOBALS['db'] = 'd<"b';
 
-        $result = [
-            0 => [
+        $result = array(
+            0 => array(
                 'DEFAULT_COLLATION_NAME' => 'utf8_general_ci',
                 'DEFAULT_CHARACTER_SET_NAME' => 'utf-8',
 
-            ],
-            'table' => [
-                null,
-                '"tbl"',
-            ],
-        ];
+            ),
+            'table' => array(null, '"tbl"')
+        );
         $dbi = $this->getMockBuilder('PhpMyAdmin\DatabaseInterface')
             ->disableOriginalConstructor()
             ->getMock();
@@ -248,24 +243,24 @@ class ExportXmlTest extends PmaTestCase
             ->with('d<"b', 'table')
             ->will(
                 $this->returnValue(
-                    [
-                        [
+                    array(
+                        array(
                             'create' => 'crt',
                             'name' => 'trname'
-                        ],
-                    ]
+                        )
+                    )
                 )
             );
 
         $dbi->expects($this->exactly(2))
             ->method('getProceduresOrFunctions')
             ->willReturnOnConsecutiveCalls(
-                [
+                array(
                     'fn'
-                ],
-                [
+                ),
+                array(
                     'pr'
-                ]
+                )
             );
 
         $dbi->expects($this->exactly(2))
@@ -283,7 +278,7 @@ class ExportXmlTest extends PmaTestCase
 
         $GLOBALS['dbi'] = $dbi;
 
-        $GLOBALS['tables'] = [];
+        $GLOBALS['tables'] = array();
         $GLOBALS['table'] = 'table';
 
         ob_start();
@@ -292,13 +287,13 @@ class ExportXmlTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '&lt;pma_xml_export version=&quot;1.0&quot; xmlns:pma=&quot;' .
             'https://www.phpmyadmin.net/some_doc_url/&quot;&gt;',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '&lt;pma:structure_schemas&gt;' . "\n" .
             '        &lt;pma:database name=&quot;d&amp;lt;&amp;quot;b&quot; collat' .
             'ion=&quot;utf8_general_ci&quot; charset=&quot;utf-8&quot;&gt;' . "\n" .
@@ -332,26 +327,20 @@ class ExportXmlTest extends PmaTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $result_1 = [
-            [
+        $result_1 = array(
+            array(
                 'DEFAULT_COLLATION_NAME' => 'utf8_general_ci',
                 'DEFAULT_CHARACTER_SET_NAME' => 'utf-8',
 
-            ],
-        ];
-        $result_2 = [
-            't1' => [
-                null,
-                '"tbl"',
-            ],
-        ];
+            )
+        );
+        $result_2 = array(
+            't1' => array(null, '"tbl"')
+        );
 
-        $result_3 = [
-            't2' => [
-                null,
-                '"tbl"',
-            ],
-        ];
+        $result_3 = array(
+            't2' => array(null, '"tbl"')
+        );
 
         $dbi->expects($this->exactly(5))
             ->method('fetchResult')
@@ -369,10 +358,7 @@ class ExportXmlTest extends PmaTestCase
 
         $GLOBALS['dbi'] = $dbi;
 
-        $GLOBALS['tables'] = [
-            't1',
-            't2',
-        ];
+        $GLOBALS['tables'] = array('t1', 't2');
 
         ob_start();
         $this->assertTrue(
@@ -381,7 +367,7 @@ class ExportXmlTest extends PmaTestCase
         $result = ob_get_clean();
 
         //echo $result; die;
-        $this->assertStringContainsString(
+        $this->assertContains(
             '&lt;pma:structure_schemas&gt;' . "\n" .
             '        &lt;pma:database name=&quot;d&amp;lt;&amp;quot;b&quot; collat' .
             'ion=&quot;utf8_general_ci&quot; charset=&quot;utf-8&quot;&gt;' . "\n" .
@@ -421,7 +407,7 @@ class ExportXmlTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '&lt;database name=&quot;&amp;amp;db&quot;&gt;',
             $result
         );
@@ -448,7 +434,7 @@ class ExportXmlTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '&lt;/database&gt;',
             $result
         );
@@ -527,49 +513,45 @@ class ExportXmlTest extends PmaTestCase
         $dbi->expects($this->at(6))
             ->method('fetchRow')
             ->with(true)
-            ->will($this->returnValue([null, '<a>']));
+            ->will($this->returnValue(array(null, '<a>')));
 
         $GLOBALS['dbi'] = $dbi;
 
         ob_start();
         $this->assertTrue(
             $this->object->exportData(
-                'db',
-                'ta<ble',
-                "\n",
-                "example.com",
-                "SELECT"
+                'db', 'ta<ble', "\n", "example.com", "SELECT"
             )
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "<!-- Table ta&lt;ble -->",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "<table name=\"ta&lt;ble\">",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "<column name=\"fName1\">NULL</column>",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "<column name=\"fNa&quot;me2\">&lt;a&gt;" .
             "</column>",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "<column name=\"fName3\">NULL</column>",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "</table>",
             $result
         );

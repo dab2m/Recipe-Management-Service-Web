@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Linter;
@@ -26,9 +24,9 @@ class LinterTest extends PmaTestCase
      */
     public function testGetLines()
     {
-        $this->assertEquals([0], Linter::getLines(''));
-        $this->assertEquals([0, 2], Linter::getLines("a\nb"));
-        $this->assertEquals([0, 4, 7], Linter::getLines("abc\nde\n"));
+        $this->assertEquals(array(0), Linter::getLines(''));
+        $this->assertEquals(array(0, 2), Linter::getLines("a\nb"));
+        $this->assertEquals(array(0, 4, 7), Linter::getLines("abc\nde\n"));
     }
 
     /**
@@ -50,32 +48,20 @@ class LinterTest extends PmaTestCase
         //      ( d, 4), ( e, 5), (\n, 6),
         //      (\n, 7).
         $this->assertEquals(
-            [
-                1,
-                0,
-            ],
-            Linter::findLineNumberAndColumn([0, 4, 7], 4)
+            array(1, 0),
+            Linter::findLineNumberAndColumn(array(0, 4, 7), 4)
         );
         $this->assertEquals(
-            [
-                1,
-                1,
-            ],
-            Linter::findLineNumberAndColumn([0, 4, 7], 5)
+            array(1, 1),
+            Linter::findLineNumberAndColumn(array(0, 4, 7), 5)
         );
         $this->assertEquals(
-            [
-                1,
-                2,
-            ],
-            Linter::findLineNumberAndColumn([0, 4, 7], 6)
+            array(1, 2),
+            Linter::findLineNumberAndColumn(array(0, 4, 7), 6)
         );
         $this->assertEquals(
-            [
-                2,
-                0,
-            ],
-            Linter::findLineNumberAndColumn([0, 4, 7], 7)
+            array(2, 0),
+            Linter::findLineNumberAndColumn(array(0, 4, 7), 7)
         );
     }
 
@@ -89,7 +75,7 @@ class LinterTest extends PmaTestCase
      *
      * @return void
      */
-    public function testLint($expected, $query): void
+    public function testLint($expected, $query)
     {
         $this->assertEquals($expected, Linter::lint($query));
     }
@@ -101,18 +87,18 @@ class LinterTest extends PmaTestCase
      */
     public static function lintProvider()
     {
-        return [
-            [
-                [],
+        return array(
+            array(
+                array(),
                 '',
-            ],
-            [
-                [],
-                'SELECT * FROM tbl',
-            ],
-            [
-                [
-                    [
+            ),
+            array(
+                array(),
+                'SELECT * FROM tbl'
+            ),
+            array(
+                array(
+                    array(
                         'message' => 'Unrecognized data type. (near ' .
                             '<code>IN</code>)',
                         'fromLine' => 0,
@@ -120,8 +106,8 @@ class LinterTest extends PmaTestCase
                         'toLine' => 0,
                         'toColumn' => 24,
                         'severity' => 'error',
-                    ],
-                    [
+                    ),
+                    array(
                         'message' => 'A closing bracket was expected. (near ' .
                             '<code>IN</code>)',
                         'fromLine' => 0,
@@ -129,13 +115,13 @@ class LinterTest extends PmaTestCase
                         'toLine' => 0,
                         'toColumn' => 24,
                         'severity' => 'error',
-                    ],
-                ],
-                'CREATE TABLE tbl ( id IN',
-            ],
-            [
-                [
-                    [
+                    )
+                ),
+                'CREATE TABLE tbl ( id IN'
+            ),
+            array(
+                array(
+                    array(
                         'message' => 'Linting is disabled for this query because ' .
                             'it exceeds the maximum length.',
                         'fromLine' => 0,
@@ -143,10 +129,10 @@ class LinterTest extends PmaTestCase
                         'toLine' => 0,
                         'toColumn' => 0,
                         'severity' => 'warning',
-                    ],
-                ],
-                str_repeat(";", 10001),
-            ],
-        ];
+                    )
+                ),
+                str_repeat(";", 10001)
+            )
+        );
     }
 }

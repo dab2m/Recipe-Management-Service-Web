@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Setup;
 
 use PhpMyAdmin\Setup\Index as SetupIndex;
@@ -24,7 +22,7 @@ class IndexTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['cfg']['ProxyUrl'] = '';
     }
@@ -36,30 +34,30 @@ class IndexTest extends TestCase
      */
     public function testPMAmessagesBegin()
     {
-        $_SESSION['messages'] = [
-            [
-                ['foo'],
-                ['bar'],
-            ],
-        ];
+        $_SESSION['messages'] = array(
+            array(
+                array('foo'),
+                array('bar')
+            )
+        );
 
         SetupIndex::messagesBegin();
 
         $this->assertEquals(
-            [
-                [
-                    [
+            array(
+                array(
+                    array(
                         0 => 'foo',
                         'fresh' => false,
-                        'active' => false,
-                    ],
-                    [
+                        'active' => false
+                    ),
+                    array(
                         0 => 'bar',
                         'fresh' => false,
-                        'active' => false,
-                    ],
-                ],
-            ],
+                        'active' => false
+                    )
+                )
+            ),
             $_SESSION['messages']
         );
 
@@ -68,10 +66,10 @@ class IndexTest extends TestCase
         unset($_SESSION['messages']);
         SetupIndex::messagesBegin();
         $this->assertEquals(
-            [
-                'error' => [],
-                'notice' => [],
-            ],
+            array(
+                'error' => array(),
+                'notice' => array()
+            ),
             $_SESSION['messages']
         );
     }
@@ -86,12 +84,12 @@ class IndexTest extends TestCase
         SetupIndex::messagesSet('type', '123', 'testTitle', 'msg');
 
         $this->assertEquals(
-            [
+            array(
                 'fresh' => true,
                 'active' => true,
                 'title' => 'testTitle',
-                'message' => 'msg',
-            ],
+                'message' => 'msg'
+            ),
             $_SESSION['messages']['type']['123']
         );
     }
@@ -103,30 +101,24 @@ class IndexTest extends TestCase
      */
     public function testPMAmessagesEnd()
     {
-        $_SESSION['messages'] = [
-            [
-                [
-                    'msg' => 'foo',
-                    'active' => false,
-                ],
-                [
-                    'msg' => 'bar',
-                    'active' => true,
-                ],
-            ],
-        ];
+        $_SESSION['messages'] = array(
+            array(
+                array('msg' => 'foo', 'active' => false),
+                array('msg' => 'bar', 'active' => true),
+            )
+        );
 
         SetupIndex::messagesEnd();
 
         $this->assertEquals(
-            [
-                [
-                    '1' => [
+            array(
+                array(
+                    '1' => array(
                         'msg' => 'bar',
-                        'active' => 1,
-                    ],
-                ],
-            ],
+                        'active' => 1
+                    )
+                )
+            ),
             $_SESSION['messages']
         );
     }
@@ -138,38 +130,25 @@ class IndexTest extends TestCase
      */
     public function testPMAMessagesShowHTML()
     {
-        $_SESSION['messages'] = [
-            'type' => [
-                [
-                    'title' => 'foo',
-                    'message' => '123',
-                    'fresh' => false
-                ],
-                [
-                    'title' => 'bar',
-                    'message' => '321',
-                    'fresh' => true
-                ],
-            ],
-        ];
+        $_SESSION['messages'] = array(
+            'type' => array(
+                array('title' => 'foo', 'message' => '123', 'fresh' => false),
+                array('title' => 'bar', 'message' => '321', 'fresh' => true),
+            )
+        );
 
-        $expected = [
-            [
-                'id' => 0,
-                'title' => 'foo',
-                'type' => 'type',
-                'message' => '123',
-                'is_hidden' => true,
-            ],
-            [
-                'id' => 1,
-                'title' => 'bar',
-                'type' => 'type',
-                'message' => '321',
-                'is_hidden' => false,
-            ],
-        ];
+        ob_start();
+        SetupIndex::messagesShowHtml();
+        $result = ob_get_clean();
 
-        $this->assertEquals($expected, SetupIndex::messagesShowHtml());
+        $this->assertContains(
+            '<div class="type hiddenmessage" id="0"><h4>foo</h4>123</div>',
+            $result
+        );
+
+        $this->assertContains(
+            '<div class="type" id="1"><h4>bar</h4>321</div>',
+            $result
+        );
     }
 }

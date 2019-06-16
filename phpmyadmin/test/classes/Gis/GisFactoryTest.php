@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Gis;
 
 use PhpMyAdmin\Gis\GisFactory;
@@ -24,12 +22,12 @@ class GisFactoryTest extends TestCase
      * Test factory method
      *
      * @param string $type geometry type
-     * @param string $geom geometry object
+     * @param object $geom geometry object
      *
      * @dataProvider providerForTestFactory
      * @return void
      */
-    public function testFactory(string $type, string $geom): void
+    public function testFactory($type, $geom)
     {
         $this->assertInstanceOf($geom, GisFactory::factory($type));
     }
@@ -37,39 +35,39 @@ class GisFactoryTest extends TestCase
     /**
      * data provider for testFactory
      *
-     * @return array[] data for testFactory
+     * @return data for testFactory
      */
-    public function providerForTestFactory(): array
+    public function providerForTestFactory()
     {
-        return [
-            [
+        return array(
+            array(
                 'MULTIPOLYGON',
-                'PhpMyAdmin\Gis\GisMultiPolygon',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisMultiPolygon'
+            ),
+            array(
                 'POLYGON',
-                'PhpMyAdmin\Gis\GisPolygon',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisPolygon'
+            ),
+            array(
                 'MULTILINESTRING',
-                'PhpMyAdmin\Gis\GisMultiLineString',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisMultiLineString'
+            ),
+            array(
                 'LINESTRING',
-                'PhpMyAdmin\Gis\GisLineString',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisLineString'
+            ),
+            array(
                 'MULTIPOINT',
-                'PhpMyAdmin\Gis\GisMultiPoint',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisMultiPoint'
+            ),
+            array(
                 'POINT',
-                'PhpMyAdmin\Gis\GisPoint',
-            ],
-            [
+                'PhpMyAdmin\Gis\GisPoint'
+            ),
+            array(
                 'GEOMETRYCOLLECTION',
-                'PhpMyAdmin\Gis\GisGeometryCollection',
-            ],
-        ];
+                'PhpMyAdmin\Gis\GisGeometryCollection'
+            ),
+        );
     }
 }

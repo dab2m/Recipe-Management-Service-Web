@@ -6,7 +6,6 @@
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Selenium;
 
@@ -24,7 +23,7 @@ class TrackingTest extends TestBase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         $this->dbQuery(
@@ -44,6 +43,16 @@ class TrackingTest extends TestBase
         $this->dbQuery(
             "INSERT INTO `test_table` (val) VALUES (2), (3);"
         );
+    }
+
+    /**
+     * setUp function that can use the selenium session (called before each test)
+     *
+     * @return void
+     */
+    public function setUpPage()
+    {
+        parent::setUpPage();
 
         $this->login();
         $this->skipIfNotPMADB();
@@ -51,16 +60,16 @@ class TrackingTest extends TestBase
         $this->navigateDatabase($this->database_name);
         $this->expandMore();
 
-        $this->waitForElement('partialLinkText', "Tracking")->click();
+        $this->waitForElement('byPartialLinkText', "Tracking")->click();
         $this->waitAjax();
 
-        $this->waitForElement('partialLinkText', "Track table");
+        $this->waitForElement("byPartialLinkText", "Track table");
         $this->byXPath("(//a[contains(., 'Track table')])[1]")->click();
 
         $this->waitAjax();
-        $this->waitForElement('name', "delete")->click();
+        $this->waitForElement("byName", "delete")->click();
         $this->byCssSelector("input[value='Create version']")->click();
-        $this->waitForElement('id', "versions");
+        $this->waitForElement("byId", "versions");
     }
 
     /**
@@ -76,76 +85,70 @@ class TrackingTest extends TestBase
 
         $this->byPartialLinkText("Tracking report")->click();
         $this->waitForElement(
-            'xpath',
+            "byXPath",
             "//h3[contains(., 'Tracking report')]"
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "DROP TABLE IF EXISTS `test_table`",
             $this->getCellByTableId('ddl_versions', 1, 4)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "CREATE TABLE `test_table` (",
             $this->getCellByTableId('ddl_versions', 2, 4)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "UPDATE test_table SET val = val + 1",
             $this->getCellByTableId('dml_versions', 1, 4)
         );
 
-        $this->assertStringNotContainsString(
+        $this->assertNotContains(
             "DELETE FROM test_table WHERE val = 3",
-            $this->byId("dml_versions")->getText()
+            $this->byId("dml_versions")->text()
         );
 
         // only structure
-        $this->selectByLabel(
-            $this->byName("logtype"),
-            'Structure only'
-        );
-
+        $this->select($this->byName("logtype"))
+            ->selectOptionByLabel("Structure only");
         $this->byCssSelector("input[value='Go']")->click();
 
         $this->waitAjax();
 
         $this->assertFalse(
-            $this->isElementPresent('id', "dml_versions")
+            $this->isElementPresent("byId", "dml_versions")
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "DROP TABLE IF EXISTS `test_table`",
             $this->getCellByTableId('ddl_versions', 1, 4)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "CREATE TABLE `test_table` (",
             $this->getCellByTableId('ddl_versions', 2, 4)
         );
 
         // only data
-        $this->selectByLabel(
-            $this->waitForElement('name', "logtype"),
-            'Data only'
-        );
-
+        $this->select($this->waitForElement('byName', "logtype"))
+            ->selectOptionByLabel("Data only");
         $this->byCssSelector("input[value='Go']")->click();
 
         $this->waitAjax();
 
         $this->assertFalse(
-            $this->isElementPresent('id', "ddl_versions")
+            $this->isElementPresent("byId", "ddl_versions")
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "UPDATE test_table SET val = val + 1",
             $this->getCellByTableId('dml_versions', 1, 4)
         );
 
-        $this->assertStringNotContainsString(
+        $this->assertNotContains(
             "DELETE FROM test_table WHERE val = 3",
-            $this->byId("dml_versions")->getText()
+            $this->byId("dml_versions")->text()
         );
     }
 
@@ -160,12 +163,11 @@ class TrackingTest extends TestBase
     {
         $this->byCssSelector("input[value='Deactivate now']")->click();
         $this->waitForElement(
-            'cssSelector',
-            "input[value='Activate now']"
+            "byCssSelector", "input[value='Activate now']"
         );
         $this->_executeSqlAndReturnToTableTracking();
         $this->assertFalse(
-            $this->isElementPresent('id', "dml_versions")
+            $this->isElementPresent("byId", "dml_versions")
         );
     }
 
@@ -184,42 +186,42 @@ class TrackingTest extends TestBase
         $this->byPartialLinkText("Tracking")->click();
 
         $this->waitAjax();
-        $this->waitForElement('id', "versions");
+        $this->waitForElement("byId", "versions");
 
         $ele = $this->waitForElement(
-            'cssSelector',
+            'byCssSelector',
             'table#versions tbody tr:nth-child(1) td:nth-child(7)'
         );
         $this->moveto($ele);
         $this->click();
 
         $this->waitForElement(
-            'cssSelector',
+            "byCssSelector",
             "button.submitOK"
         )->click();
 
         $this->waitAjax();
         $this->waitForElement(
-            'xpath',
+            "byXPath",
             "//div[@class='success' and contains(., "
             . "'Tracking data deleted successfully.')]"
         );
 
         // Can not use getCellByTableId,
         // since this is under 'th' and not 'td'
-        $this->assertStringContainsString(
+        $this->assertContains(
             'test_table',
             $this->waitForElement(
-                'cssSelector',
+                'byCssSelector',
                 'table#noversions tbody tr:nth-child(1) th:nth-child(2)'
-            )->getText()
+            )->text()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'test_table_2',
             $this->waitForElement(
-                'cssSelector',
+                'byCssSelector',
                 'table#noversions tbody tr:nth-child(2) th:nth-child(2)'
-            )->getText()
+            )->text()
         );
     }
 
@@ -233,24 +235,24 @@ class TrackingTest extends TestBase
     public function testStructureSnapshot()
     {
         $this->byPartialLinkText("Structure snapshot")->click();
-        $this->waitForElement('id', "tablestructure");
+        $this->waitForElement("byId", "tablestructure");
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "id",
             $this->getCellByTableId('tablestructure', 1, 2)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "val",
             $this->getCellByTableId('tablestructure', 2, 2)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "PRIMARY",
             $this->getCellByTableId('tablestructure_indexes', 1, 1)
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "id",
             $this->getCellByTableId('tablestructure_indexes', 1, 5)
         );
@@ -266,19 +268,18 @@ class TrackingTest extends TestBase
         $this->byPartialLinkText("SQL")->click();
         $this->waitAjax();
 
-        $this->waitForElement('id', "queryfieldscontainer");
+        $this->waitForElement("byId", "queryfieldscontainer");
         $this->typeInTextArea(
             ";UPDATE test_table SET val = val + 1; "
             . "DELETE FROM test_table WHERE val = 3"
         );
-        $this->scrollToBottom();
         $this->byCssSelector("input[value='Go']")->click();
         $this->waitAjax();
-        $this->waitForElement('className', "success");
+        $this->waitForElement("byClassName", "success");
 
         $this->expandMore();
         $this->byPartialLinkText("Tracking")->click();
         $this->waitAjax();
-        $this->waitForElement('id', "versions");
+        $this->waitForElement("byId", "versions");
     }
 }

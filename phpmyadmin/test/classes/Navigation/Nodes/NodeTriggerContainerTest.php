@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
@@ -25,7 +23,7 @@ class NodeTriggerContainerTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['server'] = 0;
     }
@@ -43,10 +41,10 @@ class NodeTriggerContainerTest extends PmaTestCase
             'text',
             $parent->links
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'db_triggers.php',
             $parent->links['text']
         );
-        $this->assertEquals('triggers', $parent->realName);
+        $this->assertEquals('triggers', $parent->real_name);
     }
 }

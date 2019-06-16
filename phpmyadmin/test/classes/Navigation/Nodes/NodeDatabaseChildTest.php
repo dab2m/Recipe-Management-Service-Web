@@ -5,14 +5,11 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
 use PhpMyAdmin\Navigation\Nodes\NodeDatabaseChild;
 use PhpMyAdmin\Tests\PmaTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Tests for PhpMyAdmin\Navigation\Nodes\NodeDatabaseChild class
@@ -22,8 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 class NodeDatabaseChildTest extends PmaTestCase
 {
     /**
-     * Mock of NodeDatabaseChild
-     * @var MockObject
+     * @var NodeDatabaseChild
      */
     protected $object;
 
@@ -33,7 +29,7 @@ class NodeDatabaseChildTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['pmaThemePath'] = $GLOBALS['PMA_Theme']->getPath();
         $GLOBALS['cfg']['DefaultTabDatabase'] = 'structure';
@@ -43,8 +39,7 @@ class NodeDatabaseChildTest extends PmaTestCase
         $_SESSION['relation'][1]['PMA_VERSION'] = PMA_VERSION;
         $_SESSION['relation'][1]['navwork'] = true;
         $this->object = $this->getMockForAbstractClass(
-            'PhpMyAdmin\Navigation\Nodes\NodeDatabaseChild',
-            ['child']
+            'PhpMyAdmin\Navigation\Nodes\NodeDatabaseChild', array('child')
         );
     }
 
@@ -54,7 +49,7 @@ class NodeDatabaseChildTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -82,7 +77,7 @@ class NodeDatabaseChildTest extends PmaTestCase
             '</span>',
             $html
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<a href="navigation.php" data-post="'
             . 'hideNavItem=1&amp;itemType=itemType&amp;itemName=child'
             . '&amp;dbName=parent&amp;lang=en" class="hideNavItem ajax">',

@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
@@ -25,7 +23,7 @@ class NodeEventContainerTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['server'] = 0;
     }
@@ -42,10 +40,10 @@ class NodeEventContainerTest extends PmaTestCase
             'text',
             $parent->links
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'db_events.php',
             $parent->links['text']
         );
-        $this->assertEquals('events', $parent->realName);
+        $this->assertEquals('events', $parent->real_name);
     }
 }

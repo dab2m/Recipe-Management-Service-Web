@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Properties\Options\Groups;
 
 use PhpMyAdmin\Properties\Options\Groups\OptionsPropertyRootGroup;
@@ -26,7 +24,7 @@ class OptionsPropertyRootGroupTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setup()
     {
         $this->object = new OptionsPropertyRootGroup();
     }
@@ -36,7 +34,7 @@ class OptionsPropertyRootGroupTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -66,4 +64,5 @@ class OptionsPropertyRootGroupTest extends TestCase
             $this->object
         );
     }
+
 }

@@ -4,13 +4,17 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Import;
 
 use PhpMyAdmin\File;
 use PhpMyAdmin\Plugins\Import\ImportOds;
 use PhpMyAdmin\Tests\PmaTestCase;
+
+/*
+ * we must set $GLOBALS['server'] here
+ * since 'check_user_privileges.inc.php' will use it globally
+ */
+$GLOBALS['server'] = 0;
 
 /**
  * Tests for PhpMyAdmin\Plugins\Import\ImportOds class
@@ -31,9 +35,8 @@ class ImportOdsTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $GLOBALS['server'] = 0;
         $GLOBALS['plugin_param'] = "csv";
         $this->object = new ImportOds();
 
@@ -67,7 +70,7 @@ class ImportOdsTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -121,39 +124,39 @@ class ImportOdsTest extends PmaTestCase
         //Test function called
         $this->object->doImport();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'CREATE DATABASE IF NOT EXISTS `ODS_DB` DEFAULT CHARACTER SET '
             . 'utf8 COLLATE utf8_general_ci',
             $sql_query
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'CREATE TABLE IF NOT EXISTS `ODS_DB`.`pma_bookmark`',
             $sql_query
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             "INSERT INTO `ODS_DB`.`pma_bookmark` (`A`, `B`, `C`, `D`) VALUES "
             . "(1, 'dbbase', NULL, 'ddd');",
             $sql_query
         );
 
         //asset that all databases and tables are imported
-        $this->assertStringContainsString(
+        $this->assertContains(
             'The following structures have either been created or altered.',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Go to database: `ODS_DB`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Edit settings for `ODS_DB`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Go to table: `pma_bookmark`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Edit settings for `pma_bookmark`',
             $import_notice
         );

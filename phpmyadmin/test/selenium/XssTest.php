@@ -6,29 +6,23 @@
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Selenium;
 
 /**
- * XssTest class
+ * XSSTest class
  *
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  * @group      selenium
  */
-class XssTest extends TestBase
+class XSSTest extends TestBase
 {
-    /**
-     * @return void
-     */
-    protected function setUp(): void
+    public function setUpPage()
     {
-        parent::setUp();
-        $this->maximize();
+        parent::setUpPage();
         $this->login();
     }
-
     /**
      * Tests the SQL query tab with a null query
      *
@@ -38,13 +32,13 @@ class XssTest extends TestBase
      */
     public function testQueryTabWithNullValue()
     {
-        if ($this->isSafari()) {
+        if (mb_strtolower($this->getBrowser()) == 'safari') {
             $this->markTestSkipped('Alerts not supported on Safari browser.');
         }
-        $this->waitForElement('partialLinkText', "SQL")->click();
+        $this->waitForElement('byPartialLinkText', "SQL")->click();
         $this->waitAjax();
 
-        $this->waitForElement('id', "queryboxf");
+        $this->waitForElement("byId", "queryboxf");
         $this->byId("button_submit_query")->click();
         $this->assertEquals("Missing value in the form!", $this->alertText());
     }

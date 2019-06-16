@@ -6,7 +6,6 @@
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Selenium;
 
@@ -24,12 +23,16 @@ class CreateDropDatabaseTest extends TestBase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         parent::setUp();
         /* TODO: For now this tests needs superuser for deleting database */
         $this->skipIfNotSuperUser();
-        $this->maximize();
+    }
+
+    public function setUpPage()
+    {
+        parent::setUpPage();
         $this->login();
     }
 
@@ -47,16 +50,16 @@ class CreateDropDatabaseTest extends TestBase
             'DROP DATABASE IF EXISTS ' . $this->database_name . ';'
         );
 
-        $this->waitForElement('partialLinkText', 'Databases')->click();
+        $this->waitForElement('byPartialLinkText','Databases')->click();
         $this->waitAjax();
 
-        $element = $this->waitForElement('id', 'text_create_db');
+        $element = $this->waitForElement('byId', 'text_create_db');
         $element->clear();
-        $element->sendKeys($this->database_name);
+        $element->value($this->database_name);
 
         $this->byId("buttonGo")->click();
 
-        $element = $this->waitForElement('linkText', 'Database: ' . $this->database_name);
+        $element = $this->waitForElement('byLinkText', 'Database: ' . $this->database_name);
 
         $result = $this->dbQuery(
             'SHOW DATABASES LIKE \'' . $this->database_name . '\';'
@@ -87,13 +90,12 @@ class CreateDropDatabaseTest extends TestBase
         $this->byCssSelector("button.submitOK")->click();
 
         $this->waitForElementNotPresent(
-            'cssSelector',
+            "byCssSelector",
             "input[name='selected_dbs[]'][value='" . $this->database_name . "']"
         );
 
         $this->waitForElement(
-            'cssSelector',
-            "span.ajax_notification div.success"
+            "byCssSelector", "span.ajax_notification div.success"
         );
 
         $result = $this->dbQuery(

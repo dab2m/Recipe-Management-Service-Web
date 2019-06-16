@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
@@ -25,7 +23,7 @@ class NodeIndexTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['server'] = 0;
     }
@@ -42,7 +40,7 @@ class NodeIndexTest extends PmaTestCase
             'text',
             $parent->links
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'tbl_indexes.php',
             $parent->links['text']
         );

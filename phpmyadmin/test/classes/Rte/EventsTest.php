@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Rte;
 
 use PhpMyAdmin\Response;
@@ -21,16 +19,11 @@ use PHPUnit\Framework\TestCase;
 class EventsTest extends TestCase
 {
     /**
-     * @var Events
-     */
-    private $events;
-
-    /**
      * Set up
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['db'] = 'db';
@@ -48,8 +41,6 @@ class EventsTest extends TestCase
         $GLOBALS['cfg']['LoginCookieValidity'] = 1440;
         $GLOBALS['cfg']['ServerDefault'] = '';
         $GLOBALS['tear_down']['server'] = true;
-
-        $this->events = new Events($GLOBALS['dbi']);
     }
 
     /**
@@ -57,7 +48,7 @@ class EventsTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         if ($GLOBALS['tear_down']['server']) {
             unset($GLOBALS['cfg']['ServerDefault']);
@@ -66,7 +57,7 @@ class EventsTest extends TestCase
     }
 
     /**
-     * Test for getDataFromRequest
+     * Test for Events::getDataFromRequest
      *
      * @param array $in  Input
      * @param array $out Expected output
@@ -75,15 +66,17 @@ class EventsTest extends TestCase
      *
      * @dataProvider providerGetDataFromRequest
      */
-    public function testGetDataFromRequestEmpty($in, $out): void
+    public function testGetDataFromRequestEmpty($in, $out)
     {
+        global $_POST;
+
         unset($_POST);
         foreach ($in as $key => $value) {
             if ($value !== '') {
                 $_POST[$key] = $value;
             }
         }
-        $this->assertEquals($out, $this->events->getDataFromRequest());
+        $this->assertEquals($out, Events::getDataFromRequest());
     }
 
     /**
@@ -93,9 +86,9 @@ class EventsTest extends TestCase
      */
     public function providerGetDataFromRequest()
     {
-        return [
-            [
-                [
+        return array(
+            array(
+                array(
                     'item_name'           => '',
                     'item_type'           => '',
                     'item_original_name'  => '',
@@ -108,9 +101,9 @@ class EventsTest extends TestCase
                     'item_definition'     => '',
                     'item_preserve'       => '',
                     'item_comment'        => '',
-                    'item_definer'        => '',
-                ],
-                [
+                    'item_definer'        => ''
+                ),
+                array(
                     'item_name'           => '',
                     'item_type'           => 'ONE TIME',
                     'item_type_toggle'    => 'RECURRING',
@@ -124,11 +117,11 @@ class EventsTest extends TestCase
                     'item_definition'     => '',
                     'item_preserve'       => '',
                     'item_comment'        => '',
-                    'item_definer'        => '',
-                ],
-            ],
-            [
-                [
+                    'item_definer'        => ''
+                )
+            ),
+            array(
+                array(
                     'item_name'           => 'foo',
                     'item_type'           => 'RECURRING',
                     'item_original_name'  => 'foo',
@@ -141,9 +134,9 @@ class EventsTest extends TestCase
                     'item_definition'     => 'foo',
                     'item_preserve'       => 'foo',
                     'item_comment'        => 'foo',
-                    'item_definer'        => 'foo',
-                ],
-                [
+                    'item_definer'        => 'foo'
+                ),
+                array(
                     'item_name'           => 'foo',
                     'item_type'           => 'RECURRING',
                     'item_type_toggle'    => 'ONE TIME',
@@ -157,14 +150,14 @@ class EventsTest extends TestCase
                     'item_definition'     => 'foo',
                     'item_preserve'       => 'foo',
                     'item_comment'        => 'foo',
-                    'item_definer'        => 'foo',
-                ],
-            ],
-        ];
+                    'item_definer'        => 'foo'
+                )
+            ),
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Events::getEditorForm
      *
      * @param array $data    Data for routine
      * @param array $matcher Matcher
@@ -173,12 +166,12 @@ class EventsTest extends TestCase
      *
      * @dataProvider providerGetEditorFormAdd
      */
-    public function testGetEditorFormAdd($data, $matcher): void
+    public function testGetEditorFormAdd($data, $matcher)
     {
-        $this->events->setGlobals();
-        $this->assertStringContainsString(
+        Events::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->events->getEditorForm('add', 'change', $data)
+            Events::getEditorForm('add', 'change', $data)
         );
     }
 
@@ -189,7 +182,7 @@ class EventsTest extends TestCase
      */
     public function providerGetEditorFormAdd()
     {
-        $data = [
+        $data = array(
             'item_name'           => '',
             'item_type'           => 'ONE TIME',
             'item_type_toggle'    => 'RECURRING',
@@ -203,55 +196,55 @@ class EventsTest extends TestCase
             'item_definition'     => '',
             'item_preserve'       => '',
             'item_comment'        => '',
-            'item_definer'        => '',
-        ];
+            'item_definer'        => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "<input name='add_item'",
-            ],
-            [
+                "<input name='add_item'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_name'",
-            ],
-            [
+                "<input type='text' name='item_name'"
+            ),
+            array(
                 $data,
-                "<select name='item_status'",
-            ],
-            [
+                "<select name='item_status'"
+            ),
+            array(
                 $data,
-                "<input name='item_type'",
-            ],
-            [
+                "<input name='item_type'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_execute_at'",
-            ],
-            [
+                "<input type='text' name='item_execute_at'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_ends'",
-            ],
-            [
+                "<input type='text' name='item_ends'"
+            ),
+            array(
                 $data,
-                "<textarea name='item_definition'",
-            ],
-            [
+                "<textarea name='item_definition'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_definer'",
-            ],
-            [
+                "<input type='text' name='item_definer'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_comment'",
-            ],
-            [
+                "<input type='text' name='item_comment'"
+            ),
+            array(
                 $data,
-                "<input type='submit' name='editor_process_add'",
-            ],
-        ];
+                "<input type='submit' name='editor_process_add'"
+            )
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Events::getEditorForm
      *
      * @param array $data    Data for routine
      * @param array $matcher Matcher
@@ -260,12 +253,12 @@ class EventsTest extends TestCase
      *
      * @dataProvider providerGetEditorFormEdit
      */
-    public function testGetEditorFormEdit($data, $matcher): void
+    public function testGetEditorFormEdit($data, $matcher)
     {
-        $this->events->setGlobals();
-        $this->assertStringContainsString(
+        Events::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->events->getEditorForm('edit', 'change', $data)
+            Events::getEditorForm('edit', 'change', $data)
         );
     }
 
@@ -276,7 +269,7 @@ class EventsTest extends TestCase
      */
     public function providerGetEditorFormEdit()
     {
-        $data = [
+        $data = array(
             'item_name'           => 'foo',
             'item_type'           => 'RECURRING',
             'item_type_toggle'    => 'ONE TIME',
@@ -290,55 +283,55 @@ class EventsTest extends TestCase
             'item_definition'     => 'SET @A=1;',
             'item_preserve'       => '',
             'item_comment'        => '',
-            'item_definer'        => '',
-        ];
+            'item_definer'        => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "<input name='edit_item'",
-            ],
-            [
+                "<input name='edit_item'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_name'",
-            ],
-            [
+                "<input type='text' name='item_name'"
+            ),
+            array(
                 $data,
-                "<select name='item_status'",
-            ],
-            [
+                "<select name='item_status'"
+            ),
+            array(
                 $data,
-                "<input name='item_type'",
-            ],
-            [
+                "<input name='item_type'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_execute_at'",
-            ],
-            [
+                "<input type='text' name='item_execute_at'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_ends'",
-            ],
-            [
+                "<input type='text' name='item_ends'"
+            ),
+            array(
                 $data,
-                "<textarea name='item_definition'",
-            ],
-            [
+                "<textarea name='item_definition'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_definer'",
-            ],
-            [
+                "<input type='text' name='item_definer'"
+            ),
+            array(
                 $data,
-                "<input type='text' name='item_comment'",
-            ],
-            [
+                "<input type='text' name='item_comment'"
+            ),
+            array(
                 $data,
-                "<input type='submit' name='editor_process_edit'",
-            ],
-        ];
+                "<input type='submit' name='editor_process_edit'"
+            )
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Events::getEditorForm
      *
      * @param array $data    Data for routine
      * @param array $matcher Matcher
@@ -347,13 +340,13 @@ class EventsTest extends TestCase
      *
      * @dataProvider providerGetEditorFormAjax
      */
-    public function testGetEditorFormAjax($data, $matcher): void
+    public function testGetEditorFormAjax($data, $matcher)
     {
         Response::getInstance()->setAjax(true);
-        $this->events->setGlobals();
-        $this->assertStringContainsString(
+        Events::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->events->getEditorForm('edit', 'change', $data)
+            Events::getEditorForm('edit', 'change', $data)
         );
         Response::getInstance()->setAjax(false);
     }
@@ -365,7 +358,7 @@ class EventsTest extends TestCase
      */
     public function providerGetEditorFormAjax()
     {
-        $data = [
+        $data = array(
             'item_name'           => '',
             'item_type'           => 'RECURRING',
             'item_type_toggle'    => 'ONE TIME',
@@ -379,27 +372,27 @@ class EventsTest extends TestCase
             'item_definition'     => '',
             'item_preserve'       => '',
             'item_comment'        => '',
-            'item_definer'        => '',
-        ];
+            'item_definer'        => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "<select name='item_type'",
-            ],
-            [
+                "<select name='item_type'"
+            ),
+            array(
                 $data,
-                "<input type='hidden' name='editor_process_edit'",
-            ],
-            [
+                "<input type='hidden' name='editor_process_edit'"
+            ),
+            array(
                 $data,
-                "<input type='hidden' name='ajax_request'",
-            ],
-        ];
+                "<input type='hidden' name='ajax_request'"
+            )
+        );
     }
 
     /**
-     * Test for getQueryFromRequest
+     * Test for Events::getQueryFromRequest
      *
      * @param array  $request Request
      * @param string $query   Query
@@ -409,12 +402,12 @@ class EventsTest extends TestCase
      *
      * @dataProvider providerGetQueryFromRequest
      */
-    public function testGetQueryFromRequest($request, $query, $num_err): void
+    public function testGetQueryFromRequest($request, $query, $num_err)
     {
-        global $errors;
+        global $_POST, $errors;
 
-        $errors = [];
-        $this->events->setGlobals();
+        $errors = array();
+        Events::setGlobals();
 
         unset($_POST);
         $_POST = $request;
@@ -427,7 +420,7 @@ class EventsTest extends TestCase
             ->will($this->returnArgument(0));
         $GLOBALS['dbi'] = $dbi;
 
-        $this->assertEquals($query, $this->events->getQueryFromRequest());
+        $this->assertEquals($query, Events::getQueryFromRequest());
         $this->assertCount($num_err, $errors);
     }
 
@@ -438,48 +431,48 @@ class EventsTest extends TestCase
      */
     public function providerGetQueryFromRequest()
     {
-        return [
+        return array(
             // Testing success
-            [
-                [ // simple once-off event
+            array(
+                array( // simple once-off event
                     'item_name'       => 's o m e e v e n t\\',
                     'item_type'       => 'ONE TIME',
                     'item_execute_at' => '2050-01-01 00:00:00',
-                    'item_definition' => 'SET @A=0;',
-                ],
+                    'item_definition' => 'SET @A=0;'
+                ),
                 'CREATE EVENT `s o m e e v e n t\` ON SCHEDULE AT \'2050-01-01 ' .
                 '00:00:00\' ON COMPLETION NOT PRESERVE DO SET @A=0;',
-                0,
-            ],
-            [
-                [ // full once-off event
+                0
+            ),
+            array(
+                array( // full once-off event
                     'item_name'       => 'evn',
                     'item_definer'    => 'me@home',
                     'item_type'       => 'ONE TIME',
                     'item_execute_at' => '2050-01-01 00:00:00',
                     'item_preserve'   => 'ON',
                     'item_status'     => 'ENABLED',
-                    'item_definition' => 'SET @A=0;',
-                ],
+                    'item_definition' => 'SET @A=0;'
+                ),
                 'CREATE DEFINER=`me`@`home` EVENT `evn` ON SCHEDULE AT ' .
                 '\'2050-01-01 00:00:00\' ON COMPLETION PRESERVE ENABLE DO SET @A=0;',
-                0,
-            ],
-            [
-                [ // simple recurring event
+                0
+            ),
+            array(
+                array( // simple recurring event
                     'item_name'           => 'rec_``evn',
                     'item_type'           => 'RECURRING',
                     'item_interval_value' => '365',
                     'item_interval_field' => 'DAY',
                     'item_status'         => 'DISABLED',
-                    'item_definition'     => 'SET @A=0;',
-                ],
+                    'item_definition'     => 'SET @A=0;'
+                ),
                 'CREATE EVENT `rec_````evn` ON SCHEDULE EVERY 365 DAY ON ' .
                 'COMPLETION NOT PRESERVE DISABLE DO SET @A=0;',
-                0,
-            ],
-            [
-                [ // full recurring event
+                0
+            ),
+            array(
+                array( // full recurring event
                     'item_name'           => 'rec_evn2',
                     'item_definer'        => 'evil``user><\\@work\\',
                     'item_type'           => 'RECURRING',
@@ -489,58 +482,58 @@ class EventsTest extends TestCase
                     'item_ends'           => '2050-01-01',
                     'item_preserve'       => 'ON',
                     'item_status'         => 'SLAVESIDE_DISABLED',
-                    'item_definition'     => 'SET @A=0;',
-                ],
+                    'item_definition'     => 'SET @A=0;'
+                ),
                 'CREATE DEFINER=`evil````user><\`@`work\` EVENT `rec_evn2` ON ' .
                 'SCHEDULE EVERY 365 DAY STARTS \'1900-01-01\' ENDS \'2050-01-01\' ' .
                 'ON COMPLETION PRESERVE DISABLE ON SLAVE DO SET @A=0;',
-                0,
-            ],
+                0
+            ),
             // Testing failures
-            [
-                [ // empty request
-                ],
+            array(
+                array( // empty request
+                ),
                 'CREATE EVENT ON SCHEDULE ON COMPLETION NOT PRESERVE DO ',
-                3,
-            ],
-            [
-                [
+                3
+            ),
+            array(
+                array(
                     'item_name'       => 's o m e e v e n t\\',
                     'item_definer'    => 'someuser', // invalid definer format
                     'item_type'       => 'ONE TIME',
                     'item_execute_at' => '', // no execution time
-                    'item_definition' => 'SET @A=0;',
-                ],
+                    'item_definition' => 'SET @A=0;'
+                ),
                 'CREATE EVENT `s o m e e v e n t\` ON SCHEDULE ON COMPLETION NOT ' .
                 'PRESERVE DO SET @A=0;',
-                2,
-            ],
-            [
-                [
+                2
+            ),
+            array(
+                array(
                     'item_name'           => 'rec_``evn',
                     'item_type'           => 'RECURRING',
                     'item_interval_value' => '', // no interval value
                     'item_interval_field' => 'DAY',
                     'item_status'         => 'DISABLED',
-                    'item_definition'     => 'SET @A=0;',
-                ],
+                    'item_definition'     => 'SET @A=0;'
+                ),
                 'CREATE EVENT `rec_````evn` ON SCHEDULE ON COMPLETION NOT ' .
                 'PRESERVE DISABLE DO SET @A=0;',
-                1,
-            ],
-            [
-                [ // simple recurring event
+                1
+            ),
+            array(
+                array( // simple recurring event
                     'item_name'           => 'rec_``evn',
                     'item_type'           => 'RECURRING',
                     'item_interval_value' => '365',
                     'item_interval_field' => 'CENTURIES', // invalid interval field
                     'item_status'         => 'DISABLED',
-                    'item_definition'     => 'SET @A=0;',
-                ],
+                    'item_definition'     => 'SET @A=0;'
+                ),
                 'CREATE EVENT `rec_````evn` ON SCHEDULE ON COMPLETION NOT ' .
                 'PRESERVE DISABLE DO SET @A=0;',
-                1,
-            ],
-        ];
+                1
+            ),
+        );
     }
 }

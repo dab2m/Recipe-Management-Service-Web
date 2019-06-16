@@ -5,13 +5,9 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation;
 
 use PhpMyAdmin\Navigation\Navigation;
-use PhpMyAdmin\Relation;
-use PhpMyAdmin\Template;
 use PhpMyAdmin\Tests\PmaTestCase;
 
 /**
@@ -22,7 +18,7 @@ use PhpMyAdmin\Tests\PmaTestCase;
 class NavigationTest extends PmaTestCase
 {
     /**
-     * @var Navigation
+     * @var PhpMyAdmin\Navigation\Navigation
      */
     protected $object;
 
@@ -32,23 +28,14 @@ class NavigationTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $GLOBALS['server'] = 1;
-        $GLOBALS['db'] = 'db';
-        $GLOBALS['table'] = '';
+        $this->object = new Navigation();
         $GLOBALS['cfgRelation']['db'] = 'pmadb';
         $GLOBALS['cfgRelation']['navigationhiding'] = 'navigationhiding';
         $GLOBALS['cfg']['Server']['user'] = 'user';
-        $GLOBALS['cfg']['Server']['DisableIS'] = false;
         $GLOBALS['cfg']['ActionLinksMode'] = 'both';
         $GLOBALS['pmaThemeImage'] = '';
-
-        $this->object = new Navigation(
-            new Template(),
-            new Relation($GLOBALS['dbi']),
-            $GLOBALS['dbi']
-        );
     }
 
     /**
@@ -57,7 +44,7 @@ class NavigationTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -83,7 +70,6 @@ class NavigationTest extends PmaTestCase
             ->will($this->returnArgument(0));
 
         $GLOBALS['dbi'] = $dbi;
-        $this->object = new Navigation(new Template(), new Relation($dbi), $dbi);
         $this->object->hideNavigationItem('itemName', 'itemType', 'db');
     }
 
@@ -108,7 +94,6 @@ class NavigationTest extends PmaTestCase
         $dbi->expects($this->any())->method('escapeString')
             ->will($this->returnArgument(0));
         $GLOBALS['dbi'] = $dbi;
-        $this->object = new Navigation(new Template(), new Relation($dbi), $dbi);
         $this->object->unhideNavigationItem('itemName', 'itemType', 'db');
     }
 
@@ -120,15 +105,56 @@ class NavigationTest extends PmaTestCase
      */
     public function testGetItemUnhideDialog()
     {
+        $expectedQuery = "SELECT `item_name`, `item_type`"
+            . " FROM `pmadb`.`navigationhiding`"
+            . " WHERE `username`='user' AND `db_name`='db' AND `table_name`=''";
+        $dbi = $this->getMockBuilder('PhpMyAdmin\DatabaseInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $dbi->expects($this->once())
+            ->method('tryQuery')
+            ->with($expectedQuery)
+            ->will($this->returnValue(true));
+        $dbi->expects($this->at(3))
+            ->method('fetchArray')
+            ->will(
+                $this->returnValue(
+                    array(
+                        'item_name' => 'tableName',
+                        'item_type' => 'table'
+                    )
+                )
+            );
+        $dbi->expects($this->at(4))
+            ->method('fetchArray')
+            ->will(
+                $this->returnValue(
+                    array(
+                        'item_name' => 'viewName',
+                        'item_type' => 'view'
+                    )
+                )
+            );
+        $dbi->expects($this->at(5))
+            ->method('fetchArray')
+            ->will($this->returnValue(false));
+        $dbi->expects($this->once())
+            ->method('freeResult');
+        $dbi->expects($this->any())->method('escapeString')
+            ->will($this->returnArgument(0));
+
+        $GLOBALS['dbi'] = $dbi;
+
         $html = $this->object->getItemUnhideDialog('db');
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<td>tableName</td>',
             $html
         );
-        $this->assertStringContainsString(
-            '<a class="unhideNavItem ajax" href="navigation.php" data-post="'
+        $this->assertContains(
+            '<a href="navigation.php" data-post="'
             . 'unhideNavItem=1&amp;itemType=table&amp;'
-            . 'itemName=tableName&amp;dbName=db&amp;lang=en">',
+            . 'itemName=tableName&amp;dbName=db&amp;lang=en"'
+            . ' class="unhideNavItem ajax">',
             $html
         );
     }

@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Index;
@@ -19,14 +17,14 @@ use PhpMyAdmin\Tests\PmaTestCase;
  */
 class IndexTest extends PmaTestCase
 {
-    private $_params = [];
+    private $_params = array();
 
     /**
      * Configures parameters.
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $this->_params['Schema'] = "PMA_Schema";
         $this->_params['Table'] = "PMA_Table";
@@ -38,27 +36,18 @@ class IndexTest extends PmaTestCase
         $this->_params['Packed'] = "PMA_Packed";
 
         //test add columns
-        $column1 = [
-            "Column_name" => "column1",
-            "Seq_in_index" => "index1",
-            "Collation" => "Collation1",
-            "Cardinality" => "Cardinality1",
-            "Null" => "null1"
-        ];
-        $column2 = [
-            "Column_name" => "column2",
-            "Seq_in_index" => "index2",
-            "Collation" => "Collation2",
-            "Cardinality" => "Cardinality2",
-            "Null" => "null2"
-        ];
-        $column3 = [
-            "Column_name" => "column3",
-            "Seq_in_index" => "index3",
-            "Collation" => "Collation3",
-            "Cardinality" => "Cardinality3",
-            "Null" => "null3"
-        ];
+        $column1 = array("Column_name"=>"column1","Seq_in_index"=>"index1",
+                         "Collation"=>"Collation1","Cardinality"=>"Cardinality1",
+                         "Null"=>"null1"
+                        );
+        $column2 = array("Column_name"=>"column2","Seq_in_index"=>"index2",
+                         "Collation"=>"Collation2","Cardinality"=>"Cardinality2",
+                         "Null"=>"null2"
+                        );
+        $column3 = array("Column_name"=>"column3","Seq_in_index"=>"index3",
+                         "Collation"=>"Collation3","Cardinality"=>"Cardinality3",
+                         "Null"=>"null3"
+                        );
         $this->_params['columns'][] = $column1;
         $this->_params['columns'][] = $column2;
         $this->_params['columns'][] = $column3;
@@ -92,11 +81,11 @@ class IndexTest extends PmaTestCase
             'PMA_Non_unique',
             $index->getNonUnique()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'PMA_Comment',
             $index->getComments()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'PMA_Index_comment',
             $index->getComments()
         );
@@ -104,6 +93,7 @@ class IndexTest extends PmaTestCase
             'PMA_Index_choice',
             $index->getChoice()
         );
+
     }
 
     /**

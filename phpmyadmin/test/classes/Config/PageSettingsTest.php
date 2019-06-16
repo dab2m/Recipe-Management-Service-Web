@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Config;
 
 use PhpMyAdmin\Config;
@@ -25,15 +23,13 @@ class PageSettingsTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $GLOBALS['PMA_Config'] = new Config();
-        $GLOBALS['PMA_Config']->enableBc();
         $GLOBALS['server'] = 1;
         $GLOBALS['db'] = 'db';
         $GLOBALS['table'] = '';
         $GLOBALS['PMA_PHP_SELF'] = 'index.php';
-        $GLOBALS['cfg']['Server']['DisableIS'] = false;
     }
 
     /**
@@ -60,7 +56,7 @@ class PageSettingsTest extends PmaTestCase
         $html = $object->getHTML();
 
         // Test some sample parts
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<div id="page_settings_modal">'
             . '<div class="page_settings">'
             . '<form method="post" '
@@ -69,15 +65,15 @@ class PageSettingsTest extends PmaTestCase
             $html
         );
 
-        $this->assertStringContainsString(
-            '<input type="hidden" name="submit_save" value="Browse">',
+        $this->assertContains(
+            '<input type="hidden" name="submit_save" value="Browse" />',
             $html
         );
 
-        $this->assertStringContainsString(
-            "registerFieldValidator('MaxRows', 'validatePositiveNumber', true);\n"
-            . "registerFieldValidator('RepeatCells', 'validateNonNegativeNumber', true);\n"
-            . "registerFieldValidator('LimitChars', 'validatePositiveNumber', true);\n",
+        $this->assertContains(
+            "validateField('MaxRows', 'PMA_validatePositiveNumber', true);\n"
+            . "validateField('RepeatCells', 'PMA_validateNonNegativeNumber', true);\n"
+            . "validateField('LimitChars', 'PMA_validatePositiveNumber', true);\n",
             $html
         );
     }
@@ -87,18 +83,18 @@ class PageSettingsTest extends PmaTestCase
      *
      * @return void
      */
-    public function testGetNaviSettings()
+    function testGetNaviSettings()
     {
         $html = PageSettings::getNaviSettings();
 
         // Test some sample parts
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<div id="pma_navigation_settings">',
             $html
         );
 
-        $this->assertStringContainsString(
-            '<input type="hidden" name="submit_save" value="Navi">',
+        $this->assertContains(
+            '<input type="hidden" name="submit_save" value="Navi" />',
             $html
         );
     }

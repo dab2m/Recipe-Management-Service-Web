@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\SysInfo;
@@ -29,7 +27,7 @@ class SysInfoTest extends TestCase
      *
      * @dataProvider sysInfoOsProvider
      */
-    public function testGetSysInfoOs($os, $expected): void
+    public function testGetSysInfoOs($os, $expected)
     {
         $this->assertEquals(
             $expected,
@@ -44,24 +42,12 @@ class SysInfoTest extends TestCase
      */
     public function sysInfoOsProvider()
     {
-        return [
-            [
-                'FreeBSD',
-                'Linux',
-            ],
-            [
-                'Linux',
-                'Linux',
-            ],
-            [
-                'Winnt',
-                'Winnt',
-            ],
-            [
-                'SunOS',
-                'SunOS',
-            ],
-        ];
+        return array(
+            array('FreeBSD', 'Linux'),
+            array('Linux', 'Linux'),
+            array('Winnt', 'Winnt'),
+            array('SunOS', 'SunOS'),
+        );
     }
 
     /**

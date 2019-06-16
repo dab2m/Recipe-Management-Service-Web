@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Properties;
 
 use PHPUnit\Framework\TestCase;
@@ -25,7 +23,7 @@ class PropertyItemTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setup()
     {
         $this->stub = $this->getMockForAbstractClass('PhpMyAdmin\Properties\PropertyItem');
     }
@@ -35,7 +33,7 @@ class PropertyItemTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->stub);
     }

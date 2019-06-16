@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Auth;
 
 use PhpMyAdmin\Config;
@@ -27,7 +25,7 @@ class AuthenticationSignonTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['PMA_Config'] = new Config();
         $GLOBALS['PMA_Config']->enableBc();
@@ -43,7 +41,7 @@ class AuthenticationSignonTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         parent::tearDown();
         unset($this->object);
@@ -62,7 +60,7 @@ class AuthenticationSignonTest extends PmaTestCase
         $this->object->showLoginForm();
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'You must set SignonURL!',
             $result
         );
@@ -92,7 +90,7 @@ class AuthenticationSignonTest extends PmaTestCase
     {
         $this->mockResponse('Location: https://example.com/SignonURL');
 
-        $GLOBALS['header'] = [];
+        $GLOBALS['header'] = array();
         $GLOBALS['cfg']['Server']['SignonURL'] = 'https://example.com/SignonURL';
         $GLOBALS['cfg']['Server']['LogoutURL'] = '';
 
@@ -125,7 +123,7 @@ class AuthenticationSignonTest extends PmaTestCase
         $_SESSION['LAST_SIGNON_URL'] = 'https://example.com/SignonURL';
         $GLOBALS['cfg']['Server']['SignonScript'] = './examples/signon-script.php';
         $GLOBALS['cfg']['Server']['SignonSession'] = 'session123';
-        $GLOBALS['cfg']['Server']['SignonCookieParams'] = [];
+        $GLOBALS['cfg']['Server']['SignonCookieParams'] = array();
         $GLOBALS['cfg']['Server']['host'] = 'localhost';
         $GLOBALS['cfg']['Server']['port'] = '80';
         $GLOBALS['cfg']['Server']['user'] = 'user';
@@ -161,7 +159,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $GLOBALS['cfg']['Server']['SignonURL'] = 'https://example.com/SignonURL';
         $GLOBALS['cfg']['Server']['SignonSession'] = 'session123';
-        $GLOBALS['cfg']['Server']['SignonCookieParams'] = [];
+        $GLOBALS['cfg']['Server']['SignonCookieParams'] = array();
         $GLOBALS['cfg']['Server']['host'] = 'localhost';
         $GLOBALS['cfg']['Server']['port'] = '80';
         $GLOBALS['cfg']['Server']['user'] = 'user';
@@ -171,7 +169,7 @@ class AuthenticationSignonTest extends PmaTestCase
         $_SESSION['PMA_single_signon_password'] = 'pass123';
         $_SESSION['PMA_single_signon_host'] = 'local';
         $_SESSION['PMA_single_signon_port'] = '12';
-        $_SESSION['PMA_single_signon_cfgupdate'] = ['foo' => 'bar'];
+        $_SESSION['PMA_single_signon_cfgupdate'] = array('foo' => 'bar');
         $_SESSION['PMA_single_signon_token'] = 'pmaToken';
         $sessionName = session_name();
         $sessionID = session_id();
@@ -179,15 +177,15 @@ class AuthenticationSignonTest extends PmaTestCase
         $this->object->logOut();
 
         $this->assertEquals(
-            [
+            array(
                 'SignonURL' => 'https://example.com/SignonURL',
                 'SignonScript' => '',
                 'SignonSession' => 'session123',
-                'SignonCookieParams' => [],
+                'SignonCookieParams' => array(),
                 'host' => 'localhost',
                 'port' => '80',
                 'user' => 'user',
-            ],
+            ),
             $GLOBALS['cfg']['Server']
         );
 
@@ -216,7 +214,7 @@ class AuthenticationSignonTest extends PmaTestCase
     {
         $GLOBALS['cfg']['Server']['SignonURL'] = 'https://example.com/SignonURL';
         $GLOBALS['cfg']['Server']['SignonSession'] = 'session123';
-        $GLOBALS['cfg']['Server']['SignonCookieParams'] = [];
+        $GLOBALS['cfg']['Server']['SignonCookieParams'] = array();
         $GLOBALS['cfg']['Server']['host'] = 'localhost';
         $GLOBALS['cfg']['Server']['port'] = '80';
         $GLOBALS['cfg']['Server']['user'] = 'user';
@@ -227,7 +225,7 @@ class AuthenticationSignonTest extends PmaTestCase
         $_SESSION['PMA_single_signon_password'] = 'pass123';
         $_SESSION['PMA_single_signon_host'] = 'local';
         $_SESSION['PMA_single_signon_port'] = '12';
-        $_SESSION['PMA_single_signon_cfgupdate'] = ['foo' => 'bar'];
+        $_SESSION['PMA_single_signon_cfgupdate'] = array('foo' => 'bar');
         $_SESSION['PMA_single_signon_token'] = 'pmaToken';
 
         $this->assertTrue(
@@ -282,7 +280,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
             ->disableOriginalConstructor()
-            ->setMethods(['showLoginForm'])
+            ->setMethods(array('showLoginForm'))
             ->getMock();
 
         $this->object->expects($this->exactly(1))
@@ -309,7 +307,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
             ->disableOriginalConstructor()
-            ->setMethods(['showLoginForm'])
+            ->setMethods(array('showLoginForm'))
             ->getMock();
 
         $this->object->expects($this->exactly(1))
@@ -335,7 +333,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
             ->disableOriginalConstructor()
-            ->setMethods(['showLoginForm'])
+            ->setMethods(array('showLoginForm'))
             ->getMock();
 
         $this->object->expects($this->exactly(1))
@@ -363,7 +361,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
             ->disableOriginalConstructor()
-            ->setMethods(['showLoginForm'])
+            ->setMethods(array('showLoginForm'))
             ->getMock();
 
         $this->object->expects($this->exactly(1))
@@ -399,7 +397,7 @@ class AuthenticationSignonTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
             ->disableOriginalConstructor()
-            ->setMethods(['showLoginForm'])
+            ->setMethods(array('showLoginForm'))
             ->getMock();
 
         $this->object->expects($this->exactly(1))
@@ -432,19 +430,19 @@ class AuthenticationSignonTest extends PmaTestCase
     {
         $this->object = $this->getMockBuilder(AuthenticationSignon::class)
         ->disableOriginalConstructor()
-        ->setMethods(['setCookieParams'])
+        ->setMethods(array('setCookieParams'))
         ->getMock();
 
-        $this->object->setCookieParams([]);
+        $this->object->setCookieParams(array());
 
-        $defaultOptions = [
+        $defaultOptions = array(
             'lifetime' => 0,
             'path' => '/',
             'domain' => '',
             'secure' => false,
             'httponly' => false,
-            'samesite' => '',
-        ];
+            'samesite' => ''
+        );
         // php did not set 'samesite' attribute in session_get_cookie_params since not yet implemented
         if (version_compare(phpversion(), '7.3.0', '<')) {
             unset($defaultOptions['samesite']);

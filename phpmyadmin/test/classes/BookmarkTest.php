@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Bookmark;
@@ -26,7 +24,7 @@ class BookmarkTest extends TestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $GLOBALS['cfg']['Server']['user'] = 'root';
         $GLOBALS['cfg']['Server']['pmadb'] = 'phpmyadmin';
@@ -55,7 +53,7 @@ class BookmarkTest extends TestCase
     public function testGetList()
     {
         $this->assertEquals(
-            [],
+            array(),
             Bookmark::getList(
                 $GLOBALS['dbi'],
                 $GLOBALS['cfg']['Server']['user'],
@@ -88,18 +86,18 @@ class BookmarkTest extends TestCase
      */
     public function testSave()
     {
-        $bookmarkData = [
+        $bookmarkData = array(
             'bkm_database' => 'phpmyadmin',
             'bkm_user' => 'root',
             'bkm_sql_query' => 'SELECT "phpmyadmin"',
             'bkm_label' => 'bookmark1',
-        ];
+        );
 
         $bookmark = Bookmark::createBookmark(
             $GLOBALS['dbi'],
             $GLOBALS['cfg']['Server']['user'],
             $bookmarkData
         );
-        $this->assertFalse($bookmark->save());
+        $this->assertfalse($bookmark->save());
     }
 }

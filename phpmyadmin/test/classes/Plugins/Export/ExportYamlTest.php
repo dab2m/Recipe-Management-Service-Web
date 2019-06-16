@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Export;
 
 use PhpMyAdmin\DatabaseInterface;
@@ -30,7 +28,7 @@ class ExportYamlTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['output_kanji_conversion'] = false;
@@ -47,7 +45,7 @@ class ExportYamlTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->object);
     }
@@ -136,7 +134,7 @@ class ExportYamlTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "%YAML 1.1\n---\n",
             $result
         );
@@ -235,11 +233,7 @@ class ExportYamlTest extends PmaTestCase
             ->with(true)
             ->will(
                 $this->returnValue(
-                    [
-                        null,
-                        '123',
-                        "\"c\\a\nb\r",
-                    ]
+                    array(null, '123', "\"c\\a\nb\r")
                 )
             );
 
@@ -248,7 +242,7 @@ class ExportYamlTest extends PmaTestCase
             ->with(true)
             ->will(
                 $this->returnValue(
-                    [null]
+                    array(null)
                 )
             );
 
@@ -257,11 +251,7 @@ class ExportYamlTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportData(
-                'db',
-                'ta<ble',
-                "\n",
-                "example.com",
-                "SELECT"
+                'db', 'ta<ble', "\n", "example.com", "SELECT"
             )
         );
         $result = ob_get_clean();

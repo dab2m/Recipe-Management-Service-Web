@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Navigation\Nodes;
 
 use PhpMyAdmin\Navigation\NodeFactory;
@@ -27,7 +25,7 @@ class NodeTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['cfg']['Server']['DisableIS'] = false;
@@ -48,7 +46,7 @@ class NodeTest extends PmaTestCase
             $child
         );
         $this->assertEquals(
-            $parent->getChild($child->realName, true),
+            $parent->getChild($child->real_name, true),
             $child
         );
     }
@@ -100,10 +98,8 @@ class NodeTest extends PmaTestCase
     public function testNodeHasChildren()
     {
         $parent = NodeFactory::getInstance();
-        $emptyContainer = NodeFactory::getInstance(
-            'Node',
-            'empty',
-            Node::CONTAINER
+        $empty_container = NodeFactory::getInstance(
+            'Node', 'empty', Node::CONTAINER
         );
         $child = NodeFactory::getInstance();
         // test with no children
@@ -116,7 +112,7 @@ class NodeTest extends PmaTestCase
             false
         );
         // test with an empty container
-        $parent->addChild($emptyContainer);
+        $parent->addChild($empty_container);
         $this->assertEquals(
             $parent->hasChildren(true),
             true
@@ -157,9 +153,7 @@ class NodeTest extends PmaTestCase
         $this->assertEquals($parent->numChildren(), 1);
         // add a container, this one doesn't count wither
         $container = NodeFactory::getInstance(
-            'Node',
-            'default',
-            Node::CONTAINER
+            'Node', 'default', Node::CONTAINER
         );
         $parent->addChild($container);
         $this->assertEquals($parent->numChildren(), 1);
@@ -179,19 +173,16 @@ class NodeTest extends PmaTestCase
     public function testParents()
     {
         $parent = NodeFactory::getInstance();
-        $this->assertEquals($parent->parents(), []); // exclude self
-        $this->assertEquals($parent->parents(true), [$parent]); // include self
+        $this->assertEquals($parent->parents(), array()); // exclude self
+        $this->assertEquals($parent->parents(true), array($parent)); // include self
 
         $child = NodeFactory::getInstance();
         $parent->addChild($child);
 
-        $this->assertEquals($child->parents(), [$parent]); // exclude self
+        $this->assertEquals($child->parents(), array($parent)); // exclude self
         $this->assertEquals(
             $child->parents(true),
-            [
-                $child,
-                $parent,
-            ]
+            array($child, $parent)
         ); // include self
     }
 
@@ -246,9 +237,7 @@ class NodeTest extends PmaTestCase
         $firstChild = NodeFactory::getInstance();
         $parent->addChild($firstChild);
         $secondChild = NodeFactory::getInstance(
-            'Node',
-            'default',
-            Node::CONTAINER
+            'Node', 'default', Node::CONTAINER
         );
         $parent->addChild($secondChild);
         // Empty Node::CONTAINER type node should not be considered in hasSiblings()
@@ -292,16 +281,14 @@ class NodeTest extends PmaTestCase
     public function testGetWhereClause()
     {
         $method = new ReflectionMethod(
-            'PhpMyAdmin\Navigation\Nodes\Node',
-            'getWhereClause'
+            'PhpMyAdmin\Navigation\Nodes\Node', '_getWhereClause'
         );
         $method->setAccessible(true);
 
         // Vanilla case
         $node = NodeFactory::getInstance();
         $this->assertEquals(
-            "WHERE TRUE ",
-            $method->invoke($node, 'SCHEMA_NAME')
+            "WHERE TRUE ", $method->invoke($node, 'SCHEMA_NAME')
         );
 
         // When a schema names is passed as search clause
@@ -311,7 +298,7 @@ class NodeTest extends PmaTestCase
         );
 
         if (! isset($GLOBALS['cfg']['Server'])) {
-            $GLOBALS['cfg']['Server'] = [];
+            $GLOBALS['cfg']['Server'] = array();
         }
 
         // When hide_db regular expression is present
@@ -331,10 +318,7 @@ class NodeTest extends PmaTestCase
         unset($GLOBALS['cfg']['Server']['only_db']);
 
         // When only_db directive is present and it's an array of dbs
-        $GLOBALS['cfg']['Server']['only_db'] = [
-            'onlyDbOne',
-            'onlyDbTwo',
-        ];
+        $GLOBALS['cfg']['Server']['only_db'] = array('onlyDbOne', 'onlyDbTwo');
         $this->assertEquals(
             "WHERE TRUE AND ( `SCHEMA_NAME` LIKE 'onlyDbOne' "
             . "OR `SCHEMA_NAME` LIKE 'onlyDbTwo' ) ",
@@ -460,12 +444,12 @@ class NodeTest extends PmaTestCase
         $dbi->expects($this->exactly(3))
             ->method('fetchArray')
             ->willReturnOnConsecutiveCalls(
-                [
-                    '0' => 'db',
-                ],
-                [
-                    '0' => 'aa_db',
-                ],
+                array(
+                    '0' => 'db'
+                ),
+                array(
+                    '0' => 'aa_db'
+                ),
                 false
             );
 

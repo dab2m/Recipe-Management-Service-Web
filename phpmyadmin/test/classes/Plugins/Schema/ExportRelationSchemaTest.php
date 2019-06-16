@@ -4,8 +4,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Schema;
 
 use PhpMyAdmin\Plugins\Schema\ExportRelationSchema;
@@ -30,7 +28,7 @@ class ExportRelationSchemaTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $_REQUEST['page_number'] = 33;
         $this->object = new ExportRelationSchema('information_schema', null);
@@ -43,7 +41,7 @@ class ExportRelationSchemaTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }

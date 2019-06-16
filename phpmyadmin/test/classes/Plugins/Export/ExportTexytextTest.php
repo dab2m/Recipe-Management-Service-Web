@@ -5,13 +5,10 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Export;
 
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Plugins\Export\ExportTexytext;
-use PhpMyAdmin\Relation;
 use PhpMyAdmin\Tests\PmaTestCase;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -31,14 +28,14 @@ class ExportTexytextTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['output_kanji_conversion'] = false;
         $GLOBALS['buffer_needed'] = false;
         $GLOBALS['asfile'] = false;
         $GLOBALS['save_on_server'] = false;
-        $GLOBALS['plugin_param'] = [];
+        $GLOBALS['plugin_param'] = array();
         $GLOBALS['plugin_param']['export_type'] = 'table';
         $GLOBALS['plugin_param']['single_table'] = false;
         $GLOBALS['cfgRelation']['relation'] = true;
@@ -50,7 +47,7 @@ class ExportTexytextTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->object);
     }
@@ -268,7 +265,7 @@ class ExportTexytextTest extends PmaTestCase
         $dbi->expects($this->at(5))
             ->method('fetchRow')
             ->with(true)
-            ->will($this->returnValue([null, '0', 'test']));
+            ->will($this->returnValue(array(null, '0', 'test')));
 
         $GLOBALS['dbi'] = $dbi;
         $GLOBALS['what'] = 'foo';
@@ -278,24 +275,21 @@ class ExportTexytextTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportData(
-                'db',
-                'ta<ble',
-                "\n",
-                "example.com",
-                "SELECT"
+                'db', 'ta<ble', "\n", "example.com", "SELECT"
             )
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "|fName1|fNa&amp;quot;me2|fName3",
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "|&amp;gt;|0|test",
             $result
         );
+
     }
 
     /**
@@ -312,18 +306,18 @@ class ExportTexytextTest extends PmaTestCase
         $dbi->expects($this->once())
             ->method('getColumns')
             ->with('db', 'view')
-            ->will($this->returnValue([1, 2]));
+            ->will($this->returnValue(array(1, 2)));
 
-        $keys = [
-            [
+        $keys = array(
+            array(
                 'Non_unique' => 0,
-                'Column_name' => 'cname',
-            ],
-            [
+                'Column_name' => 'cname'
+            ),
+            array(
                 'Non_unique' => 1,
-                'Column_name' => 'cname2',
-            ],
-        ];
+                'Column_name' => 'cname2'
+            )
+        );
 
         $dbi->expects($this->once())
             ->method('getTableIndexes')
@@ -338,22 +332,22 @@ class ExportTexytextTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder('PhpMyAdmin\Plugins\Export\ExportTexytext')
             ->disableOriginalConstructor()
-            ->setMethods(['formatOneColumnDefinition'])
+            ->setMethods(array('formatOneColumnDefinition'))
             ->getMock();
 
         $this->object->expects($this->at(0))
             ->method('formatOneColumnDefinition')
-            ->with(1, ['cname'])
+            ->with(1, array('cname'))
             ->will($this->returnValue('c1'));
 
         $this->object->expects($this->at(1))
             ->method('formatOneColumnDefinition')
-            ->with(2, ['cname'])
+            ->with(2, array('cname'))
             ->will($this->returnValue('c2'));
 
         $result = $this->object->getTableDefStandIn('db', 'view', '#');
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "c1\nc2",
             $result
         );
@@ -367,7 +361,7 @@ class ExportTexytextTest extends PmaTestCase
     public function testGetTableDef()
     {
         $this->object = $this->getMockBuilder('PhpMyAdmin\Plugins\Export\ExportTexytext')
-            ->setMethods(['formatOneColumnDefinition'])
+            ->setMethods(array('formatOneColumnDefinition'))
             ->getMock();
 
         // case 1
@@ -376,16 +370,16 @@ class ExportTexytextTest extends PmaTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $keys = [
-            [
+        $keys = array(
+            array(
                 'Non_unique' => 0,
-                'Column_name' => 'cname',
-            ],
-            [
+                'Column_name' => 'cname'
+            ),
+            array(
                 'Non_unique' => 1,
-                'Column_name' => 'cname2',
-            ],
-        ];
+                'Column_name' => 'cname2'
+            )
+        );
 
         $dbi->expects($this->once())
             ->method('getTableIndexes')
@@ -395,19 +389,19 @@ class ExportTexytextTest extends PmaTestCase
         $dbi->expects($this->exactly(2))
             ->method('fetchResult')
             ->willReturnOnConsecutiveCalls(
-                [
-                    'fname' => [
+                array(
+                    'fname' => array(
                         'foreign_table' => '<ftable',
-                        'foreign_field' => 'ffield>',
-                    ],
-                ],
-                [
-                    'fname' => [
+                        'foreign_field' => 'ffield>'
+                    )
+                ),
+                array(
+                    'fname' => array(
                         'values' => 'test-',
                         'transformation' => 'testfoo',
                         'mimetype' => 'test<'
-                    ],
-                ]
+                    )
+                )
             );
 
         $dbi->expects($this->once())
@@ -418,34 +412,33 @@ class ExportTexytextTest extends PmaTestCase
                 )
             );
 
-        $columns = [
+        $columns = array(
             'Field' => 'fname',
-            'Comment' => 'comm',
-        ];
+            'Comment' => 'comm'
+        );
 
         $dbi->expects($this->exactly(2))
             ->method('getColumns')
             ->with('db', 'table')
-            ->will($this->returnValue([$columns]));
+            ->will($this->returnValue(array($columns)));
 
         $GLOBALS['dbi'] = $dbi;
-        $this->object->relation = new Relation($dbi);
 
         $this->object->expects($this->exactly(1))
             ->method('formatOneColumnDefinition')
-            ->with(['Field' => 'fname', 'Comment' => 'comm'], ['cname'])
+            ->with(array('Field' => 'fname', 'Comment' => 'comm'), array('cname'))
             ->will($this->returnValue(1));
 
         $GLOBALS['cfgRelation']['relation'] = true;
-        $_SESSION['relation'][0] = [
+        $_SESSION['relation'][0] = array(
             'PMA_VERSION' => PMA_VERSION,
             'relwork' => true,
             'commwork' => true,
             'mimework' => true,
             'db' => 'db',
             'relation' => 'rel',
-            'column_info' => 'col',
-        ];
+            'column_info' => 'col'
+        );
 
         $result = $this->object->getTableDef(
             'db',
@@ -457,13 +450,13 @@ class ExportTexytextTest extends PmaTestCase
             true
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '1|&lt;ftable (ffield&gt;)|comm|Test&lt;',
             $result
         );
     }
 
-    /**
+     /**
      * Test for PhpMyAdmin\Plugins\Export\ExportTexytext::getTriggers
      *
      * @return void
@@ -474,14 +467,14 @@ class ExportTexytextTest extends PmaTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $triggers = [
-            [
+        $triggers = array(
+            array(
                 'name' => 'tna"me',
                 'action_timing' => 'ac>t',
                 'event_manipulation' => 'manip&',
                 'definition' => 'def'
-            ],
-        ];
+            )
+        );
 
         $dbi->expects($this->once())
             ->method('getTriggers')
@@ -492,15 +485,16 @@ class ExportTexytextTest extends PmaTestCase
 
         $result = $this->object->getTriggers('database', 'ta<ble');
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '|tna"me|ac>t|manip&|def',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '|Name|Time|Event|Definition',
             $result
         );
+
     }
 
     /**
@@ -521,7 +515,7 @@ class ExportTexytextTest extends PmaTestCase
             ->will($this->returnValue(1));
 
         $this->object = $this->getMockBuilder('PhpMyAdmin\Plugins\Export\ExportTexytext')
-            ->setMethods(['getTableDef', 'getTriggers', 'getTableDefStandIn'])
+            ->setMethods(array('getTableDef', 'getTriggers', 'getTableDefStandIn'))
             ->getMock();
 
         $this->object->expects($this->at(0))
@@ -537,16 +531,8 @@ class ExportTexytextTest extends PmaTestCase
         $this->object->expects($this->at(2))
             ->method('getTableDef')
             ->with(
-                'db',
-                't&bl',
-                "\n",
-                "example.com",
-                false,
-                false,
-                false,
-                false,
-                true,
-                true
+                'db', 't&bl', "\n", "example.com",
+                false, false, false, false, true, true
             )
             ->will($this->returnValue('dumpText3'));
 
@@ -561,17 +547,12 @@ class ExportTexytextTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportStructure(
-                'db',
-                't&bl',
-                "\n",
-                "example.com",
-                "create_table",
-                "test"
+                'db', 't&bl', "\n", "example.com", "create_table", "test"
             )
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '== Table structure for table t&amp;bl' . "\n\ndumpText1",
             $result
         );
@@ -580,12 +561,7 @@ class ExportTexytextTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportStructure(
-                'db',
-                't&bl',
-                "\n",
-                "example.com",
-                "triggers",
-                "test"
+                'db', 't&bl', "\n", "example.com", "triggers", "test"
             )
         );
         $result = ob_get_clean();
@@ -599,12 +575,7 @@ class ExportTexytextTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportStructure(
-                'db',
-                't&bl',
-                "\n",
-                "example.com",
-                "create_view",
-                "test"
+                'db', 't&bl', "\n", "example.com", "create_view", "test"
             )
         );
         $result = ob_get_clean();
@@ -618,12 +589,7 @@ class ExportTexytextTest extends PmaTestCase
         ob_start();
         $this->assertTrue(
             $this->object->exportStructure(
-                'db',
-                't&bl',
-                "\n",
-                "example.com",
-                "stand_in",
-                "test"
+                'db', 't&bl', "\n", "example.com", "stand_in", "test"
             )
         );
         $result = ob_get_clean();
@@ -641,33 +607,33 @@ class ExportTexytextTest extends PmaTestCase
      */
     public function testFormatOneColumnDefinition()
     {
-        $cols = [
+        $cols = array(
             'Null' => 'Yes',
             'Field' => 'field',
             'Key' => 'PRI',
             'Type' => 'set(abc)enum123'
-        ];
+        );
 
-        $unique_keys = [
+        $unique_keys = array(
             'field'
-        ];
+        );
 
         $this->assertEquals(
             '|//**field**//|set(abc)|Yes|NULL',
             $this->object->formatOneColumnDefinition($cols, $unique_keys)
         );
 
-        $cols = [
+        $cols = array(
             'Null' => 'NO',
             'Field' => 'fields',
             'Key' => 'COMP',
             'Type' => '',
-            'Default' => 'def',
-        ];
+            'Default' => 'def'
+        );
 
-        $unique_keys = [
+        $unique_keys = array(
             'field'
-        ];
+        );
 
         $this->assertEquals(
             '|fields|&amp;nbsp;|No|def',

@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Di;
 
 use PhpMyAdmin\Di\NotFoundException;
@@ -31,7 +29,7 @@ class NotFoundExceptionTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->exception = new NotFoundException();
     }
@@ -43,7 +41,7 @@ class NotFoundExceptionTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->exception);
     }

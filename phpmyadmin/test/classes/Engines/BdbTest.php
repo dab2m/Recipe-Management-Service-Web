@@ -4,8 +4,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Engines;
 
 use PhpMyAdmin\Engines\Bdb;
@@ -30,7 +28,7 @@ class BdbTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['server'] = 0;
         $this->object = new Bdb('bdb');
@@ -43,7 +41,7 @@ class BdbTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -57,31 +55,42 @@ class BdbTest extends PmaTestCase
     {
         $this->assertEquals(
             $this->object->getVariables(),
-            [
-                'version_bdb' => [
+            array(
+                'version_bdb' => array(
                     'title' => __('Version information'),
-                ],
-                'bdb_cache_size' => [
+                ),
+                'bdb_cache_size' => array(
                     'type'  => 1,
-                ],
-                'bdb_home' => [],
-                'bdb_log_buffer_size' => [
+                ),
+                'bdb_home' => array(
+                ),
+                'bdb_log_buffer_size' => array(
                     'type'  => 1,
-                ],
-                'bdb_logdir' => [],
-                'bdb_max_lock' => [
+                ),
+                'bdb_logdir' => array(
+                ),
+                'bdb_max_lock' => array(
                     'type'  => 2,
-                ],
-                'bdb_shared_data' => [],
-                'bdb_tmpdir' => [],
-                'bdb_data_direct' => [],
-                'bdb_lock_detect' => [],
-                'bdb_log_direct' => [],
-                'bdb_no_recover' => [],
-                'bdb_no_sync' => [],
-                'skip_sync_bdb_logs' => [],
-                'sync_bdb_logs' => [],
-            ]
+                ),
+                'bdb_shared_data' => array(
+                ),
+                'bdb_tmpdir' => array(
+                ),
+                'bdb_data_direct' => array(
+                ),
+                'bdb_lock_detect' => array(
+                ),
+                'bdb_log_direct' => array(
+                ),
+                'bdb_no_recover' => array(
+                ),
+                'bdb_no_sync' => array(
+                ),
+                'skip_sync_bdb_logs' => array(
+                ),
+                'sync_bdb_logs' => array(
+                ),
+            )
         );
     }
 
@@ -109,5 +118,6 @@ class BdbTest extends PmaTestCase
             $this->object->getMysqlHelpPage(),
             'bdb'
         );
+
     }
 }

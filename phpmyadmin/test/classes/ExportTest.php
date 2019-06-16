@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Export;
@@ -23,92 +21,77 @@ use PHPUnit\Framework\TestCase;
 class ExportTest extends TestCase
 {
     /**
-     * @var Export
-     */
-    private $export;
-
-    /**
-     * Sets up the fixture
+     * Test for Export::mergeAliases
      *
      * @return void
      */
-    protected function setUp(): void
+    public function testPMAMergeAliases()
     {
-        $this->export = new Export($GLOBALS['dbi']);
-    }
-
-    /**
-     * Test for mergeAliases
-     *
-     * @return void
-     */
-    public function testMergeAliases()
-    {
-        $aliases1 = [
-            'test_db' => [
+        $aliases1 = array(
+            'test_db' => array(
                 'alias' => 'aliastest',
-                'tables' => [
-                    'foo' => [
+                'tables' => array(
+                    'foo' => array(
                         'alias' => 'foobar',
-                        'columns' => [
+                        'columns' => array(
                             'bar' => 'foo',
-                            'baz' => 'barbaz',
-                        ],
-                    ],
-                    'bar' => [
+                            'baz' => 'barbaz'
+                        )
+                    ),
+                    'bar' => array(
                         'alias' => 'foobaz',
-                        'columns' => [
+                        'columns' => array(
                             'a' => 'a_alias',
-                            'b' => 'b',
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $aliases2 = [
-            'test_db' => [
+                            'b' => 'b'
+                        )
+                    )
+                )
+            )
+        );
+        $aliases2 = array(
+            'test_db' => array(
                 'alias' => 'test',
-                'tables' => [
-                    'foo' => [
-                        'columns' => [
-                            'bar' => 'foobar',
-                        ],
-                    ],
-                    'baz' => [
-                        'columns' => [
-                            'a' => 'x',
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $expected = [
-            'test_db' => [
+                'tables' => array(
+                    'foo' => array(
+                        'columns' => array(
+                            'bar' => 'foobar'
+                        )
+                    ),
+                    'baz' => array(
+                        'columns' => array(
+                            'a' => 'x'
+                        )
+                    )
+                )
+            )
+        );
+        $expected = array(
+            'test_db' => array(
                 'alias' => 'test',
-                'tables' => [
-                    'foo' => [
+                'tables' => array(
+                    'foo' => array(
                         'alias' => 'foobar',
-                        'columns' => [
+                        'columns' => array(
                             'bar' => 'foobar',
-                            'baz' => 'barbaz',
-                        ],
-                    ],
-                    'bar' => [
+                            'baz' => 'barbaz'
+                        )
+                    ),
+                    'bar' => array(
                         'alias' => 'foobaz',
-                        'columns' => [
+                        'columns' => array(
                             'a' => 'a_alias',
-                            'b' => 'b',
-                        ],
-                    ],
-                    'baz' => [
-                        'columns' => [
-                            'a' => 'x',
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $actual = $this->export->mergeAliases($aliases1, $aliases2);
+                            'b' => 'b'
+                        )
+                    ),
+                    'baz' => array(
+                        'columns' => array(
+                            'a' => 'x'
+                        )
+                    )
+                )
+            )
+        );
+        $actual = Export::mergeAliases($aliases1, $aliases2);
         $this->assertEquals($expected, $actual);
     }
 }

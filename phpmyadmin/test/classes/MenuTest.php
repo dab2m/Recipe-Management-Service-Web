@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Core;
@@ -25,9 +23,9 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
-        if (! defined('PMA_IS_WINDOWS')) {
+        if (!defined('PMA_IS_WINDOWS')) {
             define('PMA_IS_WINDOWS', false);
         }
         $GLOBALS['cfg']['Server']['DisableIS'] = false;
@@ -45,10 +43,10 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    public function testServer()
+    function testServer()
     {
-        $menu = new Menu('', '');
-        $this->assertStringContainsString(
+        $menu = new Menu('server', '', '');
+        $this->assertContains(
             'floating_menubar',
             $menu->getDisplay()
         );
@@ -59,10 +57,10 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    public function testDatabase()
+    function testDatabase()
     {
-        $menu = new Menu('pma_test', '');
-        $this->assertStringContainsString(
+        $menu = new Menu('server', 'pma_test', '');
+        $this->assertContains(
             'floating_menubar',
             $menu->getDisplay()
         );
@@ -73,10 +71,10 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    public function testTable()
+    function testTable()
     {
-        $menu = new Menu('pma_test', 'table1');
-        $this->assertStringContainsString(
+        $menu = new Menu('server', 'pma_test', 'table1');
+        $this->assertContains(
             'floating_menubar',
             $menu->getDisplay()
         );
@@ -87,9 +85,9 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    public function testTableDisplay()
+    function testTableDisplay()
     {
-        $menu = new Menu('pma_test', '');
+        $menu = new Menu('server', 'pma_test', '');
         $this->expectOutputString(
             $menu->getDisplay()
         );
@@ -102,11 +100,11 @@ class MenuTest extends PmaTestCase
      *
      * @return void
      */
-    public function testSetTable()
+    function testSetTable()
     {
-        $menu = new Menu('pma_test', '');
+        $menu = new Menu('server', 'pma_test', '');
         $menu->setTable('table1');
-        $this->assertStringContainsString(
+        $this->assertContains(
             'table1',
             $menu->getDisplay()
         );

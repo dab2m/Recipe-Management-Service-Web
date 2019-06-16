@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Config;
 
 use PhpMyAdmin\Config;
@@ -34,7 +32,7 @@ class FormDisplayTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
         $GLOBALS['pmaThemePath'] = $GLOBALS['PMA_Theme']->getPath();
         $GLOBALS['PMA_Config'] = new Config();
@@ -47,7 +45,7 @@ class FormDisplayTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -60,12 +58,9 @@ class FormDisplayTest extends PmaTestCase
      */
     public function testFormDisplayContructor()
     {
-        $reflection = new ReflectionProperty(FormDisplay::class, '_jsLangStrings');
-        $reflection->setAccessible(true);
-
         $this->assertCount(
             5,
-            $reflection->getValue($this->object)
+            $this->readAttribute($this->object, '_jsLangStrings')
         );
     }
 
@@ -82,14 +77,14 @@ class FormDisplayTest extends PmaTestCase
         $attrForms = $reflection->getProperty('_forms');
         $attrForms->setAccessible(true);
 
-        $array = [
-            "Servers" => [
-                "1" => [
+        $array = array(
+            "Servers" => array(
+                "1" => array(
                     'test' => 1,
                     1 => ':group:end'
-                ],
-            ],
-        ];
+                )
+            )
+        );
 
         $this->object->registerForm('pma_testform', $array, 2);
         $_forms = $attrForms->getValue($this->object);
@@ -98,26 +93,20 @@ class FormDisplayTest extends PmaTestCase
             $_forms['pma_testform']
         );
 
-        $attrSystemPaths = $reflection->getProperty('_systemPaths');
-        $attrSystemPaths->setAccessible(true);
-
         $this->assertEquals(
-            [
+            array(
                 "Servers/2/test" => "Servers/1/test",
-                "Servers/2/:group:end:0" => "Servers/1/:group:end:0",
-            ],
-            $attrSystemPaths->getValue($this->object)
+                "Servers/2/:group:end:0" => "Servers/1/:group:end:0"
+            ),
+            $this->readAttribute($this->object, '_systemPaths')
         );
 
-        $attrTranslatedPaths = $reflection->getProperty('_translatedPaths');
-        $attrTranslatedPaths->setAccessible(true);
-
         $this->assertEquals(
-            [
+            array(
                 "Servers/2/test" => "Servers-2-test",
-                "Servers/2/:group:end:0" => "Servers-2-:group:end:0",
-            ],
-            $attrTranslatedPaths->getValue($this->object)
+                "Servers/2/:group:end:0" => "Servers-2-:group:end:0"
+            ),
+            $this->readAttribute($this->object, '_translatedPaths')
         );
     }
 
@@ -135,23 +124,23 @@ class FormDisplayTest extends PmaTestCase
 
         $this->object = $this->getMockBuilder('PhpMyAdmin\Config\FormDisplay')
             ->disableOriginalConstructor()
-            ->setMethods(['save'])
+            ->setMethods(array('save'))
             ->getMock();
 
         $attrForms = new ReflectionProperty('PhpMyAdmin\Config\FormDisplay', '_forms');
         $attrForms->setAccessible(true);
-        $attrForms->setValue($this->object, [1, 2, 3]);
+        $attrForms->setValue($this->object, array(1, 2, 3));
 
         $this->object->expects($this->once())
             ->method('save')
-            ->with([0, 1, 2], false)
+            ->with(array(0, 1, 2), false)
             ->will($this->returnValue(true));
 
         $this->assertTrue(
             $this->object->process(false, false)
         );
 
-        $attrForms->setValue($this->object, []);
+        $attrForms->setValue($this->object, array());
 
         $this->assertFalse(
             $this->object->process(false, false)
@@ -173,23 +162,20 @@ class FormDisplayTest extends PmaTestCase
 
         $attrIsValidated = $reflection->getProperty('_errors');
         $attrIsValidated->setAccessible(true);
-        $attrIsValidated->setValue($this->object, []);
+        $attrIsValidated->setValue($this->object, array());
 
         $this->assertNull(
             $this->object->displayErrors()
         );
 
-        $arr = [
-            "Servers/1/test" => ['e1'],
-            "foobar" => [
-                'e2',
-                'e3',
-            ]
-        ];
+        $arr = array(
+            "Servers/1/test" => array('e1'),
+            "foobar" => array('e2', 'e3')
+        );
 
-        $sysArr = [
-            "Servers/1/test" => "Servers/1/test2",
-        ];
+        $sysArr = array(
+            "Servers/1/test" => "Servers/1/test2"
+        );
 
         $attrSystemPaths = $reflection->getProperty('_systemPaths');
         $attrSystemPaths->setAccessible(true);
@@ -199,11 +185,11 @@ class FormDisplayTest extends PmaTestCase
 
         $result = $this->object->displayErrors();
 
-        $this->assertStringContainsString('<dt>Servers/1/test2</dt>', $result);
-        $this->assertStringContainsString('<dd>e1</dd>', $result);
-        $this->assertStringContainsString('<dt>Form_foobar</dt>', $result);
-        $this->assertStringContainsString('<dd>e2</dd>', $result);
-        $this->assertStringContainsString('<dd>e3</dd>', $result);
+        $this->assertContains('<dt>Servers/1/test2</dt>', $result);
+        $this->assertContains('<dd>e1</dd>', $result);
+        $this->assertContains('<dt>Form_foobar</dt>', $result);
+        $this->assertContains('<dd>e2</dd>', $result);
+        $this->assertContains('<dd>e3</dd>', $result);
     }
 
     /**
@@ -221,22 +207,21 @@ class FormDisplayTest extends PmaTestCase
 
         $attrIsValidated = $reflection->getProperty('_errors');
         $attrIsValidated->setAccessible(true);
-        $attrIsValidated->setValue($this->object, []);
+        $attrIsValidated->setValue($this->object, array());
 
-        $this->object->fixErrors();
+        $this->assertNull(
+            $this->object->fixErrors()
+        );
 
-        $arr = [
-            "Servers/1/test" => ['e1'],
-            "Servers/2/test" => [
-                'e2',
-                'e3',
-            ],
-            "Servers/3/test" => [],
-        ];
+        $arr = array(
+            "Servers/1/test" => array('e1'),
+            "Servers/2/test" => array('e2', 'e3'),
+            "Servers/3/test" => array()
+        );
 
-        $sysArr = [
-            "Servers/1/test" => "Servers/1/host",
-        ];
+        $sysArr = array(
+            "Servers/1/test" => "Servers/1/host"
+        );
 
         $attrSystemPaths = $reflection->getProperty('_systemPaths');
         $attrSystemPaths->setAccessible(true);
@@ -247,13 +232,13 @@ class FormDisplayTest extends PmaTestCase
         $this->object->fixErrors();
 
         $this->assertEquals(
-            [
-                'Servers' => [
-                    '1' => [
-                        'test' => 'localhost',
-                    ],
-                ],
-            ],
+            array(
+                'Servers' => array(
+                    '1' => array(
+                        'test' => 'localhost'
+                    )
+                )
+            ),
             $_SESSION['ConfigFile0']
         );
     }
@@ -271,27 +256,21 @@ class FormDisplayTest extends PmaTestCase
         );
         $attrValidateSelect->setAccessible(true);
 
-        $arr = ['foo' => 'var'];
+        $arr = array('foo' => 'var');
         $value = 'foo';
         $this->assertTrue(
             $attrValidateSelect->invokeArgs(
                 $this->object,
-                [
-                    &$value,
-                    $arr,
-                ]
+                array(&$value, $arr)
             )
         );
 
-        $arr = ['' => 'foobar'];
+        $arr = array('' => 'foobar');
         $value = null;
         $this->assertTrue(
             $attrValidateSelect->invokeArgs(
                 $this->object,
-                [
-                    &$value,
-                    $arr,
-                ]
+                array(&$value, $arr)
             )
         );
         $this->assertEquals(
@@ -299,27 +278,21 @@ class FormDisplayTest extends PmaTestCase
             gettype($value)
         );
 
-        $arr = [0 => 'foobar'];
+        $arr = array(0 => 'foobar');
         $value = 0;
         $this->assertTrue(
             $attrValidateSelect->invokeArgs(
                 $this->object,
-                [
-                    &$value,
-                    $arr,
-                ]
+                array(&$value, $arr)
             )
         );
 
-        $arr = ['1' => 'foobar'];
+        $arr = array('1' => 'foobar');
         $value = 0;
         $this->assertFalse(
             $attrValidateSelect->invokeArgs(
                 $this->object,
-                [
-                    &$value,
-                    $arr,
-                ]
+                array(&$value, $arr)
             )
         );
     }
@@ -340,10 +313,7 @@ class FormDisplayTest extends PmaTestCase
 
         $attrErrors->setValue(
             $this->object,
-            [
-                1,
-                2,
-            ]
+            array(1, 2)
         );
 
         $this->assertTrue(
@@ -414,7 +384,7 @@ class FormDisplayTest extends PmaTestCase
         $attrUserprefs->setAccessible(true);
         $method->invoke($this->object, null);
         $this->assertEquals(
-            [],
+            array(),
             $attrUserprefs->getValue($this->object)
         );
     }
@@ -430,7 +400,7 @@ class FormDisplayTest extends PmaTestCase
         $method->setAccessible(true);
 
         // recoding
-        $opts = ['values' => []];
+        $opts = array('values' => array());
         $opts['values']['iconv'] = 'testIconv';
         $opts['values']['recode'] = 'testRecode';
         $opts['values']['mb'] = 'testMB';
@@ -439,18 +409,15 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'RecodingEngine',
-                &$opts,
-            ]
+            array('RecodingEngine', &$opts)
         );
 
         $expect['comment'] = '';
-        if (! function_exists('iconv')) {
+        if (!function_exists('iconv')) {
             $expect['values']['iconv'] .= " (unavailable)";
             $expect['comment'] = '"iconv" requires iconv extension';
         }
-        if (! function_exists('recode_string')) {
+        if (!function_exists('recode_string')) {
             $expect['values']['recode'] .= " (unavailable)";
             $expect['comment'] .= ($expect['comment'] ? ", " : '') .
                 '"recode" requires recode extension';
@@ -465,18 +432,15 @@ class FormDisplayTest extends PmaTestCase
         // ZipDump, GZipDump, BZipDump
         $method->invokeArgs(
             $this->object,
-            [
-                'ZipDump',
-                &$opts,
-            ]
+            array('ZipDump', &$opts)
         );
 
         $comment = '';
-        if (! function_exists("zip_open")) {
+        if (!function_exists("zip_open")) {
             $comment = 'Compressed import will not work due to missing function ' .
                 'zip_open.';
         }
-        if (! function_exists("gzcompress")) {
+        if (!function_exists("gzcompress")) {
             $comment .= ($comment ? '; ' : '') . 'Compressed export will not work ' .
             'due to missing function gzcompress.';
         }
@@ -492,18 +456,15 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'GZipDump',
-                &$opts,
-            ]
+            array('GZipDump', &$opts)
         );
 
         $comment = '';
-        if (! function_exists("gzopen")) {
+        if (!function_exists("gzopen")) {
             $comment = 'Compressed import will not work due to missing function ' .
                 'gzopen.';
         }
-        if (! function_exists("gzencode")) {
+        if (!function_exists("gzencode")) {
             $comment .= ($comment ? '; ' : '') . 'Compressed export will not work ' .
             'due to missing function gzencode.';
         }
@@ -519,18 +480,15 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'BZipDump',
-                &$opts,
-            ]
+            array('BZipDump', &$opts)
         );
 
         $comment = '';
-        if (! function_exists("bzopen")) {
+        if (!function_exists("bzopen")) {
             $comment = 'Compressed import will not work due to missing function ' .
                 'bzopen.';
         }
-        if (! function_exists("bzcompress")) {
+        if (!function_exists("bzcompress")) {
             $comment .= ($comment ? '; ' : '') . 'Compressed export will not work ' .
             'due to missing function bzcompress.';
         }
@@ -552,10 +510,7 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'MaxDbList',
-                &$opts,
-            ]
+            array('MaxDbList', &$opts)
         );
 
         $this->assertEquals(
@@ -565,10 +520,7 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'MaxTableList',
-                &$opts,
-            ]
+            array('MaxTableList', &$opts)
         );
 
         $this->assertEquals(
@@ -578,15 +530,13 @@ class FormDisplayTest extends PmaTestCase
 
         $method->invokeArgs(
             $this->object,
-            [
-                'QueryHistoryMax',
-                &$opts,
-            ]
+            array('QueryHistoryMax', &$opts)
         );
 
         $this->assertEquals(
             "maximum 10",
             $opts['comment']
         );
+
     }
 }

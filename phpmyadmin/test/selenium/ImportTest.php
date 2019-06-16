@@ -6,7 +6,6 @@
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Selenium;
 
@@ -20,13 +19,13 @@ namespace PhpMyAdmin\Tests\Selenium;
 class ImportTest extends TestBase
 {
     /**
-     * setUp function
+     * setUp function that can use the selenium session (called before each test)
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUpPage()
     {
-        parent::setUp();
+        parent::setUpPage();
         $this->login();
     }
 
@@ -100,33 +99,19 @@ class ImportTest extends TestBase
      */
     private function _doImport($type)
     {
-        $this->waitForElement('partialLinkText', "Import")->click();
+        $this->waitForElement('byPartialLinkText', "Import")->click();
         $this->waitAjax();
-        $this->waitForElement('id', 'input_import_file');
+        $this->waitForElement("byId", "input_import_file");
 
-        $this->waitForElement('cssSelector', 'label[for=radio_local_import_file]')->click();
+        $this->waitForElement('byCssSelector', 'label[for=radio_local_import_file]')->click();
+        $this->select($this->byName("local_import_file"))
+            ->selectOptionByLabel($type . "_import.sql");
 
-        $this->selectByValue(
-            $this->byName("local_import_file"),
-            $type . "_import.sql"
-        );
-
-        $this->webDriver->wait(5);
-
-        $this->webDriver->executeScript(
-            "window.scrollTo(0," .
-            $this->byId('buttonGo')->getLocation()->getY()
-            . ")"
-        );
-        $this->webDriver->wait(5);
         $this->scrollToBottom();
-        $this->waitUntilElementIsVisible('id', 'buttonGo', 30);
-
-        $this->byId('buttonGo')->click();
-        $this->waitUntilElementIsVisible(
-            'xpath',
-            "//div[@class='success' and contains(., 'Import has been successfully')]",
-            30
+        $this->byId("buttonGo")->click();
+        $this->waitForElement(
+            "byXPath",
+            "//div[@class='success' and contains(., 'Import has been successfully')]"
         );
     }
 }

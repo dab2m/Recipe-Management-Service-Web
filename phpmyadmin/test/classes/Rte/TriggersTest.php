@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Rte;
 
 use PhpMyAdmin\Response;
@@ -21,16 +19,11 @@ use PHPUnit\Framework\TestCase;
 class TriggersTest extends TestCase
 {
     /**
-     * @var Triggers
-     */
-    private $triggers;
-
-    /**
      * Set up
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['cfg']['ServerDefault'] = '';
         $GLOBALS['cfg']['AllowThirdPartyFraming'] = false;
@@ -47,12 +40,10 @@ class TriggersTest extends TestCase
         $GLOBALS['db'] = 'pma_test';
         $GLOBALS['table'] = 'table';
         $GLOBALS['PMA_PHP_SELF'] = 'index.php';
-
-        $this->triggers = new Triggers($GLOBALS['dbi']);
     }
 
     /**
-     * Test for getDataFromRequest
+     * Test for Triggers::getDataFromRequest
      *
      * @param array $in  Input
      * @param array $out Expected output
@@ -61,15 +52,17 @@ class TriggersTest extends TestCase
      *
      * @dataProvider providerGetDataFromRequestEmpty
      */
-    public function testGetDataFromRequestEmpty($in, $out): void
+    public function testGetDataFromRequestEmpty($in, $out)
     {
+        global $_POST;
+
         unset($_POST);
         foreach ($in as $key => $value) {
             if ($value !== '') {
                 $_POST[$key] = $value;
             }
         }
-        $this->assertEquals($out, $this->triggers->getDataFromRequest());
+        $this->assertEquals($out, Triggers::getDataFromRequest());
     }
 
     /**
@@ -79,52 +72,52 @@ class TriggersTest extends TestCase
      */
     public function providerGetDataFromRequestEmpty()
     {
-        return [
-            [
-                [
+        return array(
+            array(
+                array(
                     'item_name'               => '',
                     'item_table'              => '',
                     'item_original_name'      => '',
                     'item_action_timing'      => '',
                     'item_event_manipulation' => '',
                     'item_definition'         => '',
-                    'item_definer'            => '',
-                ],
-                [
+                    'item_definer'            => ''
+                ),
+                array(
                     'item_name'               => '',
                     'item_table'              => '',
                     'item_original_name'      => '',
                     'item_action_timing'      => '',
                     'item_event_manipulation' => '',
                     'item_definition'         => '',
-                    'item_definer'            => '',
-                ],
-            ],
-            [
-                [
+                    'item_definer'            => ''
+                )
+            ),
+            array(
+                array(
                     'item_name'               => 'foo',
                     'item_table'              => 'foo',
                     'item_original_name'      => 'foo',
                     'item_action_timing'      => 'foo',
                     'item_event_manipulation' => 'foo',
                     'item_definition'         => 'foo',
-                    'item_definer'            => 'foo',
-                ],
-                [
+                    'item_definer'            => 'foo'
+                ),
+                array(
                     'item_name'               => 'foo',
                     'item_table'              => 'foo',
                     'item_original_name'      => 'foo',
                     'item_action_timing'      => 'foo',
                     'item_event_manipulation' => 'foo',
                     'item_definition'         => 'foo',
-                    'item_definer'            => 'foo',
-                ],
-            ],
-        ];
+                    'item_definer'            => 'foo'
+                )
+            )
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Triggers::getEditorForm
      *
      * @param array $data    Data for trigger
      * @param array $matcher Matcher
@@ -134,13 +127,13 @@ class TriggersTest extends TestCase
      * @dataProvider providerGetEditorFormAdd
      * @group medium
      */
-    public function testGetEditorFormAdd($data, $matcher): void
+    public function testGetEditorFormAdd($data, $matcher)
     {
         $GLOBALS['server'] = 1;
-        $this->triggers->setGlobals();
-        $this->assertStringContainsString(
+        Triggers::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->triggers->getEditorForm('add', $data)
+            Triggers::getEditorForm('add', $data)
         );
     }
 
@@ -151,54 +144,54 @@ class TriggersTest extends TestCase
      */
     public function providerGetEditorFormAdd()
     {
-        $data = [
+        $data = array(
             'item_name'               => '',
             'item_table'              => 'table1',
             'item_original_name'      => '',
             'item_action_timing'      => '',
             'item_event_manipulation' => '',
             'item_definition'         => '',
-            'item_definer'            => '',
-        ];
+            'item_definer'            => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "name='add_item'",
-            ],
-            [
+                "name='add_item'"
+            ),
+            array(
                 $data,
-                "name='item_name'",
-            ],
-            [
+                "name='item_name'"
+            ),
+            array(
                 $data,
-                "name='item_table'",
-            ],
-            [
+                "name='item_table'"
+            ),
+            array(
                 $data,
-                "name='item_timing'",
-            ],
-            [
+                "name='item_timing'"
+            ),
+            array(
                 $data,
-                "name='item_event'",
-            ],
-            [
+                "name='item_event'"
+            ),
+            array(
                 $data,
-                "name='item_definition'",
-            ],
-            [
+                "name='item_definition'"
+            ),
+            array(
                 $data,
-                "name='item_definer'",
-            ],
-            [
+                "name='item_definer'"
+            ),
+            array(
                 $data,
-                "name='editor_process_add'",
-            ],
-        ];
+                "name='editor_process_add'"
+            )
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Triggers::getEditorForm
      *
      * @param array $data    Data for trigger
      * @param array $matcher Matcher
@@ -208,13 +201,13 @@ class TriggersTest extends TestCase
      * @dataProvider providerGetEditorFormEdit
      * @group medium
      */
-    public function testGetEditorFormEdit($data, $matcher): void
+    public function testGetEditorFormEdit($data, $matcher)
     {
         $GLOBALS['server'] = 1;
-        $this->triggers->setGlobals();
-        $this->assertStringContainsString(
+        Triggers::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->triggers->getEditorForm('edit', $data)
+            Triggers::getEditorForm('edit', $data)
         );
     }
 
@@ -225,54 +218,54 @@ class TriggersTest extends TestCase
      */
     public function providerGetEditorFormEdit()
     {
-        $data = [
+        $data = array(
             'item_name'               => 'foo',
             'item_table'              => 'table1',
             'item_original_name'      => 'bar',
             'item_action_timing'      => 'BEFORE',
             'item_event_manipulation' => 'INSERT',
             'item_definition'         => 'SET @A=1;',
-            'item_definer'            => '',
-        ];
+            'item_definer'            => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "name='edit_item'",
-            ],
-            [
+                "name='edit_item'"
+            ),
+            array(
                 $data,
-                "name='item_name'",
-            ],
-            [
+                "name='item_name'"
+            ),
+            array(
                 $data,
-                "name='item_table'",
-            ],
-            [
+                "name='item_table'"
+            ),
+            array(
                 $data,
-                "name='item_timing'",
-            ],
-            [
+                "name='item_timing'"
+            ),
+            array(
                 $data,
-                "name='item_event'",
-            ],
-            [
+                "name='item_event'"
+            ),
+            array(
                 $data,
-                "name='item_definition'",
-            ],
-            [
+                "name='item_definition'"
+            ),
+            array(
                 $data,
-                "name='item_definer'",
-            ],
-            [
+                "name='item_definer'"
+            ),
+            array(
                 $data,
-                "name='editor_process_edit'",
-            ],
-        ];
+                "name='editor_process_edit'"
+            )
+        );
     }
 
     /**
-     * Test for getEditorForm
+     * Test for Triggers::getEditorForm
      *
      * @param array $data    Data for trigger
      * @param array $matcher Matcher
@@ -281,14 +274,14 @@ class TriggersTest extends TestCase
      *
      * @dataProvider providerGetEditorFormAjax
      */
-    public function testGetEditorFormAjax($data, $matcher): void
+    public function testGetEditorFormAjax($data, $matcher)
     {
         $GLOBALS['server'] = 1;
         Response::getInstance()->setAjax(true);
-        $this->triggers->setGlobals();
-        $this->assertStringContainsString(
+        Triggers::setGlobals();
+        $this->assertContains(
             $matcher,
-            $this->triggers->getEditorForm('edit', $data)
+            Triggers::getEditorForm('edit', $data)
         );
         Response::getInstance()->setAjax(false);
     }
@@ -300,30 +293,30 @@ class TriggersTest extends TestCase
      */
     public function providerGetEditorFormAjax()
     {
-        $data = [
+        $data = array(
             'item_name'               => 'foo',
             'item_table'              => 'table1',
             'item_original_name'      => 'bar',
             'item_action_timing'      => 'BEFORE',
             'item_event_manipulation' => 'INSERT',
             'item_definition'         => 'SET @A=1;',
-            'item_definer'            => '',
-        ];
+            'item_definer'            => ''
+        );
 
-        return [
-            [
+        return array(
+            array(
                 $data,
-                "name='editor_process_edit'",
-            ],
-            [
+                "name='editor_process_edit'"
+            ),
+            array(
                 $data,
-                "name='ajax_request'",
-            ],
-        ];
+                "name='ajax_request'"
+            )
+        );
     }
 
     /**
-     * Test for getQueryFromRequest
+     * Test for Triggers::getQueryFromRequest
      *
      * @param string $definer    Definer
      * @param string $name       Name
@@ -339,19 +332,12 @@ class TriggersTest extends TestCase
      * @dataProvider providerGetQueryFromRequest
      */
     public function testGetQueryFromRequest(
-        $definer,
-        $name,
-        $timing,
-        $event,
-        $table,
-        $definition,
-        $query,
-        $num_err
+        $definer, $name, $timing, $event, $table, $definition, $query, $num_err
     ) {
-        global $errors;
+        global $_POST, $errors;
 
-        $errors = [];
-        $this->triggers->setGlobals();
+        $errors = array();
+        Triggers::setGlobals();
 
         $_POST['item_definer']    = $definer;
         $_POST['item_name']       = $name;
@@ -361,7 +347,7 @@ class TriggersTest extends TestCase
         $_POST['item_definition'] = $definition;
         $GLOBALS['server'] = 1;
 
-        $this->assertEquals($query, $this->triggers->getQueryFromRequest());
+        $this->assertEquals($query, Triggers::getQueryFromRequest());
         $this->assertCount($num_err, $errors);
     }
 
@@ -372,18 +358,17 @@ class TriggersTest extends TestCase
      */
     public function providerGetQueryFromRequest()
     {
-        return [
-            [
-                '',
+        return array(
+            array('',
                 '',
                 '',
                 '',
                 '',
                 '',
                 'CREATE TRIGGER ON  FOR EACH ROW ',
-                5,
-            ],
-            [
+                5
+            ),
+            array(
                 'root',
                 'trigger',
                 'BEFORE',
@@ -391,9 +376,9 @@ class TriggersTest extends TestCase
                 'table`2',
                 'SET @A=NULL',
                 'CREATE TRIGGER `trigger` BEFORE INSERT ON  FOR EACH ROW SET @A=NULL',
-                2,
-            ],
-            [
+                2
+            ),
+            array(
                 'foo`s@host',
                 'trigger`s test',
                 'AFTER',
@@ -401,9 +386,9 @@ class TriggersTest extends TestCase
                 'table3',
                 'BEGIN SET @A=1; SET @B=2; END',
                 'CREATE DEFINER=`foo``s`@`host` TRIGGER `trigger``s test` AFTER ON  FOR EACH ROW BEGIN SET @A=1; SET @B=2; END',
-                2,
-            ],
-            [
+                2
+            ),
+            array(
                 'root@localhost',
                 'trigger',
                 'BEFORE',
@@ -411,8 +396,8 @@ class TriggersTest extends TestCase
                 'table1',
                 'SET @A=NULL',
                 'CREATE DEFINER=`root`@`localhost` TRIGGER `trigger` BEFORE INSERT ON `table1` FOR EACH ROW SET @A=NULL',
-                0,
-            ],
-        ];
+                0
+            ),
+        );
     }
 }

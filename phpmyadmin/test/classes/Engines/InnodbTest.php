@@ -4,8 +4,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Engines;
 
 use PhpMyAdmin\Engines\Innodb;
@@ -30,7 +28,7 @@ class InnodbTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['server'] = 0;
         $this->object = new Innodb('innodb');
@@ -43,7 +41,7 @@ class InnodbTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -56,85 +54,99 @@ class InnodbTest extends PmaTestCase
     public function testGetVariables()
     {
         $this->assertEquals(
-            [
-                'innodb_data_home_dir' => [
+            array(
+                'innodb_data_home_dir' => array(
                     'title' => __('Data home directory'),
                     'desc'  => __('The common part of the directory path for all InnoDB data files.'),
-                ],
-                'innodb_data_file_path' => [
+                ),
+                'innodb_data_file_path' => array(
                     'title' => __('Data files'),
-                ],
-                'innodb_autoextend_increment' => [
+                ),
+                'innodb_autoextend_increment' => array(
                     'title' => __('Autoextend increment'),
                     'desc'  => __('The increment size for extending the size of an autoextending tablespace when it becomes full.'),
                     'type'  => 2,
-                ],
-                'innodb_buffer_pool_size' => [
+                ),
+                'innodb_buffer_pool_size' => array(
                     'title' => __('Buffer pool size'),
                     'desc'  => __('The size of the memory buffer InnoDB uses to cache data and indexes of its tables.'),
                     'type'  => 1,
-                ],
-                'innodb_additional_mem_pool_size' => [
+                ),
+                'innodb_additional_mem_pool_size' => array(
                     'title' => 'innodb_additional_mem_pool_size',
                     'type'  => 1,
-                ],
-                'innodb_buffer_pool_awe_mem_mb' => [
+                ),
+                'innodb_buffer_pool_awe_mem_mb' => array(
                     'type'  => 1,
-                ],
-                'innodb_checksums' => [],
-                'innodb_commit_concurrency' => [],
-                'innodb_concurrency_tickets' => [
+                ),
+                'innodb_checksums' => array(
+                ),
+                'innodb_commit_concurrency' => array(
+                ),
+                'innodb_concurrency_tickets' => array(
                     'type'  => 2,
-                ],
-                'innodb_doublewrite' => [],
-                'innodb_fast_shutdown' => [],
-                'innodb_file_io_threads' => [
+                ),
+                'innodb_doublewrite' => array(
+                ),
+                'innodb_fast_shutdown' => array(
+                ),
+                'innodb_file_io_threads' => array(
                     'type'  => 2,
-                ],
-                'innodb_file_per_table' => [],
-                'innodb_flush_log_at_trx_commit' => [],
-                'innodb_flush_method' => [],
-                'innodb_force_recovery' => [],
-                'innodb_lock_wait_timeout' => [
+                ),
+                'innodb_file_per_table' => array(
+                ),
+                'innodb_flush_log_at_trx_commit' => array(
+                ),
+                'innodb_flush_method' => array(
+                ),
+                'innodb_force_recovery' => array(
+                ),
+                'innodb_lock_wait_timeout' => array(
                     'type'  => 2,
-                ],
-                'innodb_locks_unsafe_for_binlog' => [],
-                'innodb_log_arch_dir' => [],
-                'innodb_log_archive' => [],
-                'innodb_log_buffer_size' => [
+                ),
+                'innodb_locks_unsafe_for_binlog' => array(
+                ),
+                'innodb_log_arch_dir' => array(
+                ),
+                'innodb_log_archive' => array(
+                ),
+                'innodb_log_buffer_size' => array(
                     'type'  => 1,
-                ],
-                'innodb_log_file_size' => [
+                ),
+                'innodb_log_file_size' => array(
                     'type'  => 1,
-                ],
-                'innodb_log_files_in_group' => [
+                ),
+                'innodb_log_files_in_group' => array(
                     'type'  => 2,
-                ],
-                'innodb_log_group_home_dir' => [],
-                'innodb_max_dirty_pages_pct' => [
+                ),
+                'innodb_log_group_home_dir' => array(
+                ),
+                'innodb_max_dirty_pages_pct' => array(
                     'type'  => 2,
-                ],
-                'innodb_max_purge_lag' => [],
-                'innodb_mirrored_log_groups' => [
+                ),
+                'innodb_max_purge_lag' => array(
+                ),
+                'innodb_mirrored_log_groups' => array(
                     'type'  => 2,
-                ],
-                'innodb_open_files' => [
+                ),
+                'innodb_open_files' => array(
                     'type'  => 2,
-                ],
-                'innodb_support_xa' => [],
-                'innodb_sync_spin_loops' => [
+                ),
+                'innodb_support_xa' => array(
+                ),
+                'innodb_sync_spin_loops' => array(
                     'type'  => 2,
-                ],
-                'innodb_table_locks' => [
+                ),
+                'innodb_table_locks' => array(
                     'type'  => 3,
-                ],
-                'innodb_thread_concurrency' => [
+                ),
+                'innodb_thread_concurrency' => array(
                     'type'  => 2,
-                ],
-                'innodb_thread_sleep_delay' => [
+                ),
+                'innodb_thread_sleep_delay' => array(
                     'type'  => 2,
-                ],
-            ],
+                ),
+            ),
             $this->object->getVariables()
         );
     }
@@ -160,15 +172,15 @@ class InnodbTest extends PmaTestCase
     public function testGetInfoPages()
     {
         $this->assertEquals(
-            [],
+            array(),
             $this->object->getInfoPages()
         );
         $this->object->support = 2;
         $this->assertEquals(
-            [
+            array (
                 'Bufferpool' => 'Buffer Pool',
                 'Status' => 'InnoDB Status'
-            ],
+            ),
             $this->object->getInfoPages()
         );
     }
@@ -269,9 +281,10 @@ class InnodbTest extends PmaTestCase
     public function testGetPageStatus()
     {
         $this->assertEquals(
-            '<pre id="pre_innodb_status">' . "\n\n" . '</pre>' . "\n",
+            '<pre id="pre_innodb_status">' . "\n" . "\n" . '</pre>' . "\n",
             $this->object->getPageStatus()
         );
+
     }
 
     /**
@@ -287,7 +300,7 @@ class InnodbTest extends PmaTestCase
         );
         $this->object->support = 2;
         $this->assertEquals(
-            '<pre id="pre_innodb_status">' . "\n\n" . '</pre>' . "\n",
+            '<pre id="pre_innodb_status">' . "\n" . "\n" . '</pre>' . "\n",
             $this->object->getPage('Status')
         );
     }
@@ -303,6 +316,7 @@ class InnodbTest extends PmaTestCase
             'innodb-storage-engine',
             $this->object->getMysqlHelpPage()
         );
+
     }
 
     /**
@@ -316,6 +330,7 @@ class InnodbTest extends PmaTestCase
             '1.1.8',
             $this->object->getInnodbPluginVersion()
         );
+
     }
 
     /**
@@ -328,6 +343,7 @@ class InnodbTest extends PmaTestCase
         $this->assertFalse(
             $this->object->supportsFilePerTable()
         );
+
     }
 
     /**
@@ -341,5 +357,6 @@ class InnodbTest extends PmaTestCase
             'Antelope',
             $this->object->getInnodbFileFormat()
         );
+
     }
 }

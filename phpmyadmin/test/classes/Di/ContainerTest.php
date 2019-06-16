@@ -5,13 +5,10 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Di;
 
 use PhpMyAdmin\Di\Container;
 use PhpMyAdmin\Tests\PmaTestCase;
-use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Tests for PhpMyAdmin\Di\Container class
@@ -32,7 +29,7 @@ class ContainerTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->container = new Container();
     }
@@ -44,7 +41,7 @@ class ContainerTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->container);
     }
@@ -67,7 +64,7 @@ class ContainerTest extends PmaTestCase
      */
     public function testGetThrowsNotFoundException()
     {
-        $this->expectException(NotFoundExceptionInterface::class);
+        $this->setExpectedException('Psr\Container\NotFoundExceptionInterface');
         $this->container->get('name');
     }
 

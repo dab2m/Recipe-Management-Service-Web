@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\ListDatabase;
@@ -24,20 +22,13 @@ $GLOBALS['cfg']['Server']['DisableIS'] = false;
 class ListDatabaseTest extends PmaTestCase
 {
     /**
-     * ListDatabase instance
-     *
-     * @var ListDatabase
-     */
-    private $object;
-
-    /**
      * SetUp for test cases
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
-        $GLOBALS['cfg']['Server']['only_db'] = ['single\\_db'];
+        $GLOBALS['cfg']['Server']['only_db'] = array('single\\_db');
         $this->object = new ListDatabase();
     }
 
@@ -47,7 +38,7 @@ class ListDatabaseTest extends PmaTestCase
      * @param string $name   method name
      * @param array  $params parameters for the invocation
      *
-     * @return mixed the output from the protected method.
+     * @return the output from the protected method.
      */
     private function _callProtectedFunction($name, $params)
     {
@@ -64,7 +55,7 @@ class ListDatabaseTest extends PmaTestCase
      */
     public function testEmpty()
     {
-        $arr = new ListDatabase();
+        $arr = new ListDatabase;
         $this->assertEquals('', $arr->getEmpty());
     }
 
@@ -75,7 +66,7 @@ class ListDatabaseTest extends PmaTestCase
      */
     public function testExists()
     {
-        $arr = new ListDatabase();
+        $arr = new ListDatabase;
         $this->assertEquals(true, $arr->exists('single_db'));
     }
 
@@ -86,7 +77,7 @@ class ListDatabaseTest extends PmaTestCase
      */
     public function testHtmlOptions()
     {
-        $arr = new ListDatabase();
+        $arr = new ListDatabase;
         $this->assertEquals(
             '<option value="single_db">single_db</option>' . "\n",
             $arr->getHtmlOptions()
@@ -104,7 +95,7 @@ class ListDatabaseTest extends PmaTestCase
         $this->assertEquals(
             $this->_callProtectedFunction(
                 'checkHideDatabase',
-                []
+                array()
             ),
             ''
         );
@@ -129,4 +120,5 @@ class ListDatabaseTest extends PmaTestCase
             'mysql'
         );
     }
+
 }

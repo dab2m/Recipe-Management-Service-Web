@@ -4,8 +4,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Engines;
 
 use PhpMyAdmin\Engines\Ndbcluster;
@@ -30,7 +28,7 @@ class NdbclusterTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $GLOBALS['server'] = 0;
         $this->object = new Ndbcluster('nbdcluster');
@@ -43,7 +41,7 @@ class NdbclusterTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -57,9 +55,10 @@ class NdbclusterTest extends PmaTestCase
     {
         $this->assertEquals(
             $this->object->getVariables(),
-            [
-                'ndb_connectstring' => [],
-            ]
+            array(
+                'ndb_connectstring' => array(
+                ),
+            )
         );
     }
 
@@ -87,5 +86,6 @@ class NdbclusterTest extends PmaTestCase
             $this->object->getMysqlHelpPage(),
             'ndbcluster'
         );
+
     }
 }

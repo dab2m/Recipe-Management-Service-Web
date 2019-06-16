@@ -5,12 +5,9 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Export;
 
 use PhpMyAdmin\Plugins\Export\ExportLatex;
-use PhpMyAdmin\Relation;
 use PhpMyAdmin\Tests\PmaTestCase;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -30,7 +27,7 @@ class ExportLatexTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
         $GLOBALS['server'] = 0;
         $GLOBALS['output_kanji_conversion'] = false;
@@ -38,7 +35,7 @@ class ExportLatexTest extends PmaTestCase
         $GLOBALS['buffer_needed'] = false;
         $GLOBALS['asfile'] = true;
         $GLOBALS['save_on_server'] = false;
-        $GLOBALS['plugin_param'] = [];
+        $GLOBALS['plugin_param'] = array();
         $GLOBALS['plugin_param']['export_type'] = 'table';
         $GLOBALS['plugin_param']['single_table'] = false;
         $GLOBALS['cfgRelation']['relation'] = true;
@@ -52,7 +49,7 @@ class ExportLatexTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    public function tearDown()
     {
         unset($this->object);
     }
@@ -178,11 +175,11 @@ class ExportLatexTest extends PmaTestCase
         );
 
         $this->assertEquals(
-            [
+            array(
                 'structure' => __('structure'),
                 'data' => __('data'),
-                'structure_and_data' => __('structure and data'),
-            ],
+                'structure_and_data' => __('structure and data')
+            ),
             $property->getValues()
         );
 
@@ -485,7 +482,7 @@ class ExportLatexTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             "\n% Host: localhost:80",
             $result
         );
@@ -577,12 +574,12 @@ class ExportLatexTest extends PmaTestCase
         $dbi->expects($this->at(3))
             ->method('fetchAssoc')
             ->with(null)
-            ->will($this->returnValue(['f1' => 'foo$%']));
+            ->will($this->returnValue(array('f1' => 'foo$%')));
 
         $dbi->expects($this->at(4))
             ->method('fetchAssoc')
             ->with(null)
-            ->will($this->returnValue(['f1' => null]));
+            ->will($this->returnValue(array('f1' => null)));
 
         $dbi->expects($this->at(5))
             ->method('fetchAssoc')
@@ -633,12 +630,12 @@ class ExportLatexTest extends PmaTestCase
         $dbi->expects($this->at(3))
             ->method('fetchAssoc')
             ->with(null)
-            ->will($this->returnValue(['f1' => 'foo$%']));
+            ->will($this->returnValue(array('f1' => 'foo$%')));
 
         $dbi->expects($this->at(4))
             ->method('fetchAssoc')
             ->with(null)
-            ->will($this->returnValue(['f1' => null]));
+            ->will($this->returnValue(array('f1' => null)));
 
         $dbi->expects($this->at(5))
             ->method('fetchAssoc')
@@ -653,7 +650,7 @@ class ExportLatexTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '{datalabel} \\\\\\\\ \hlinefoo',
             $result
         );
@@ -670,16 +667,16 @@ class ExportLatexTest extends PmaTestCase
         //     ->setMethods(array('formatOneColumnDefinition'))
         //     ->getMock();
 
-        $keys = [
-            [
+        $keys = array(
+            array(
                 'Non_unique' => 0,
-                'Column_name' => 'name1',
-            ],
-            [
+                'Column_name' => 'name1'
+            ),
+            array(
                 'Non_unique' => 1,
-                'Column_name' => 'name2',
-            ],
-        ];
+                'Column_name' => 'name2'
+            )
+        );
 
         // case 1
 
@@ -695,31 +692,31 @@ class ExportLatexTest extends PmaTestCase
         $dbi->expects($this->exactly(2))
             ->method('fetchResult')
             ->willReturnOnConsecutiveCalls(
-                [],
-                [
-                    'name1' => [
+                array(),
+                array(
+                    'name1' => array(
                         'values' => 'test-',
                         'transformation' => 'testfoo',
                         'mimetype' => 'testmimetype_'
-                    ],
-                ]
+                    )
+                )
             );
 
-        $columns = [
-            [
+        $columns = array(
+            array(
                 'Null' => 'Yes',
                 'Field' => 'name1',
                 'Key' => 'PRI',
                 'Type' => 'set(abc)enum123'
-            ],
-            [
+            ),
+            array(
                 'Null' => 'NO',
                 'Field' => 'fields',
                 'Key' => 'COMP',
                 'Type' => '',
-                'Default' => 'def',
-            ],
-        ];
+                'Default' => 'def'
+            )
+        );
         $dbi->expects($this->once())
             ->method('getColumns')
             ->with('database', '')
@@ -737,28 +734,27 @@ class ExportLatexTest extends PmaTestCase
             ->method('fetchAssoc')
             ->will(
                 $this->returnValue(
-                    [
-                        'comment' => ['name1' => 'testComment'],
-                    ]
+                    array(
+                        'comment' => array('name1' => 'testComment')
+                    )
                 )
             );
 
         $GLOBALS['dbi'] = $dbi;
-        $this->object->relation = new Relation($dbi);
         if (isset($GLOBALS['latex_caption'])) {
             unset($GLOBALS['latex_caption']);
         }
 
         $GLOBALS['cfgRelation']['relation'] = true;
-        $_SESSION['relation'][0] = [
+        $_SESSION['relation'][0] = array(
             'PMA_VERSION' => PMA_VERSION,
             'relwork' => true,
             'commwork' => true,
             'mimework' => true,
             'db' => 'database',
             'relation' => 'rel',
-            'column_info' => 'col',
-        ];
+            'column_info' => 'col'
+        );
 
         ob_start();
         $this->assertTrue(
@@ -788,7 +784,7 @@ class ExportLatexTest extends PmaTestCase
             ' \\multicolumn{1}{|c|}{\\textbf{Comments}} & \\multicolumn{1}' .
             '{|c|}{\\textbf{MIME}} \\\\ \\hline \\hline' . "\n" .
             '\\endfirsthead' . "\n" . ' \\hline \\multicolumn{1}{|c|}' .
-            '{\\textbf{Column}} & \\multicolumn{1}{|c|}{\\textbf{Type}}' .
+            '{\\textbf{Column}} & \\multicolumn{1}' . '{|c|}{\\textbf{Type}}' .
             ' & \\multicolumn{1}{|c|}{\\textbf{Null}} & \\multicolumn' .
             '{1}{|c|}{\\textbf{Default}} & \\multicolumn{1}{|c|}{\\textbf' .
             '{Comments}} & \\multicolumn{1}{|c|}{\\textbf{MIME}} \\\\ ' .
@@ -809,20 +805,20 @@ class ExportLatexTest extends PmaTestCase
         $dbi->expects($this->exactly(2))
             ->method('fetchResult')
             ->willReturnOnConsecutiveCalls(
-                [
-                    'name1' => [
+                array(
+                    'name1' => array(
                         'foreign_table' => 'ftable',
-                        'foreign_field' => 'ffield',
-                    ],
-                    'foreign_keys_data' => [],
-                ],
-                [
-                    'field' => [
+                        'foreign_field' => 'ffield'
+                    ),
+                    'foreign_keys_data' => array()
+                ),
+                array(
+                    'field' => array(
                         'values' => 'test-',
                         'transformation' => 'testfoo',
                         'mimetype' => 'test<'
-                    ],
-                ]
+                    )
+                )
             );
 
         $dbi->expects($this->once())
@@ -847,25 +843,24 @@ class ExportLatexTest extends PmaTestCase
             ->method('fetchAssoc')
             ->will(
                 $this->returnValue(
-                    [
-                        'comment' => ['field' => 'testComment'],
-                    ]
+                    array(
+                        'comment' => array('field' => 'testComment')
+                    )
                 )
             );
 
         $GLOBALS['dbi'] = $dbi;
-        $this->object->relation = new Relation($dbi);
 
         $GLOBALS['cfgRelation']['relation'] = true;
-        $_SESSION['relation'][0] = [
+        $_SESSION['relation'][0] = array(
             'PMA_VERSION' => PMA_VERSION,
             'relwork' => true,
             'commwork' => true,
             'mimework' => true,
             'db' => 'database',
             'relation' => 'rel',
-            'column_info' => 'col',
-        ];
+            'column_info' => 'col'
+        );
 
         ob_start();
         $this->assertTrue(
@@ -883,7 +878,7 @@ class ExportLatexTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '\\textbf{\\textit{name1}} & set(abc) & Yes & NULL & ' .
             'ftable (ffield) &  &  \\\\ \\hline',
             $result
@@ -917,9 +912,9 @@ class ExportLatexTest extends PmaTestCase
             ->method('fetchAssoc')
             ->will(
                 $this->returnValue(
-                    [
-                        'comment' => ['field' => 'testComment'],
-                    ]
+                    array(
+                        'comment' => array('field' => 'testComment')
+                    )
                 )
             );
 
@@ -933,15 +928,15 @@ class ExportLatexTest extends PmaTestCase
         $GLOBALS['cfg']['Server']['host'] = 'localhost';
         $GLOBALS['cfg']['Server']['verbose'] = 'verb';
 
-        $_SESSION['relation'][0] = [
+        $_SESSION['relation'][0] = array(
             'PMA_VERSION' => PMA_VERSION,
             'relwork' => false,
             'commwork' => false,
             'mimework' => false,
             'db' => 'database',
             'relation' => 'rel',
-            'column_info' => 'col',
-        ];
+            'column_info' => 'col'
+        );
 
         ob_start();
         $this->assertTrue(
@@ -956,12 +951,12 @@ class ExportLatexTest extends PmaTestCase
         );
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '\\caption{latexstructure} \\label{latexlabel}',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'caption{latexcontinued}',
             $result
         );

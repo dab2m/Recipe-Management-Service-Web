@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Url;
@@ -26,7 +24,7 @@ class UrlTest extends TestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         unset($_COOKIE['pma_lang']);
     }
@@ -47,7 +45,7 @@ class UrlTest extends TestCase
         $expected = '?db=db'
             . htmlentities($separator) . $expected;
 
-        $this->assertEquals($expected, Url::getCommon(['db' => 'db']));
+        $this->assertEquals($expected, Url::getCommon(array('db' => 'db')));
     }
 
     /**
@@ -66,10 +64,7 @@ class UrlTest extends TestCase
         $expected = '?db=db'
             . htmlentities($separator) . 'table=table'
             . htmlentities($separator) . $expected;
-        $params = [
-            'db' => 'db',
-            'table' => 'table',
-        ];
+        $params = array('db' => 'db', 'table' => 'table');
         $this->assertEquals($expected, Url::getCommon($params));
     }
 
@@ -91,11 +86,7 @@ class UrlTest extends TestCase
         $this->assertEquals(
             $expected,
             Url::getCommonRaw(
-                [
-                    'db' => 'db',
-                    'table' => 'table',
-                ],
-                '#ABC#'
+                array('db' => 'db', 'table' => 'table'), '#ABC#'
             )
         );
     }

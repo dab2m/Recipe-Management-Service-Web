@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Display;
 
 use PhpMyAdmin\Display\CreateTable;
@@ -29,7 +27,7 @@ class CreateTableTest extends TestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         //$GLOBALS
         $GLOBALS['server'] = 0;
@@ -63,34 +61,34 @@ class CreateTableTest extends TestCase
         $html = CreateTable::getHtml($db);
 
         //getImage
-        $this->assertStringContainsString(
+        $this->assertContains(
             Util::getImage('b_table_add'),
             $html
         );
 
         //__('Create table')
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Create table'),
             $html
         );
 
         //Url::getHiddenInputs
-        $this->assertStringContainsString(
+        $this->assertContains(
             Url::getHiddenInputs($db),
             $html
         );
         //label
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Name'),
             $html
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Number of columns'),
             $html
         );
 
         //button
-        $this->assertStringContainsString(
+        $this->assertContains(
             __('Go'),
             $html
         );

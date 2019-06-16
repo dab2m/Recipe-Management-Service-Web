@@ -5,14 +5,11 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Scripts;
 use PhpMyAdmin\Tests\PmaTestCase;
 use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Tests for Script.php
@@ -22,7 +19,7 @@ use ReflectionProperty;
 class ScriptsTest extends PmaTestCase
 {
     /**
-     * @var Scripts
+     * @access protected
      */
     protected $object;
 
@@ -33,7 +30,7 @@ class ScriptsTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->object = new Scripts();
         if (! defined('PMA_USR_BROWSER_AGENT')) {
@@ -48,9 +45,51 @@ class ScriptsTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
+    }
+
+    /**
+     * Call private functions by setting visibility to public.
+     *
+     * @param string $name   method name
+     * @param array  $params parameters for the invocation
+     *
+     * @return the output from the private method.
+     */
+    private function _callPrivateFunction($name, $params)
+    {
+        $class = new ReflectionClass(Scripts::class);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($this->object, $params);
+    }
+
+    /**
+     * Test for _includeFile
+     *
+     * @return void
+     *
+     * @group medium
+     */
+    public function testIncludeFile()
+    {
+        $this->assertEquals(
+            '<script data-cfasync="false" type="text/javascript" '
+            . 'src="js/common.js?v=' . PMA_VERSION . '"></script>' . "\n",
+            $this->_callPrivateFunction(
+                '_includeFiles',
+                array(
+                    array(
+                        array(
+                            'has_onload' => false,
+                            'filename' => 'common.js'
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**
@@ -60,22 +99,21 @@ class ScriptsTest extends PmaTestCase
      */
     public function testGetDisplay()
     {
+
         $this->object->addFile('common.js');
 
-        $actual = $this->object->getDisplay();
+        $this->assertRegExp(
+            '@<script data-cfasync="false" type="text/javascript" '
+            . 'src="js/common.js\?v=' . PMA_VERSION . '"></script>' . "\n"
+            . '<script data-cfasync="false" type="text/'
+            . 'javascript">// <!\\[CDATA\\[' . "\n"
+            . 'AJAX.scriptHandler.add\\("common.js",1\\);' . "\n"
+            . '\\$\\(function\\(\\) \\{AJAX.fireOnload\\("common.js"\\);\\}\\);'
+            . "\n"
+            . '// ]]></script>@',
+            $this->object->getDisplay()
+        );
 
-        $this->assertStringContainsString(
-            'src="js/common.js?v=' . PMA_VERSION . '"',
-            $actual
-        );
-        $this->assertStringContainsString(
-            '.add(\'common.js\', 1)',
-            $actual
-        );
-        $this->assertStringContainsString(
-            'AJAX.fireOnload(\'common.js\')',
-            $actual
-        );
     }
 
     /**
@@ -85,17 +123,20 @@ class ScriptsTest extends PmaTestCase
      */
     public function testAddCode()
     {
+
         $this->object->addCode('alert(\'CodeAdded\');');
 
-        $actual = $this->object->getDisplay();
-
-        $this->assertStringContainsString(
-            'alert(\'CodeAdded\');',
-            $actual
+        $this->assertEquals(
+            '<script data-cfasync="false" type="text/javascript">// <![CDATA[
+alert(\'CodeAdded\');
+AJAX.scriptHandler;
+$(function() {});
+// ]]></script>',
+            $this->object->getDisplay()
         );
     }
 
-    /**
+     /**
      * test for getFiles
      *
      * @return void
@@ -107,16 +148,10 @@ class ScriptsTest extends PmaTestCase
 
         $this->object->addFile('common.js');
         $this->assertEquals(
-            [
-                [
-                    'name' => 'vendor/codemirror/lib/codemirror.js',
-                    'fire' => 0,
-                ],
-                [
-                    'name' => 'common.js',
-                    'fire' => 1,
-                ],
-            ],
+            array(
+                array('name' => 'vendor/codemirror/lib/codemirror.js', 'fire' => 0),
+                array('name' => 'common.js', 'fire' => 1)
+            ),
             $this->object->getFiles()
         );
     }
@@ -128,25 +163,31 @@ class ScriptsTest extends PmaTestCase
      */
     public function testAddFile()
     {
-        $reflection = new ReflectionProperty(Scripts::class, '_files');
-        $reflection->setAccessible(true);
-
         // Assert empty _files property of
         // Scripts
-        $this->assertEquals([], $reflection->getValue($this->object));
+        $this->assertAttributeEquals(
+            array(),
+            '_files',
+            $this->object
+        );
 
         // Add one script file
         $file = 'common.js';
         $hash = 'd7716810d825f4b55d18727c3ccb24e6';
-        $_files = [
-            $hash => [
+        $_files = array(
+            $hash => array(
                 'has_onload' => 1,
                 'filename' => 'common.js',
-                'params' => [],
-            ],
-        ];
+                'params' => array(),
+            )
+        );
         $this->object->addFile($file);
-        $this->assertEquals($_files, $reflection->getValue($this->object));
+        $this->assertAttributeEquals(
+            $_files,
+            '_files',
+            $this->object
+        );
+
     }
 
     /**
@@ -156,27 +197,28 @@ class ScriptsTest extends PmaTestCase
      */
     public function testAddFiles()
     {
-        $reflection = new ReflectionProperty(Scripts::class, '_files');
-        $reflection->setAccessible(true);
-
-        $filenames = [
+        $filenames = array(
             'common.js',
             'sql.js',
             'common.js',
-        ];
-        $_files = [
-            'd7716810d825f4b55d18727c3ccb24e6' => [
+        );
+        $_files = array(
+            'd7716810d825f4b55d18727c3ccb24e6' => array(
                 'has_onload' => 1,
                 'filename' => 'common.js',
-                'params' => [],
-            ],
-            '347a57484fcd6ea6d8a125e6e1d31f78' => [
+                'params' => array(),
+            ),
+            '347a57484fcd6ea6d8a125e6e1d31f78' => array(
                 'has_onload' => 1,
                 'filename' => 'sql.js',
-                'params' => [],
-            ],
-        ];
+                'params' => array(),
+            ),
+        );
         $this->object->addFiles($filenames);
-        $this->assertEquals($_files, $reflection->getValue($this->object));
+        $this->assertAttributeEquals(
+            $_files,
+            '_files',
+            $this->object
+        );
     }
 }

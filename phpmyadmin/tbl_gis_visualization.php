@@ -5,48 +5,38 @@
  *
  * @package PhpMyAdmin
  */
-declare(strict_types=1);
 
-use PhpMyAdmin\Controllers\Table\GisVisualizationController;
+use PhpMyAdmin\Controllers\Table\TableGisVisualizationController;
 use PhpMyAdmin\Di\Container;
 use PhpMyAdmin\Response;
 use PhpMyAdmin\Util;
-use Symfony\Component\DependencyInjection\Definition;
 
-if (! defined('ROOT_PATH')) {
-    define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-}
-
-require_once ROOT_PATH . 'libraries/common.inc.php';
+require_once 'libraries/common.inc.php';
 
 $container = Container::getDefaultContainer();
-$container->set(Response::class, Response::getInstance());
-$container->alias('response', Response::class);
+$container->factory(
+    'PhpMyAdmin\Controllers\Table\TableGisVisualizationController'
+);
+$container->alias(
+    'TableGisVisualizationController',
+    'PhpMyAdmin\Controllers\Table\TableGisVisualizationController'
+);
+$container->set('PhpMyAdmin\Response', Response::getInstance());
+$container->alias('response', 'PhpMyAdmin\Response');
 
 /* Define dependencies for the concerned controller */
-$dependency_definitions = [
-    'db' => $container->get('db'),
-    'table' => $container->get('table'),
-    'sql_query' => &$GLOBALS['sql_query'],
-    'url_params' => &$GLOBALS['url_params'],
-    'goto' => Util::getScriptNameForOption(
-        $GLOBALS['cfg']['DefaultTabDatabase'],
-        'database'
+$dependency_definitions = array(
+    "sql_query" => &$GLOBALS['sql_query'],
+    "url_params" => &$GLOBALS['url_params'],
+    "goto" => Util::getScriptNameForOption(
+        $GLOBALS['cfg']['DefaultTabDatabase'], 'database'
     ),
-    'back' => 'sql.php',
-    'visualizationSettings' => [],
-];
-
-/** @var Definition $definition */
-$definition = $containerBuilder->getDefinition(GisVisualizationController::class);
-array_map(
-    static function (string $parameterName, $value) use ($definition) {
-        $definition->replaceArgument($parameterName, $value);
-    },
-    array_keys($dependency_definitions),
-    $dependency_definitions
+    "back" => 'sql.php',
+    "visualizationSettings" => array()
 );
 
-/** @var GisVisualizationController $controller */
-$controller = $containerBuilder->get(GisVisualizationController::class);
+/** @var TableGisVisualizationController $controller */
+$controller = $container->get(
+    'TableGisVisualizationController', $dependency_definitions
+);
 $controller->indexAction();

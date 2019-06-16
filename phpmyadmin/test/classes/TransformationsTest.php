@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Theme;
@@ -21,23 +19,18 @@ use PHPUnit\Framework\TestCase;
 class TransformationsTest extends TestCase
 {
     /**
-     * @var Transformations
-     */
-    private $transformations;
-
-    /**
      * Set up global environment.
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup()
     {
         $GLOBALS['table'] = 'table';
         $GLOBALS['db'] = 'db';
-        $GLOBALS['cfg'] = [
+        $GLOBALS['cfg'] = array(
             'ServerDefault' => 1,
             'ActionLinksMode' => 'icons',
-        ];
+        );
         $GLOBALS['server'] = 1;
         $GLOBALS['cfg']['Server']['pmadb'] = 'pmadb';
         $GLOBALS['cfg']['Server']['user'] = 'user';
@@ -49,8 +42,6 @@ class TransformationsTest extends TestCase
         $GLOBALS['cfg']['DBG']['sql'] = false;
         // need to clear relation test cache
         unset($_SESSION['relation']);
-
-        $this->transformations = new Transformations();
     }
 
     /**
@@ -63,11 +54,11 @@ class TransformationsTest extends TestCase
      *
      * @dataProvider getOptionsData
      */
-    public function testGetOptions($input, $expected): void
+    public function testGetOptions($input, $expected)
     {
         $this->assertEquals(
             $expected,
-            $this->transformations->getOptions($input)
+            Transformations::getOptions($input)
         );
     }
 
@@ -78,41 +69,13 @@ class TransformationsTest extends TestCase
      */
     public function getOptionsData()
     {
-        return [
-            [
-                "option1 , option2 ",
-                [
-                    'option1 ',
-                    ' option2 ',
-                ],
-            ],
-            [
-                "'option1' ,' option2' ",
-                [
-                    'option1',
-                    ' option2',
-                ],
-            ],
-            [
-                "'2,3' ,' ,, option ,,' ",
-                [
-                    '2,3',
-                    ' ,, option ,,',
-                ],
-            ],
-            [
-                "'',,",
-                [
-                    '',
-                    '',
-                    '',
-                ],
-            ],
-            [
-                '',
-                [],
-            ],
-        ];
+        return array(
+            array("option1 , option2 ", array('option1 ', ' option2 ')),
+            array("'option1' ,' option2' ", array('option1', ' option2')),
+            array("'2,3' ,' ,, option ,,' ", array('2,3', ' ,, option ,,')),
+            array("'',,", array('', '', '')),
+            array('', array()),
+        );
     }
 
     /**
@@ -123,15 +86,15 @@ class TransformationsTest extends TestCase
     public function testGetTypes()
     {
         $this->assertEquals(
-            [
-                'mimetype' =>  [
+            array (
+                'mimetype' => array (
                     'Application/Octetstream' => 'Application/Octetstream',
                     'Image/JPEG' => 'Image/JPEG',
                     'Image/PNG' => 'Image/PNG',
                     'Text/Plain' => 'Text/Plain',
                     'Text/Octetstream' => 'Text/Octetstream'
-                ],
-                'transformation' =>  [
+                ),
+                'transformation' => array (
                     0 => 'Application/Octetstream: Download',
                     1 => 'Application/Octetstream: Hex',
                     2 => 'Image/JPEG: Inline',
@@ -151,8 +114,8 @@ class TransformationsTest extends TestCase
                     16 => 'Text/Plain: Longtoipv4',
                     17 => 'Text/Plain: PreApPend',
                     18 => 'Text/Plain: Substring',
-                ],
-                'transformation_file' =>  [
+                    ),
+                'transformation_file' => array (
                     0 => 'Output/Application_Octetstream_Download.php',
                     1 => 'Output/Application_Octetstream_Hex.php',
                     2 => 'Output/Image_JPEG_Inline.php',
@@ -172,8 +135,8 @@ class TransformationsTest extends TestCase
                     16 => 'Text_Plain_Longtoipv4.php',
                     17 => 'Text_Plain_PreApPend.php',
                     18 => 'Text_Plain_Substring.php',
-                ],
-                'input_transformation' => [
+                ),
+                'input_transformation' => array(
                     'Image/JPEG: Upload',
                     'Text/Plain: FileUpload',
                     'Text/Plain: Iptobinary',
@@ -185,8 +148,8 @@ class TransformationsTest extends TestCase
                     'Text/Plain: Longtoipv4',
                     'Text/Plain: PreApPend',
                     'Text/Plain: Substring',
-                ],
-                'input_transformation_file' => [
+                ),
+                'input_transformation_file' => array(
                     'Input/Image_JPEG_Upload.php',
                     'Input/Text_Plain_FileUpload.php',
                     'Input/Text_Plain_Iptobinary.php',
@@ -198,9 +161,9 @@ class TransformationsTest extends TestCase
                     'Text_Plain_Longtoipv4.php',
                     'Text_Plain_PreApPend.php',
                     'Text_Plain_Substring.php',
-                ],
-            ],
-            $this->transformations->getAvailableMimeTypes()
+                ),
+            ),
+            Transformations::getAvailableMIMEtypes()
         );
     }
 
@@ -217,30 +180,30 @@ class TransformationsTest extends TestCase
         $_SESSION['relation'][$GLOBALS['server']]['column_info'] = "column_info";
         $_SESSION['relation'][$GLOBALS['server']]['trackingwork'] = false;
         $this->assertEquals(
-            [
-                'o' => [
+            array(
+                'o' => array(
                     'column_name' => 'o',
                     'mimetype' => 'Text/plain',
                     'transformation' => 'Sql',
                     'transformation_options' => '',
                     'input_transformation' => 'regex',
                     'input_transformation_options' => '/pma/i',
-                ],
-                'col' => [
+                ),
+                'col' => array(
                     'column_name' => 'col',
                     'mimetype' => 'T',
                     'transformation' => 'O/P',
                     'transformation_options' => '',
                     'input_transformation' => 'i/p',
                     'input_transformation_options' => '',
-                ],
-            ],
-            $this->transformations->getMime('pma_test', 'table1')
+                ),
+            ),
+            Transformations::getMIME('pma_test', 'table1')
         );
     }
 
     /**
-     * Test for clear
+     * Test for Transformations::clear
      *
      * @return void
      */
@@ -256,7 +219,7 @@ class TransformationsTest extends TestCase
         $GLOBALS['dbi'] = $dbi;
 
         // Case 1 : no configuration storage
-        $actual = $this->transformations->clear('db');
+        $actual = Transformations::clear('db');
         $this->assertEquals(
             false,
             $actual
@@ -267,21 +230,21 @@ class TransformationsTest extends TestCase
         $_SESSION['relation'][$GLOBALS['server']]['db'] = "pmadb";
 
         // Case 2 : database delete
-        $actual = $this->transformations->clear('db');
+        $actual = Transformations::clear('db');
         $this->assertEquals(
             true,
             $actual
         );
 
         // Case 3 : table delete
-        $actual = $this->transformations->clear('db', 'table');
+        $actual = Transformations::clear('db', 'table');
         $this->assertEquals(
             true,
             $actual
         );
 
         // Case 4 : column delete
-        $actual = $this->transformations->clear('db', 'table', 'col');
+        $actual = Transformations::clear('db', 'table', 'col');
         $this->assertEquals(
             true,
             $actual
@@ -289,48 +252,40 @@ class TransformationsTest extends TestCase
     }
 
     /**
-     * @param string $value    value
-     * @param string $expected expected result
-     *
-     * @return void
-     *
      * @dataProvider fixupData
      */
-    public function testFixup($value, $expected): void
+    public function testFixup($value, $expected)
     {
         $this->assertEquals(
             $expected,
-            $this->transformations->fixUpMime($value)
+            Transformations::fixupMIME($value)
         );
     }
 
-    /**
-     * @return array
-     */
     public function fixupData()
     {
-        return [
-            [
+        return array(
+            array(
                 'text_plain_bool2text.php',
-                'Text_Plain_Bool2Text.php',
-            ],
-            [
+                'Text_Plain_Bool2Text.php'
+            ),
+            array(
                 'application_octetstream_download.php',
-                'Application_Octetstream_Download.php',
-            ],
-            [
+                'Application_Octetstream_Download.php'
+            ),
+            array(
                 'text_plain_json.php',
-                'Text_Plain_Json.php',
-            ],
-            [
+                'Text_Plain_Json.php'
+            ),
+            array(
                 'image_jpeg_link.php',
-                'Image_JPEG_Link.php',
-            ],
-            [
+                'Image_JPEG_Link.php'
+            ),
+            array(
                 'text_plain_dateformat.php',
-                'Text_Plain_Dateformat.php',
-            ],
-        ];
+                'Text_Plain_Dateformat.php'
+            ),
+        );
     }
 
     /**
@@ -339,16 +294,11 @@ class TransformationsTest extends TestCase
      * @param string $file                transformation file
      * @param string $expectedDescription expected description
      *
-     * @return void
-     *
      * @dataProvider providerGetDescription
      */
-    public function testGetDescription($file, $expectedDescription): void
+    public function testGetDescription($file, $expectedDescription)
     {
-        $this->assertEquals(
-            $expectedDescription,
-            $this->transformations->getDescription($file)
-        );
+        $this->assertEquals($expectedDescription, Transformations::getDescription($file));
     }
 
     /**
@@ -357,18 +307,9 @@ class TransformationsTest extends TestCase
     public function providerGetDescription()
     {
         return [
-            [
-                '../../../../test',
-                '',
-            ],
-            [
-                'Input/Text_Plain_SqlEditor',
-                'Syntax highlighted CodeMirror editor for SQL.',
-            ],
-            [
-                'Output/Text_Plain_Sql',
-                'Formats text as SQL query with syntax highlighting.',
-            ],
+            ['../../../../test', ''],
+            ['Input/Text_Plain_SqlEditor', 'Syntax highlighted CodeMirror editor for SQL.'],
+            ['Output/Text_Plain_Sql', 'Formats text as SQL query with syntax highlighting.']
         ];
     }
 
@@ -378,16 +319,11 @@ class TransformationsTest extends TestCase
      * @param string $file         transformation file
      * @param string $expectedName expected name
      *
-     * @return void
-     *
      * @dataProvider providerGetName
      */
-    public function testGetName($file, $expectedName): void
+    public function testGetName($file, $expectedName)
     {
-        $this->assertEquals(
-            $expectedName,
-            $this->transformations->getName($file)
-        );
+        $this->assertEquals($expectedName, Transformations::getName($file));
     }
 
     /**
@@ -396,18 +332,9 @@ class TransformationsTest extends TestCase
     public function providerGetName()
     {
         return [
-            [
-                '../../../../test',
-                '',
-            ],
-            [
-                'Input/Text_Plain_SqlEditor',
-                'SQL',
-            ],
-            [
-                'Output/Text_Plain_Sql',
-                'SQL',
-            ],
+            ['../../../../test', ''],
+            ['Input/Text_Plain_SqlEditor', 'SQL'],
+            ['Output/Text_Plain_Sql', 'SQL']
         ];
     }
 }

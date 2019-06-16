@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Properties\Options\Items;
 
 use PhpMyAdmin\Properties\Options\Items\BoolPropertyItem;

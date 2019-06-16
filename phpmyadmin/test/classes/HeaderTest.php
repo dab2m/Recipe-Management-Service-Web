@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Config;
@@ -14,7 +12,6 @@ use PhpMyAdmin\Core;
 use PhpMyAdmin\Header;
 use PhpMyAdmin\Tests\PmaTestCase;
 use ReflectionMethod;
-use ReflectionProperty;
 
 /**
  * Test for PhpMyAdmin\Header class
@@ -29,9 +26,9 @@ class HeaderTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    function setup()
     {
-        if (! defined('PMA_IS_WINDOWS')) {
+        if (!defined('PMA_IS_WINDOWS')) {
             define('PMA_IS_WINDOWS', false);
         }
         $GLOBALS['server'] = 0;
@@ -39,8 +36,8 @@ class HeaderTest extends PmaTestCase
         $GLOBALS['pmaThemePath'] = $GLOBALS['PMA_Theme']->getPath();
         $GLOBALS['PMA_PHP_SELF'] = Core::getenv('PHP_SELF');
         $GLOBALS['server'] = 'server';
-        $GLOBALS['db'] = 'db';
-        $GLOBALS['table'] = '';
+        $GLOBALS['db'] = 'pma_test';
+        $GLOBALS['table'] = 'table1';
         $GLOBALS['PMA_Config'] = new Config();
         $GLOBALS['PMA_Config']->enableBc();
         $GLOBALS['cfg']['Server']['DisableIS'] = false;
@@ -59,7 +56,7 @@ class HeaderTest extends PmaTestCase
         $header = new Header();
         $header->disable();
         $this->assertEquals(
-            "\n",
+            '',
             $header->getDisplay()
         );
     }
@@ -73,7 +70,7 @@ class HeaderTest extends PmaTestCase
     {
         $header = new Header();
         $header->setBodyId('PMA_header_id');
-        $this->assertStringContainsString(
+        $this->assertContains(
             'PMA_header_id',
             $header->getDisplay()
         );
@@ -88,7 +85,7 @@ class HeaderTest extends PmaTestCase
     {
         $header = new Header();
         $header->enablePrintView();
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Print view',
             $header->getDisplay()
         );
@@ -116,8 +113,8 @@ class HeaderTest extends PmaTestCase
     public function testGetJsParamsCode()
     {
         $header = new Header();
-        $this->assertStringContainsString(
-            'CommonParams.setAll',
+        $this->assertContains(
+            'PMA_commonParams.setAll',
             $header->getJsParamsCode()
         );
     }
@@ -130,7 +127,7 @@ class HeaderTest extends PmaTestCase
     public function testGetMessage()
     {
         $header = new Header();
-        $this->assertStringContainsString(
+        $this->assertContains(
             'phpmyadminmessage',
             $header->getMessage()
         );
@@ -144,12 +141,28 @@ class HeaderTest extends PmaTestCase
      */
     public function testDisableWarnings()
     {
-        $reflection = new ReflectionProperty(Header::class, '_warningsEnabled');
-        $reflection->setAccessible(true);
+        $header = new Header();
+        $header->disableWarnings();
+        $this->assertAttributeEquals(
+            false,
+            '_warningsEnabled',
+            $header
+        );
+    }
+
+    /**
+     * Tests private method _getWarnings when warnings are disabled
+     *
+     * @return void
+     * @test
+     */
+    public function testGetWarningsWithWarningsDisabled()
+    {
+        $method = new ReflectionMethod(Header::class, '_getWarnings');
+        $method->setAccessible(true);
 
         $header = new Header();
         $header->disableWarnings();
-
-        $this->assertFalse($reflection->getValue($header));
+        $this->assertEmpty($method->invoke($header));
     }
 }

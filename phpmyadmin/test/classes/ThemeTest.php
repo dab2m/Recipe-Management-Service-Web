@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests;
 
 use PhpMyAdmin\Config;
@@ -26,7 +24,7 @@ class ThemeTest extends PmaTestCase
     protected $object;
 
     /**
-     * @var Theme backup for session theme
+     * @var backup for session theme
      */
     protected $backup;
 
@@ -36,7 +34,7 @@ class ThemeTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->object = new Theme();
         $this->backup = $GLOBALS['PMA_Theme'];
@@ -44,6 +42,7 @@ class ThemeTest extends PmaTestCase
         $GLOBALS['PMA_Config'] = new Config();
         $GLOBALS['PMA_Config']->enableBc();
         $GLOBALS['text_dir'] = 'ltr';
+        include 'themes/pmahomme/layout.inc.php';
         $GLOBALS['server'] = '99';
     }
 
@@ -53,7 +52,7 @@ class ThemeTest extends PmaTestCase
      *
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         $GLOBALS['PMA_Theme'] = $this->backup;
     }
@@ -77,7 +76,7 @@ class ThemeTest extends PmaTestCase
      */
     public function testCheckImgPathIncorrect()
     {
-        $this->object->setPath(ROOT_PATH . 'test/classes/_data/incorrect_theme');
+        $this->object->setPath('./test/classes/_data/incorrect_theme');
         $this->assertFalse(
             $this->object->loadInfo(),
             'Theme name is not properly set'
@@ -91,10 +90,10 @@ class ThemeTest extends PmaTestCase
      */
     public function testCheckImgPathFull()
     {
-        $this->object->setPath(ROOT_PATH . 'test/classes/_data/gen_version_info');
+        $this->object->setPath('./test/classes/_data/gen_version_info');
         $this->assertTrue($this->object->loadInfo());
         $this->assertEquals('Test Theme', $this->object->getName());
-        $this->assertEquals('5.0', $this->object->getVersion());
+        $this->assertEquals('4.8', $this->object->getVersion());
     }
 
     /**
@@ -104,7 +103,7 @@ class ThemeTest extends PmaTestCase
      */
     public function testLoadInfo()
     {
-        $this->object->setPath(ROOT_PATH . 'themes/original');
+        $this->object->setPath('./themes/original');
         $infofile = $this->object->getPath() . '/theme.json';
         $this->assertTrue($this->object->loadInfo());
 
@@ -113,7 +112,7 @@ class ThemeTest extends PmaTestCase
             $this->object->mtime_info
         );
 
-        $this->object->setPath(ROOT_PATH . 'themes/original');
+        $this->object->setPath('./themes/original');
         $this->object->mtime_info = filemtime($infofile);
         $this->assertTrue($this->object->loadInfo());
         $this->assertEquals('Original', $this->object->getName());
@@ -126,8 +125,42 @@ class ThemeTest extends PmaTestCase
      */
     public function testLoad()
     {
-        $newTheme = Theme::load(ROOT_PATH . 'themes/original');
+        $newTheme = Theme::load('./themes/original');
         $this->assertNotNull($newTheme);
+    }
+
+    /**
+     * Test for Theme::loadCss
+     *
+     * @param string $theme Path to theme files
+     *
+     * @return void
+     *
+     * @dataProvider listThemes
+     */
+    public function testLoadCss($theme)
+    {
+        $newTheme = Theme::load($theme);
+        ob_start();
+        $ret = $newTheme->loadCss();
+        $out = ob_get_contents();
+        ob_end_clean();
+        $this->assertTrue($ret);
+        $this->assertContains('FILE: navigation.css.php', $out);
+        $this->assertContains('.ic_b_bookmark', $out);
+    }
+
+    /**
+     * Data provider for Theme::loadCss test
+     *
+     * @return array with theme paths
+     */
+    public function listThemes()
+    {
+        return array(
+            array('./themes/original'),
+            array('./themes/pmahomme/'),
+        );
     }
 
     /**
@@ -158,7 +191,7 @@ class ThemeTest extends PmaTestCase
      */
     public function testCheckImgPath()
     {
-        $this->object->setPath(ROOT_PATH . 'themes/original');
+        $this->object->setPath('./themes/original');
         $this->assertTrue($this->object->checkImgPath());
     }
 
@@ -170,9 +203,19 @@ class ThemeTest extends PmaTestCase
     public function testGetSetPath()
     {
         $this->assertEmpty($this->object->getPath());
-        $this->object->setPath(ROOT_PATH . 'themes/original');
+        $this->object->setPath('./themes/original');
 
-        $this->assertEquals(ROOT_PATH . 'themes/original', $this->object->getPath());
+        $this->assertEquals('./themes/original', $this->object->getPath());
+    }
+
+    /**
+     * Test for Theme::loadInfo
+     *
+     * @return void
+     */
+    public function testGetLayoutFile()
+    {
+        $this->assertContains('layout.inc.php', $this->object->getLayoutFile());
     }
 
     /**
@@ -246,17 +289,57 @@ class ThemeTest extends PmaTestCase
      */
     public function testGetPrintPreview()
     {
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<h2>' . "\n" . '         (0.0.0.0)',
             $this->object->getPrintPreview()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'name="" href="index.php?set_theme=&amp;server=99&amp;lang=en">',
             $this->object->getPrintPreview()
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'No preview available.',
             $this->object->getPrintPreview()
+        );
+    }
+
+    /**
+     * Test for getFontSize
+     *
+     * @return void
+     */
+    public function testGetFontSize()
+    {
+        $this->assertEquals(
+            $this->object->getFontSize(),
+            '82%'
+        );
+
+        $GLOBALS['PMA_Config']->set('FontSize', '12px');
+        $this->assertEquals(
+            $this->object->getFontSize(),
+            '12px'
+        );
+
+    }
+
+    /**
+     * Test for getCssGradient
+     *
+     * @return void
+     */
+    public function testgetCssGradient()
+    {
+        $this->assertEquals(
+            $this->object->getCssGradient('12345', '54321'),
+            'background-image: url(./themes/svg_gradient.php?from=12345&to=54321);'
+            . "\n" . 'background-size: 100% 100%;'
+            . "\n" . 'background: -webkit-gradient(linear, left top, left bottom, '
+            . 'from(#12345), to(#54321));'
+            . "\n" . 'background: -webkit-linear-gradient(top, #12345, #54321);'
+            . "\n" . 'background: -moz-linear-gradient(top, #12345, #54321);'
+            . "\n" . 'background: -ms-linear-gradient(top, #12345, #54321);'
+            . "\n" . 'background: -o-linear-gradient(top, #12345, #54321);'
         );
     }
 
@@ -271,7 +354,7 @@ class ThemeTest extends PmaTestCase
      *
      * @dataProvider providerForGetImgPath
      */
-    public function testGetImgPath($file, $fallback, $output): void
+    public function testGetImgPath($file, $fallback, $output)
     {
         $this->assertEquals(
             $this->object->getImgPath($file, $fallback),
@@ -286,27 +369,27 @@ class ThemeTest extends PmaTestCase
      */
     public function providerForGetImgPath()
     {
-        return [
-            [
+        return array(
+            array(
                 null,
                 null,
-                '',
-            ],
-            [
+                ''
+            ),
+            array(
                 'screen.png',
                 null,
-                './themes/pmahomme/img/screen.png',
-            ],
-            [
+                './themes/pmahomme/img/screen.png'
+            ),
+            array(
                 'arrow_ltr.png',
                 null,
-                './themes/pmahomme/img/arrow_ltr.png',
-            ],
-            [
+                './themes/pmahomme/img/arrow_ltr.png'
+            ),
+            array(
                 'logo_right.png',
                 'pma_logo.png',
-                './themes/pmahomme/img/pma_logo.png',
-            ],
-        ];
+                './themes/pmahomme/img/pma_logo.png'
+            ),
+        );
     }
 }

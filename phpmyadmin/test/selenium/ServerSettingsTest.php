@@ -6,7 +6,6 @@
  * @package    PhpMyAdmin-test
  * @subpackage Selenium
  */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Selenium;
 
@@ -17,25 +16,24 @@ namespace PhpMyAdmin\Tests\Selenium;
  * @subpackage Selenium
  * @group      selenium
  */
-class ServerSettingsTest extends TestBase
+class SettingsTest extends TestBase
 {
     /**
-     * setUp function
+     * setUp function that can use the selenium session (called before each test)
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUpPage()
     {
-        parent::setUp();
+        parent::setUpPage();
+
         $this->login();
         $this->expandMore();
-        $this->maximize();
-        $this->waitForElement('partialLinkText', "Settings")->click();
+        $this->waitForElement("byPartialLinkText", "Settings")->click();
         $this->waitAjax();
 
         $this->waitForElement(
-            'xpath',
-            "//a[@class='tabactive' and contains(., 'Settings')]"
+            "byXPath", "//a[@class='tabactive' and contains(., 'Settings')]"
         );
     }
 
@@ -48,18 +46,25 @@ class ServerSettingsTest extends TestBase
     {
         // Submit the form
         $ele = $this->waitForElement(
-            'xpath',
+            'byXPath',
             "//fieldset[not(contains(@style,'display: none;'))]//input[@value='Apply']"
         );
         $this->scrollToBottom();
         $this->moveto($ele);
         $ele->click();
 
-        $this->waitUntilElementIsPresent(
-            'xpath',
-            "//div[@class='success' and contains(., 'Configuration has been saved')]",
-            5000
-        );
+        $this->waitUntil(function() {
+            if (
+                $this->isElementPresent(
+                    "byXPath",
+                    "//div[@class='success' and contains(., 'Configuration has been saved')]"
+                )
+            ) {
+                return true;
+            }
+
+            return null;
+        }, 5000);
     }
 
     /**
@@ -74,21 +79,21 @@ class ServerSettingsTest extends TestBase
         $this->byPartialLinkText("Features")->click();
         $this->waitAjax();
 
-        $this->waitForElement('xpath', "//a[contains(@href, '#Databases')]")->click();
+        $this->waitForElement('byXPath', "//a[contains(@href, '#Databases')]")->click();
 
-        $ele = $this->waitForElement('name', "Servers-1-hide_db");
+        $ele = $this->waitForElement("byName", "Servers-1-hide_db");
         $this->moveto($ele);
-        $ele->sendKeys($this->database_name);
+        $ele->value($this->database_name);
 
         $this->_saveConfig();
         $this->assertFalse(
-            $this->isElementPresent('partialLinkText', $this->database_name)
+            $this->isElementPresent("byLinkText", $this->database_name)
         );
 
-        $this->waitForElement('name', "Servers-1-hide_db")->clear();
+        $this->waitForElement("byName", "Servers-1-hide_db")->clear();
         $this->_saveConfig();
         $this->assertTrue(
-            $this->isElementPresent('partialLinkText', $this->database_name)
+            $this->isElementPresent("byLinkText", $this->database_name)
         );
     }
 
@@ -104,22 +109,22 @@ class ServerSettingsTest extends TestBase
         $this->byPartialLinkText("SQL queries")->click();
         $this->waitAjax();
 
-        $this->waitForElement('className', 'tabs');
+        $this->waitForElement('byClassName', 'tabs');
 
         $this->byPartialLinkText("SQL Query box")->click();
         $this->assertTrue(
-            $this->byId("Sql_box")->isDisplayed()
+            $this->byId("Sql_box")->displayed()
         );
         $this->assertFalse(
-            $this->byId("Sql_queries")->isDisplayed()
+            $this->byId("Sql_queries")->displayed()
         );
 
         $this->byCssSelector("a[href='#Sql_queries']")->click();
         $this->assertFalse(
-            $this->byId("Sql_box")->isDisplayed()
+            $this->byId("Sql_box")->displayed()
         );
         $this->assertTrue(
-            $this->byId("Sql_queries")->isDisplayed()
+            $this->byId("Sql_queries")->displayed()
         );
     }
 
@@ -135,17 +140,18 @@ class ServerSettingsTest extends TestBase
         $this->byPartialLinkText("Navigation panel")->click();
         $this->waitAjax();
 
-        $this->waitForElement('name', "NavigationDisplayLogo")
+        $this->waitForElement("byName", "NavigationDisplayLogo")
             ->click();
         $this->_saveConfig();
         $this->assertFalse(
-            $this->isElementPresent('id', "imgpmalogo")
+            $this->isElementPresent("byId", "imgpmalogo")
         );
 
         $this->byCssSelector("a[href='#NavigationDisplayLogo']")->click();
         $this->_saveConfig();
         $this->assertTrue(
-            $this->isElementPresent('id', "imgpmalogo")
+            $this->isElementPresent("byId", "imgpmalogo")
         );
     }
+
 }

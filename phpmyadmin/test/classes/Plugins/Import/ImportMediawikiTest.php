@@ -4,13 +4,17 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Plugins\Import;
 
 use PhpMyAdmin\File;
 use PhpMyAdmin\Plugins\Import\ImportMediawiki;
 use PhpMyAdmin\Tests\PmaTestCase;
+
+/*
+ * we must set $GLOBALS['server'] here
+ * since 'check_user_privileges.inc.php' will use it globally
+ */
+$GLOBALS['server'] = 0;
 
 /**
  * Tests for PhpMyAdmin\Plugins\Import\ImportMediawiki class
@@ -31,9 +35,8 @@ class ImportMediawikiTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
-        $GLOBALS['server'] = 0;
         $GLOBALS['plugin_param'] = 'database';
         $this->object = new ImportMediawiki();
 
@@ -58,7 +61,7 @@ class ImportMediawikiTest extends PmaTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -86,13 +89,14 @@ class ImportMediawikiTest extends PmaTestCase
             $properties->getMimeType()
         );
         $this->assertEquals(
-            [],
+            array(),
             $properties->getOptions()
         );
         $this->assertEquals(
             __('Options'),
             $properties->getOptionsText()
         );
+
     }
 
     /**
@@ -130,23 +134,23 @@ class ImportMediawikiTest extends PmaTestCase
         */
 
         //asset that all databases and tables are imported
-        $this->assertStringContainsString(
+        $this->assertContains(
             'The following structures have either been created or altered.',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Go to database: `mediawiki_DB`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Edit settings for `mediawiki_DB`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Go to table: `pma_bookmarktest`',
             $import_notice
         );
-        $this->assertStringContainsString(
+        $this->assertContains(
             'Edit settings for `pma_bookmarktest`',
             $import_notice
         );
@@ -154,5 +158,6 @@ class ImportMediawikiTest extends PmaTestCase
             true,
             $GLOBALS['finished']
         );
+
     }
 }

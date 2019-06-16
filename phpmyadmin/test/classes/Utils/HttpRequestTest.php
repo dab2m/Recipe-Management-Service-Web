@@ -1,33 +1,16 @@
 <?php
-/* vim: set expandtab sw=4 ts=4 sts=4: */
-/**
- * tests for PhpMyAdmin\Utils\HttpRequest class
- *
- * @package PhpMyAdmin-test
- */
-declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Utils;
 
-use PhpMyAdmin\Tests\PmaTestCase;
 use PhpMyAdmin\Utils\HttpRequest;
+use PhpMyAdmin\Tests\PmaTestCase;
 use ReflectionClass;
 
-/**
- * Class HttpRequestTest
- * @package PhpMyAdmin\Tests\Utils
- */
 class HttpRequestTest extends PmaTestCase
 {
-    /**
-     * @var HttpRequest
-     */
     private $httpRequest;
 
-    /**
-     * @return void
-     */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->httpRequest = new HttpRequest();
     }
@@ -47,7 +30,7 @@ class HttpRequestTest extends PmaTestCase
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method->invokeArgs(
-            $object ?? $this->httpRequest,
+            $object !== null ? $object : $this->httpRequest,
             $params
         );
     }
@@ -82,11 +65,6 @@ class HttpRequestTest extends PmaTestCase
     /**
      * Test for http request using Curl
      *
-     * @param string $url                url
-     * @param string $method             method
-     * @param bool   $return_only_status return only status
-     * @param bool   $expected           expected result
-     *
      * @group medium
      *
      * @return void
@@ -95,7 +73,7 @@ class HttpRequestTest extends PmaTestCase
      *
      * @group network
      */
-    public function testCurl($url, $method, $return_only_status, $expected): void
+    public function testCurl($url, $method, $return_only_status, $expected)
     {
         $this->checkCurl();
         $result = $this->callProtectedMethod('curl', [$url, $method, $return_only_status]);
@@ -105,11 +83,6 @@ class HttpRequestTest extends PmaTestCase
     /**
      * Test for http request using Curl with CURLOPT_CAPATH
      *
-     * @param string $url                url
-     * @param string $method             method
-     * @param bool   $return_only_status return only status
-     * @param bool   $expected           expected result
-     *
      * @group medium
      *
      * @return void
@@ -118,7 +91,7 @@ class HttpRequestTest extends PmaTestCase
      *
      * @group network
      */
-    public function testCurlCAPath($url, $method, $return_only_status, $expected): void
+    public function testCurlCAPath($url, $method, $return_only_status, $expected)
     {
         $this->checkCurl(true);
         $result = $this->callProtectedMethod('curl', [
@@ -127,7 +100,7 @@ class HttpRequestTest extends PmaTestCase
             $return_only_status,
             null,
             '',
-            CURLOPT_CAPATH,
+            CURLOPT_CAPATH
         ]);
         $this->validateHttp($result, $expected);
     }
@@ -135,11 +108,6 @@ class HttpRequestTest extends PmaTestCase
     /**
      * Test for http request using Curl with CURLOPT_CAINFO
      *
-     * @param string $url                url
-     * @param string $method             method
-     * @param bool   $return_only_status return only status
-     * @param bool   $expected           expected result
-     *
      * @group medium
      *
      * @return void
@@ -148,7 +116,7 @@ class HttpRequestTest extends PmaTestCase
      *
      * @group network
      */
-    public function testCurlCAInfo($url, $method, $return_only_status, $expected): void
+    public function testCurlCAInfo($url, $method, $return_only_status, $expected)
     {
         $this->checkCurl(true);
         $result = $this->callProtectedMethod('curl', [
@@ -157,18 +125,13 @@ class HttpRequestTest extends PmaTestCase
             $return_only_status,
             null,
             '',
-            CURLOPT_CAINFO,
+            CURLOPT_CAINFO
         ]);
         $this->validateHttp($result, $expected);
     }
 
     /**
      * Test for http request using fopen
-     *
-     * @param string $url                url
-     * @param string $method             method
-     * @param bool   $return_only_status return only status
-     * @param bool   $expected           expected result
      *
      * @group medium
      *
@@ -178,7 +141,7 @@ class HttpRequestTest extends PmaTestCase
      *
      * @group network
      */
-    public function testFopen($url, $method, $return_only_status, $expected): void
+    public function testFopen($url, $method, $return_only_status, $expected)
     {
         if (! ini_get('allow_url_fopen')) {
             $this->markTestSkipped('allow_url_fopen not supported');
@@ -191,11 +154,6 @@ class HttpRequestTest extends PmaTestCase
     /**
      * Test for http request using generic interface
      *
-     * @param string $url                url
-     * @param string $method             method
-     * @param bool   $return_only_status return only status
-     * @param bool   $expected           expected result
-     *
      * @group medium
      *
      * @return void
@@ -204,7 +162,7 @@ class HttpRequestTest extends PmaTestCase
      *
      * @group network
      */
-    public function testCreate($url, $method, $return_only_status, $expected): void
+    public function testCreate($url, $method, $return_only_status, $expected)
     {
         if (! function_exists('curl_init') && ! ini_get('allow_url_fopen')) {
             $this->markTestSkipped('neither curl nor allow_url_fopen are supported');
@@ -230,7 +188,7 @@ class HttpRequestTest extends PmaTestCase
         } elseif ($expected === null) {
             $this->assertNull($result);
         } else {
-            $this->assertStringContainsString($expected, $result);
+            $this->assertContains($expected, $result);
         }
     }
 
@@ -241,37 +199,12 @@ class HttpRequestTest extends PmaTestCase
      */
     public function httpRequests()
     {
-        return [
-            [
-                "https://www.phpmyadmin.net/test/data",
-                "GET",
-                true,
-                true,
-            ],
-            [
-                "https://www.phpmyadmin.net/test/data",
-                "POST",
-                true,
-                null,
-            ],
-            [
-                "https://nonexisting.phpmyadmin.net/test/data",
-                "GET",
-                true,
-                null,
-            ],
-            [
-                "https://www.phpmyadmin.net/test/data",
-                "GET",
-                false,
-                "TEST DATA",
-            ],
-            [
-                "https://www.phpmyadmin.net/test/nothing",
-                "GET",
-                true,
-                false,
-            ],
-        ];
+        return array(
+            array("https://www.phpmyadmin.net/test/data", "GET", true, true),
+            array("https://www.phpmyadmin.net/test/data", "POST", true, null),
+            array("https://nonexisting.phpmyadmin.net/test/data", "GET", true, null),
+            array("https://www.phpmyadmin.net/test/data","GET", false, "TEST DATA"),
+            array("https://www.phpmyadmin.net/test/nothing","GET", true, false),
+        );
     }
 }

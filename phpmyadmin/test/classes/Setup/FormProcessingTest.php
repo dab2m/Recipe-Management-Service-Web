@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Setup;
 
 use PhpMyAdmin\Setup\FormProcessing;
@@ -24,7 +22,7 @@ class FormProcessingTest extends PmaTestCase
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setUp()
     {
         $GLOBALS['server'] = 1;
         $GLOBALS['db'] = 'db';
@@ -41,17 +39,17 @@ class FormProcessingTest extends PmaTestCase
     public function testProcessFormSet()
     {
         $this->mockResponse(
-            [
-                ['status: 303 See Other'],
-                ['Location: index.php?lang=en'],
-                303,
-            ]
-        );
+            array(
+                array('status: 303 See Other'),
+                array('Location: index.php?lang=en'),
+                303
+                )
+            );
 
         // case 1
         $formDisplay = $this->getMockBuilder('PhpMyAdmin\Config\FormDisplay')
             ->disableOriginalConstructor()
-            ->setMethods(['process', 'getDisplay'])
+            ->setMethods(array('process', 'getDisplay'))
             ->getMock();
 
         $formDisplay->expects($this->once())
@@ -68,7 +66,7 @@ class FormProcessingTest extends PmaTestCase
         // case 2
         $formDisplay = $this->getMockBuilder('PhpMyAdmin\Config\FormDisplay')
             ->disableOriginalConstructor()
-            ->setMethods(['process', 'hasErrors', 'displayErrors'])
+            ->setMethods(array('process', 'hasErrors', 'displayErrors'))
             ->getMock();
 
         $formDisplay->expects($this->once())
@@ -85,22 +83,22 @@ class FormProcessingTest extends PmaTestCase
         FormProcessing::process($formDisplay);
         $result = ob_get_clean();
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<div class="error">',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'mode=revert',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             '<a class="btn" href="index.php?',
             $result
         );
 
-        $this->assertStringContainsString(
+        $this->assertContains(
             'mode=edit',
             $result
         );
@@ -108,7 +106,7 @@ class FormProcessingTest extends PmaTestCase
         // case 3
         $formDisplay = $this->getMockBuilder('PhpMyAdmin\Config\FormDisplay')
             ->disableOriginalConstructor()
-            ->setMethods(['process', 'hasErrors'])
+            ->setMethods(array('process', 'hasErrors'))
             ->getMock();
 
         $formDisplay->expects($this->once())

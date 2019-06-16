@@ -5,8 +5,6 @@
  *
  * @package PhpMyAdmin-test
  */
-declare(strict_types=1);
-
 namespace PhpMyAdmin\Tests\Gis;
 
 use PhpMyAdmin\Gis\GisLineString;
@@ -33,7 +31,7 @@ class GisLineStringTest extends GisGeomTestCase
      * @access protected
      * @return void
      */
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->object = GisLineString::singleton();
     }
@@ -45,7 +43,7 @@ class GisLineStringTest extends GisGeomTestCase
      * @access protected
      * @return void
      */
-    protected function tearDown(): void
+    protected function tearDown()
     {
         unset($this->object);
     }
@@ -53,29 +51,23 @@ class GisLineStringTest extends GisGeomTestCase
     /**
      * data provider for testGenerateWkt
      *
-     * @return array data for testGenerateWkt
+     * @return data for testGenerateWkt
      */
     public function providerForTestGenerateWkt()
     {
-        $temp1 = [
-            0 => [
-                'LINESTRING' => [
+        $temp1 = array(
+            0 => array(
+                'LINESTRING' => array(
                     'no_of_points' => 2,
-                    0 => [
-                        'x' => 5.02,
-                        'y' => 8.45,
-                    ],
-                    1 => [
-                        'x' => 6.14,
-                        'y' => 0.15,
-                    ]
-                ],
-            ],
-        ];
+                    0 => array('x' => 5.02, 'y' => 8.45),
+                    1 => array('x' => 6.14, 'y' => 0.15)
+                )
+            )
+        );
 
         $temp2 = $temp1;
         $temp2[0]['LINESTRING']['no_of_points'] = 3;
-        $temp2[0]['LINESTRING'][2] = ['x' => 1.56];
+        $temp2[0]['LINESTRING'][2] = array('x' => 1.56);
 
         $temp3 = $temp2;
         $temp3[0]['LINESTRING']['no_of_points'] = -1;
@@ -84,124 +76,110 @@ class GisLineStringTest extends GisGeomTestCase
         $temp4[0]['LINESTRING']['no_of_points'] = 3;
         unset($temp4[0]['LINESTRING'][2]['x']);
 
-        return [
-            [
+        return array(
+            array(
                 $temp1,
                 0,
                 null,
-                'LINESTRING(5.02 8.45,6.14 0.15)',
-            ],
+                'LINESTRING(5.02 8.45,6.14 0.15)'
+            ),
             // if a coordinate is missing, default is empty string
-            [
+            array(
                 $temp2,
                 0,
                 null,
-                'LINESTRING(5.02 8.45,6.14 0.15,1.56 )',
-            ],
+                'LINESTRING(5.02 8.45,6.14 0.15,1.56 )'
+            ),
             // if no_of_points is not valid, it is considered as 2
-            [
+            array(
                 $temp3,
                 0,
                 null,
-                'LINESTRING(5.02 8.45,6.14 0.15)',
-            ],
+                'LINESTRING(5.02 8.45,6.14 0.15)'
+            ),
             // missing coordinates are replaced with provided values (3rd parameter)
-            [
+            array(
                 $temp4,
                 0,
                 '0',
-                'LINESTRING(5.02 8.45,6.14 0.15,0 0)',
-            ],
-        ];
+                'LINESTRING(5.02 8.45,6.14 0.15,0 0)'
+            )
+        );
     }
 
     /**
      * data provider for testGenerateParams
      *
-     * @return array data for testGenerateParams
+     * @return data for testGenerateParams
      */
     public function providerForTestGenerateParams()
     {
-        $temp = [
-            'LINESTRING' => [
+        $temp = array(
+            'LINESTRING' => array(
                 'no_of_points' => 2,
-                0 => [
-                    'x' => '5.02',
-                    'y' => '8.45',
-                ],
-                1 => [
-                    'x' => '6.14',
-                    'y' => '0.15',
-                ]
-            ],
-        ];
+                0 => array('x' => '5.02', 'y' => '8.45'),
+                1 => array('x' => '6.14', 'y' => '0.15')
+            )
+        );
         $temp1 = $temp;
         $temp1['gis_type'] = 'LINESTRING';
 
-        return [
-            [
+        return array(
+            array(
                 "'LINESTRING(5.02 8.45,6.14 0.15)',124",
                 null,
-                [
+                array(
                     'srid' => '124',
                     0 => $temp
-                ],
-            ],
-            [
+                )
+            ),
+            array(
                 'LINESTRING(5.02 8.45,6.14 0.15)',
                 2,
-                [
-                    2 => $temp1,
-                ],
-            ],
-        ];
+                array(
+                    2 => $temp1
+                )
+            )
+        );
     }
 
     /**
      * data provider for testScaleRow
      *
-     * @return array data for testScaleRow
+     * @return data for testScaleRow
      */
     public function providerForTestScaleRow()
     {
-        return [
-            [
+        return array(
+            array(
                 'LINESTRING(12 35,48 75,69 23,25 45,14 53,35 78)',
-                [
+                array(
                     'minX' => 12,
                     'maxX' => 69,
                     'minY' => 23,
-                    'maxY' => 78,
-                ],
-            ],
-        ];
+                    'maxY' => 78
+                )
+            )
+        );
     }
 
     /**
      * test case for prepareRowAsPng() method
      *
-     * @param string   $spatial    GIS LINESTRING object
-     * @param string   $label      label for the GIS LINESTRING object
-     * @param string   $line_color color for the GIS LINESTRING object
-     * @param array    $scale_data array containing data related to scaling
-     * @param resource $image      image object
+     * @param string $spatial    GIS LINESTRING object
+     * @param string $label      label for the GIS LINESTRING object
+     * @param string $line_color color for the GIS LINESTRING object
+     * @param array  $scale_data array containing data related to scaling
+     * @param object $image      image object
      *
      * @dataProvider providerForPrepareRowAsPng
      * @return void
      */
-    public function testPrepareRowAsPng(
-        $spatial,
-        $label,
-        $line_color,
-        $scale_data,
-        $image
+    public function testPrepareRowAsPng($spatial, $label, $line_color,
+        $scale_data, $image
     ) {
         $this->object->prepareRowAsPng(
-            $spatial,
-            $label,
-            $line_color,
-            $scale_data,
-            $image
+            $spatial, $label, $line_color, $scale_data, $image
         );
         /* TODO: this never fails */
         $this->assertTrue(true);
@@ -217,20 +195,20 @@ class GisLineStringTest extends GisGeomTestCase
         if (! function_exists('imagecreatetruecolor')) {
             $this->markTestSkipped('GD extension missing!');
         }
-        return [
-            [
+        return array(
+            array(
                 'LINESTRING(12 35,48 75,69 23,25 45,14 53,35 78)',
                 'image',
                 '#B02EE0',
-                [
+                array(
                     'x' => 12,
                     'y' => 69,
                     'scale' => 2,
-                    'height' => 150,
-                ],
-                imagecreatetruecolor(120, 150),
-            ],
-        ];
+                    'height' => 150
+                ),
+                imagecreatetruecolor('120', '150')
+            )
+        );
     }
 
     /**
@@ -240,24 +218,16 @@ class GisLineStringTest extends GisGeomTestCase
      * @param string $label      label for the GIS LINESTRING object
      * @param string $line_color color for the GIS LINESTRING object
      * @param array  $scale_data array containing data related to scaling
-     * @param TCPDF  $pdf        TCPDF instance
+     * @param object $pdf        TCPDF instance
      *
      * @dataProvider providerForPrepareRowAsPdf
      * @return void
      */
-    public function testPrepareRowAsPdf(
-        $spatial,
-        $label,
-        $line_color,
-        $scale_data,
-        $pdf
+    public function testPrepareRowAsPdf($spatial, $label, $line_color,
+        $scale_data, $pdf
     ) {
         $return = $this->object->prepareRowAsPdf(
-            $spatial,
-            $label,
-            $line_color,
-            $scale_data,
-            $pdf
+            $spatial, $label, $line_color, $scale_data, $pdf
         );
         $this->assertInstanceOf('TCPDF', $return);
     }
@@ -269,20 +239,20 @@ class GisLineStringTest extends GisGeomTestCase
      */
     public function providerForPrepareRowAsPdf()
     {
-        return [
-            [
+        return array(
+            array(
                 'LINESTRING(12 35,48 75,69 23,25 45,14 53,35 78)',
                 'pdf',
                 '#B02EE0',
-                [
+                array(
                     'x' => 12,
                     'y' => 69,
                     'scale' => 2,
-                    'height' => 150,
-                ],
+                    'height' => 150
+                ),
                 new TCPDF(),
-            ],
-        ];
+            )
+        );
     }
 
     /**
@@ -297,18 +267,11 @@ class GisLineStringTest extends GisGeomTestCase
      * @dataProvider providerForPrepareRowAsSvg
      * @return void
      */
-    public function testPrepareRowAsSvg(
-        $spatial,
-        $label,
-        $line_color,
-        $scale_data,
-        $output
+    public function testPrepareRowAsSvg($spatial, $label, $line_color,
+        $scale_data, $output
     ) {
         $string = $this->object->prepareRowAsSvg(
-            $spatial,
-            $label,
-            $line_color,
-            $scale_data
+            $spatial, $label, $line_color, $scale_data
         );
         $this->assertEquals(1, preg_match($output, $string));
     }
@@ -320,22 +283,22 @@ class GisLineStringTest extends GisGeomTestCase
      */
     public function providerForPrepareRowAsSvg()
     {
-        return [
-            [
+        return array(
+            array(
                 'LINESTRING(12 35,48 75,69 23,25 45,14 53,35 78)',
                 'svg',
                 '#B02EE0',
-                [
+                array(
                     'x' => 12,
                     'y' => 69,
                     'scale' => 2,
-                    'height' => 150,
-                ],
+                    'height' => 150
+                ),
                 '/^(<polyline points="0,218 72,138 114,242 26,198 4,182 46,132 " '
                 . 'name="svg" id="svg)(\d+)(" class="linestring vector" fill="none" '
-                . 'stroke="#B02EE0" stroke-width="2"\/>)$/',
-            ],
-        ];
+                . 'stroke="#B02EE0" stroke-width="2"\/>)$/'
+            )
+        );
     }
 
     /**
@@ -351,21 +314,12 @@ class GisLineStringTest extends GisGeomTestCase
      * @dataProvider providerForPrepareRowAsOl
      * @return void
      */
-    public function testPrepareRowAsOl(
-        $spatial,
-        $srid,
-        $label,
-        $line_color,
-        $scale_data,
-        $output
+    public function testPrepareRowAsOl($spatial, $srid, $label,
+        $line_color, $scale_data, $output
     ) {
         $this->assertEquals(
             $this->object->prepareRowAsOl(
-                $spatial,
-                $srid,
-                $label,
-                $line_color,
-                $scale_data
+                $spatial, $srid, $label, $line_color, $scale_data
             ),
             $output
         );
@@ -378,18 +332,18 @@ class GisLineStringTest extends GisGeomTestCase
      */
     public function providerForPrepareRowAsOl()
     {
-        return [
-            [
+        return array(
+            array(
                 'LINESTRING(12 35,48 75,69 23,25 45,14 53,35 78)',
                 4326,
                 'Ol',
                 '#B02EE0',
-                [
+                array(
                     'minX' => '0',
                     'minY' => '0',
                     'maxX' => '1',
                     'maxY' => '1',
-                ],
+                ),
                 'bound = new OpenLayers.Bounds(); bound.extend(new OpenLayers.'
                 . 'LonLat(0, 0).transform(new OpenLayers.Projection("EPSG:4326"), '
                 . 'map.getProjectionObject())); bound.extend(new OpenLayers.LonLat'
@@ -408,8 +362,8 @@ class GisLineStringTest extends GisGeomTestCase
                 . 'ProjectionObject()), (new OpenLayers.Geometry.Point(35,78)).'
                 . 'transform(new OpenLayers.Projection("EPSG:4326"), map.'
                 . 'getProjectionObject()))), null, {"strokeColor":"#B02EE0",'
-                . '"strokeWidth":2,"label":"Ol","fontSize":10}));',
-            ],
-        ];
+                . '"strokeWidth":2,"label":"Ol","fontSize":10}));'
+            )
+        );
     }
 }
