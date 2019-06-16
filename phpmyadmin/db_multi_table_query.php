@@ -5,34 +5,58 @@
  *
  * @package PhpMyAdmin
  */
-use PhpMyAdmin\Database\MultiTableQuery;
-use PhpMyAdmin\Response;
+declare(strict_types=1);
 
-require_once 'libraries/common.inc.php';
+use PhpMyAdmin\Controllers\Database\MultiTableQueryController;
+use PhpMyAdmin\DatabaseInterface;
+use PhpMyAdmin\Di\Container;
+use PhpMyAdmin\Response;
+use PhpMyAdmin\Template;
+use Symfony\Component\DependencyInjection\Definition;
+
+if (! defined('ROOT_PATH')) {
+    define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
+}
+
+global $db;
+
+require_once ROOT_PATH . 'libraries/common.inc.php';
+
+$container = Container::getDefaultContainer();
+$container->set(Response::class, Response::getInstance());
+
+/** @var Response $response */
+$response = $container->get(Response::class);
+
+/** @var DatabaseInterface $dbi */
+$dbi = $container->get(DatabaseInterface::class);
+
+/** @var Definition $definition */
+$definition = $containerBuilder->getDefinition(MultiTableQueryController::class);
+$definition->replaceArgument('db', $container->get('db'));
+
+/** @var MultiTableQueryController $controller */
+$controller = $containerBuilder->get(MultiTableQueryController::class);
+
+/** @var Template $template */
+$template = $containerBuilder->get('template');
 
 if (isset($_POST['sql_query'])) {
-    MultiTableQuery::displayResults(
-        $_POST['sql_query'],
-        $_REQUEST['db'],
-        $pmaThemeImage
-    );
-} if (isset($_GET['tables'])) {
-    $constrains = $GLOBALS['dbi']->getForeignKeyConstrains(
-        $_REQUEST['db'],
-        $_GET['tables']
-    );
-    $response = Response::getInstance();
-    $response->addJSON('foreignKeyConstrains',$constrains);
+    $controller->displayResults([
+        'sql_query' => $_POST['sql_query'],
+        'db' => $_REQUEST['db'] ?? null,
+    ]);
+} elseif (isset($_GET['tables'])) {
+    $response->addJSON($controller->table([
+        'tables' => $_GET['tables'],
+        'db' => $_REQUEST['db'] ?? null,
+    ]));
 } else {
-    $response = Response::getInstance();
-
     $header = $response->getHeader();
     $scripts = $header->getScripts();
     $scripts->addFile('vendor/jquery/jquery.md5.js');
-    $scripts->addFile('db_multi_table_query.js');
-    $scripts->addFile('db_query_generator.js');
+    $scripts->addFile('database/multi_table_query.js');
+    $scripts->addFile('database/query_generator.js');
 
-    $queryInstance = new MultiTableQuery($GLOBALS['dbi'], $db);
-
-    $response->addHTML($queryInstance->getFormHtml());
+    $response->addHTML($controller->index($template));
 }
