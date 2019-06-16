@@ -1,4 +1,7 @@
 <?php 
+    session_start();
+    if(!isset($_SESSION['username']))
+        header("location:login.php");
     include 'db.php';  // db scriptini bu scripte ekliyor
 ?>
 <!DOCTYPE html>
@@ -67,8 +70,17 @@
 		</a>
 
 		<div class="page-top">
-			<!-- BEGIN HEADER SEARCH BOX -->
-			<!-- DOC: Apply "search-form-expanded" right after the "search-form" class to have half expanded search box -->
+			<div class="top-menu">
+				
+				<ul class="nav navbar-nav pull-right">
+					<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
+						<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
+						<i class="icon-power"></i>
+						</a>
+					</li>
+				</ul>
+				
+			</div>
 			<form class="search-form search-form-expanded" action="#" method="POST">
 				<div class="input-group">
 					<input id="yemeksearchbar" type="text" class="form-control" placeholder="Arama..." onkeyup="search()">
