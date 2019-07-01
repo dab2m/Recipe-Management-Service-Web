@@ -4,9 +4,6 @@
 	},
 	"require-dev":{
 		"heroku/heroku-buildpack-php": "*"
-	},
-	"scripts" : {
-	  "post-install-cmd" : "composer create-project Recipe-Management-Service-Web/web; cp config.inc.php Recipe-Management-Service-Web/"
 	}
 }
  
