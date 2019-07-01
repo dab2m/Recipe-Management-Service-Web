@@ -1,1 +1,1 @@
-web: bin/heroku-php-apache2 Recipe-Management-Service-Web/
+web: vendor/heroku/heroku-buildpack-php/bin/heroku-php-apache2 Recipe-Management-Service-Web/
