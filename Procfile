@@ -1,1 +1,1 @@
-web: vendor/bin/heroku-php-apache2 phpmyadmin/
+web: bin/heroku-php-apache2 Recipe-Management-Service-Web/

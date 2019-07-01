@@ -1,2 +1,5 @@
 vendor/
+.vs
+node_modules/
 phpmyadmin/
+
