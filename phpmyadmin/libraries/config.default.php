@@ -135,7 +135,7 @@ $cfg['Servers'][$i]['host'] = '127.0.0.1';
  *
  * @global string $cfg['Servers'][$i]['port']
  */
-$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['port'] = '7777';
 
 /**
  * Path to the socket - leave blank for default socket

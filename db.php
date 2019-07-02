@@ -5,7 +5,7 @@
     //$password = $url["pass"];
     //$database = substr($url["path"],1);
     
-    $db = mysqli_connect("127.0.0.1:3306","root","","yemek_tarifi"); //girdigi link - db username - db password - db name 
+    $db = mysqli_connect("127.0.0.1:7777","root","","yemek_tarifi"); //girdigi link - db username - db password - db name 
     
     if (!$db) {
         echo "<script>alert('There is something wrong with DB connection...');</script>";
