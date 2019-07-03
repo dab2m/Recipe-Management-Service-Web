@@ -1,7 +1,5 @@
 # Recipe-Management-Service-Web
 
-![image](https://imgur.com/a/e068ASa)
-
 [Website](https://recipemanagementservice495.herokuapp.com/login.php) 💻
 [GitStats](https://recipemanagementservice495.herokuapp.com/Statistics/index.html) 📊
 
