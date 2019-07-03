@@ -7,7 +7,7 @@
     $conn = substr($url["path"],1);
 
     //$db = mysqli_connect("127.0.0.1","root","","yemek_tarifi"); //girdigi link - db username - db password - db name 
-    $db = mysqli_connect($server,$username,$password,$conn)
+    $db = mysqli_connect($server,$username,$password,$conn);
 
     if (!$db) {
         echo "<script>alert('There is something wrong with DB connection...');</script>";
