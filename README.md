@@ -5,7 +5,7 @@
 
 # What is Recipe Management Service? 🤔
 
-  Recipe Management Service is an app works on both web and android 😮. You can add your favorite recipes to your profile to never forget them❗️ \s\s
+  Recipe Management Service is an app works on both web and android 😮.  You can add your favorite recipes to your profile to never forget them❗️  
   You can also share your recipes with your friends they can like your recipes if they are impressed by your cooking skills❗️ 😉
   
 # But how can I use it? 🤔
