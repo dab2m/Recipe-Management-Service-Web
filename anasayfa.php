@@ -28,6 +28,8 @@
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="assets/admin/pages/css/blog.css" rel="stylesheet" type="text/css"/>
 <link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css"/>
+<link href="assets/global/css/likeButton.css" rel="stylesheet" type="text/css">
+<link href="assets/global/css/editButton.css" rel="stylesheet" type="text/css">
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
 <link href="assets/global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
@@ -176,6 +178,7 @@
 										 ?>									      
         										  <div class="row">
         											<div class="col-md-4 blog-img blog-tag-data">
+													<button class="myButton" ><i class="fa fa-edit">Edit</i></button>
         												<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
         												<ul class="list-inline blog-tags">
         													<li>
@@ -202,7 +205,12 @@
         												</h3>
         												<p>
         													<?php echo $row['aciklama'];?>
-        												</p>
+														</p>
+														<div class="like-content">
+																<button class="btn-secondary like-review">
+																	<i class="fa fa-heart" aria-hidden="true"></i> Like
+																</button>
+													  </div>
         											</div>
         										</div>
         										<hr>										      
@@ -232,6 +240,7 @@
 
 <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script src="assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+<script src="assets/global/scripts/likeButtonJs.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
 <script src="assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
 <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
@@ -247,7 +256,7 @@
 <script src="assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-   Metronic.init(); // init metronic core components
+Metronic.init(); // init metronic core components
 Layout.init(); // init current layout
 Demo.init(); // init demo features
 });
