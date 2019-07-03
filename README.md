@@ -1,5 +1,7 @@
 # Recipe-Management-Service-Web
 
+![Picture](recipe.png)
+
 [Website](https://recipemanagementservice495.herokuapp.com/login.php) 💻
 [GitStats](https://recipemanagementservice495.herokuapp.com/Statistics/index.html) 📊
 
