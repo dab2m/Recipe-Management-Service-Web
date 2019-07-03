@@ -1,6 +1,7 @@
 {
 	"require":{
-		"ext-mbstring": "*"
+		"ext-mbstring": "*",
+		"ext-mysqli": "*"
 	},
 	"require-dev":{
 		"heroku/heroku-buildpack-php": "*"
