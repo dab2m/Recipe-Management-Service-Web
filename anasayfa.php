@@ -184,7 +184,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 
 															<!--<p><button class="myButton" ><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
 															<!-- </form>-->
-															<!--<p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>-->
+															<button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
 															<ul class="list-inline blog-tags">
 																<li>
