@@ -193,7 +193,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 																	$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
 																	$tagres = mysqli_query($db, $tagsql);
 																	while ($tagrow = mysqli_fetch_assoc($tagres)) {
-																		$innersql = "SELECT * FROM `tag` WHERE id = " . $tagrow['tag_id'];
+																		$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
 																		$innerres = mysqli_query($db, $innersql);
 																		$innerrow = mysqli_fetch_assoc($innerres);
 																		echo "<a href=\"javascript:;\"> " . $innerrow['isim'] . " </a>";
