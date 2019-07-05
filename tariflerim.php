@@ -26,6 +26,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 	<!-- END GLOBAL MANDATORY STYLES -->
 	<!-- BEGIN PAGE LEVEL STYLES -->
 	<link href="assets/admin/pages/css/blog.css" rel="stylesheet" type="text/css" />
@@ -79,8 +80,10 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 				<div class="top-menu">
 
 					<ul class="nav navbar-nav pull-right">
+					<li>
+						<i class='far fa-sun' style='font-size:19px;color:red;margin-top:31px;'></i>
+					</li>
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
-							<i class='far fa-sun' style='font-size:19px;color:red'></i>
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
 								<i class="icon-power"></i>
 							</a>
