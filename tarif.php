@@ -38,8 +38,6 @@
             if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
                 echo "<script> alert('Uploaded'); </script>";
         }
-
-
     }
 ?>
 
@@ -138,6 +136,12 @@
 						<span class="title">Yeni Yemek Tarifi</span>
 						</a>
 					</li>
+					<li class="start ">
+							<a href="tariflerim.php">
+								<i class="icon-book-open"></i>
+								<span class="title">Tariflerim</span>
+							</a>
+						</li>
 				</ul>
 
 			</div>

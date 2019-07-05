@@ -3,7 +3,6 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
-
 ?>
 <!DOCTYPE html>
 
@@ -21,6 +20,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<meta content="" name="author" />
 	<!-- BEGIN GLOBAL MANDATORY STYLES -->
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -29,9 +29,9 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<!-- END GLOBAL MANDATORY STYLES -->
 	<!-- BEGIN PAGE LEVEL STYLES -->
 	<link href="assets/admin/pages/css/blog.css" rel="stylesheet" type="text/css" />
-	<link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css" />
 	<link href="assets/global/css/likeButton.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/css/editButton.css" rel="stylesheet" type="text/css">
+	<link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- END PAGE LEVEL STYLES -->
 	<!-- BEGIN THEME STYLES -->
@@ -42,6 +42,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<link href="assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="favicon.ico" />
+
 	<script type="text/javascript">
 		function search() {
 			var key = $('#yemeksearchbar').val();
@@ -137,6 +138,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 			<!-- BEGIN CONTENT -->
 			<div class="page-content-wrapper">
 				<div class="page-content">
+				
 					<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 					<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
@@ -160,15 +162,18 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 					<h3 class="page-title">
 						Yemek Tarifleri
 					</h3>
-					<div class="page-bar">
-						<ul class="page-breadcrumb">
-							<li>
-								<i class="fa fa-home"></i>
-								<a href="#">Anasayfa</a>
-							</li>
-
-						</ul>
-					</div>
+				<div class="page-bar">
+					<ul class="page-breadcrumb">
+						<li>
+							<i class="fa fa-home"></i>
+							<a href="anasayfa.php">Ana Sayfa</a>
+							<i class="fa fa-angle-right"></i>
+						</li>
+						<li>
+							<a href="#">Tariflerim</a>
+						</li>
+					</ul>
+				</div>
 					<!-- END PAGE HEADER-->
 					<!-- BEGIN PAGE CONTENT-->
 					<div class="portlet light">
@@ -178,23 +183,25 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 									<div class="row">
 										<div id="tarifler" class="col-md-9 col-sm-8 article-block">
 											<?php
-											$sql = "SELECT * FROM `tarif`"; // sorgu
-											$result = mysqli_query($db, $sql); //sorgu sonucu
-										
+											$user_name=$_SESSION['username'];
+											$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'"; // sorgu
+											$result = mysqli_query($db, $sql);//sorgu sonucu
+                                            
 											if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
 											{
+												
 												while ($row = mysqli_fetch_assoc($result)) {
+											
 													?>
 													<div class="row">
 														<div class="col-md-4 blog-img blog-tag-data">
-															<!-- 	<form action="editRecipe.php" id="form_sample_3" class="form-horizontal" method="post" enctype="multipart/form-data">-->
-															<!-- 		<input type="hidden" name="id" value="<?php echo $row['id']; ?>" />-->
 
-															<!--<p><button class="myButton" ><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
-															<!-- </form>-->
-															<!--<button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>-->
-															
+														    <!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
+														
+															<p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
+
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
+
 															<ul class="list-inline blog-tags">
 																<li>
 																	<i class="fa fa-tags"></i>
@@ -203,9 +210,10 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 																	$tagres = mysqli_query($db, $tagsql);
 																	while ($tagrow = mysqli_fetch_assoc($tagres)) {
 																		$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
-																		$innerres = mysqli_query($db, $innersql);
+																		$innerres = mysqli_query($db, $innersql);	
 																		$innerrow = mysqli_fetch_assoc($innerres);
 																		echo "<a href=\"javascript:;\"> " . $innerrow['isim'] . " </a>";
+																		
 																	}
 																	?>
 																</li>
@@ -215,23 +223,29 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 															<h3>
 																<a href="#">
 																	<?php echo $row['isim']; ?></a>
+
 															</h3>
+
 															<p>
 																<?php echo $row['aciklama']; ?>
 															</p>
+
 															<!--<div class="like-content">
-																		<button class="btn-secondary like-review">
-																			<i class="fa fa-heart" aria-hidden="true"></i> Like
-																		</button>
-																	</div>-->
+																<button class="btn-secondary like-review">
+																	<i class="fa fa-heart" aria-hidden="true"></i> Like
+																</button>-->
+															</div>
 														</div>
 													</div>
 													<hr>
 												<?php
 												}
+											
 											} else {
 												echo "<h1>Gosterilecek tarif yok...</h1>";
-											}
+											
+										}
+										
 											?>
 										</div>
 										<!--end col-md-9-->
@@ -266,6 +280,14 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<script src="assets/global/scripts/metronic.js" type="text/javascript"></script>
 	<script src="assets/admin/layout2/scripts/layout.js" type="text/javascript"></script>
 	<script src="assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
+	<script>
+		function Editqry(id) {
+			
+				window.location.href = 'editRecipe.php?del_id=' + id + '';
+				return true;
+			
+		}
+	</script>
 	<script>
 		function Deleteqry(id) {
 			if (confirm("Do you want Delete!")) {
