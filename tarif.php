@@ -8,14 +8,16 @@
         $name = $_POST['name'];
         $tags = $_POST['select2tags'];
         $tags = $myArray = explode(',', $tags);
-        $desc = $_POST['editor1'];
+		$desc = $_POST['editor1'];
+		$user_name=$_SESSION['username'];
+		//echo "$user_name";
         
         if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
             $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
         else 
             $photoname = addslashes("fotograflar\\no.png" );
             
-        $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama) VALUES ('$name','$photoname','$desc')";
+        $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username) VALUES ('$name','$photoname','$desc','$user_name')";
         
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
             echo "<script> alert('Could not record...'); </script>";
