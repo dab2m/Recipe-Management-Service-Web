@@ -2,7 +2,8 @@
     session_start();
     if(!isset($_SESSION['username']))
         header("location:login.php");
-    include 'db.php';
+	include 'db.php';
+	date_default_timezone_set('Europe/Istanbul');
     if(isset($_POST['name']))
     {
         $name = $_POST['name'];
@@ -10,6 +11,7 @@
         $tags = $myArray = explode(',', $tags);
 		$desc = $_POST['editor1'];
 		$user_name=$_SESSION['username'];
+		$date = date('Y-m-d');
 		//echo "$user_name";
         
         if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
@@ -17,7 +19,7 @@
         else 
             $photoname = addslashes("fotograflar\\no.png" );
             
-        $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username) VALUES ('$name','$photoname','$desc','$user_name')";
+        $sql = "INSERT INTO `tarif`(isim,fotograf,date,aciklama,username) VALUES ('$name','$photoname','$date','$desc','$user_name')";
                     
 		if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
 		echo "<script> alert('Uploaded'); </script>";
