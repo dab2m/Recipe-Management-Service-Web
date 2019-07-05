@@ -18,7 +18,10 @@
             $photoname = addslashes("fotograflar\\no.png" );
             
         $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username) VALUES ('$name','$photoname','$desc','$user_name')";
-        
+                    
+		if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
+		echo "<script> alert('Uploaded'); </script>";
+		
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
             echo "<script> alert('Could not record...'); </script>";
         else // sorguyu calistirabilirse
@@ -34,9 +37,7 @@
                 //echo "<script> console.log('$sql') </script>";
                 mysqli_query($db, $sql);
             }
-            
-            if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
-                echo "<script> alert('Uploaded'); </script>";
+
         }
     }
 ?>
