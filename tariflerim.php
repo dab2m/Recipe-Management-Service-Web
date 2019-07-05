@@ -81,7 +81,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 
 					<ul class="nav navbar-nav pull-right">
 					<li>
-						<i class='far fa-sun' style='font-size:19px;color:red;margin-top:31px;'></i>
+						<i class='far fa-sun' onclick="myFunction()" style='font-size:19px;color:red;margin-top:31px;'></i>
 					</li>
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
@@ -306,6 +306,15 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 			Layout.init(); // init current layout
 			Demo.init(); // init demo features
 		});
+	</script>
+		<script>
+		function myFunction() {
+
+			var x;
+
+			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
+
+		}
 	</script>
 </body>
 
