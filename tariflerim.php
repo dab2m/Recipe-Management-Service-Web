@@ -59,6 +59,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 				}
 			});
 		}
+		
 	</script>
 </head>
 
@@ -80,9 +81,9 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 				<div class="top-menu">
 
 					<ul class="nav navbar-nav pull-right">
-					<li>
-						<i class='far fa-sun' onclick="myFunction()" style='font-size:19px;color:red;margin-top:31px;'></i>
-					</li>
+						<li>
+							<i class='far fa-sun' onclick="myFunction()" style='font-size:19px;color:red;margin-top:31px;'></i>
+						</li>
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
 								<i class="icon-power"></i>
@@ -142,7 +143,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 			<!-- BEGIN CONTENT -->
 			<div class="page-content-wrapper">
 				<div class="page-content">
-				
+
 					<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 					<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
@@ -166,18 +167,18 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 					<h3 class="page-title">
 						Yemek Tarifleri
 					</h3>
-				<div class="page-bar">
-					<ul class="page-breadcrumb">
-						<li>
-							<i class="fa fa-home"></i>
-							<a href="anasayfa.php">Ana Sayfa</a>
-							<i class="fa fa-angle-right"></i>
-						</li>
-						<li>
-							<a href="#">Tariflerim</a>
-						</li>
-					</ul>
-				</div>
+					<div class="page-bar">
+						<ul class="page-breadcrumb">
+							<li>
+								<i class="fa fa-home"></i>
+								<a href="anasayfa.php">Ana Sayfa</a>
+								<i class="fa fa-angle-right"></i>
+							</li>
+							<li>
+								<a href="#">Tariflerim</a>
+							</li>
+						</ul>
+					</div>
 					<!-- END PAGE HEADER-->
 					<!-- BEGIN PAGE CONTENT-->
 					<div class="portlet light">
@@ -186,23 +187,25 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 								<div class="col-md-12 blog-page">
 									<div class="row">
 										<div id="tarifler" class="col-md-9 col-sm-8 article-block">
+																				
 											<?php
-											$user_name=$_SESSION['username'];
+											//Burası degisecek
+											$user_name = $_SESSION['username'];
 											$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'"; // sorgu
-											$result = mysqli_query($db, $sql);//sorgu sonucu
-                                            
+											$result = mysqli_query($db, $sql); //sorgu sonucu
+
 											if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
 											{
-												
+                                            
 												while ($row = mysqli_fetch_assoc($result)) {
-											
+
 													?>
+                                                     <p><button class="myButton" onkeyup="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
 													<div class="row">
 														<div class="col-md-4 blog-img blog-tag-data">
 
-														    <!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
-														
-															<p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
+															<!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
+
 
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
 
@@ -214,10 +217,9 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 																	$tagres = mysqli_query($db, $tagsql);
 																	while ($tagrow = mysqli_fetch_assoc($tagres)) {
 																		$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
-																		$innerres = mysqli_query($db, $innersql);	
+																		$innerres = mysqli_query($db, $innersql);
 																		$innerrow = mysqli_fetch_assoc($innerres);
 																		echo "<a href=\"javascript:;\"> " . $innerrow['isim'] . " </a>";
-																		
 																	}
 																	?>
 																</li>
@@ -235,35 +237,34 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 															</p>
 
 															<!--<div class="like-content">
-																<button class="btn-secondary like-review">
-																	<i class="fa fa-heart" aria-hidden="true"></i> Like
-																</button>-->
-															</div>
+																				<button class="btn-secondary like-review">
+																					<i class="fa fa-heart" aria-hidden="true"></i> Like
+																				</button>-->
 														</div>
 													</div>
-													<hr>
-												<?php
-												}
-											
-											} else {
-												echo "<h1>Gosterilecek tarif yok...</h1>";
-											
-										}
-										
-											?>
-										</div>
-										<!--end col-md-9-->
 
-										<!--end col-md-3-->
+											
+												<hr>
+											<?php
+											}
+										} else {
+											echo "<h1>Gosterilecek tarif yok...</h1>";
+										}
+
+										?>
 									</div>
+									<!--end col-md-9-->
+
+									<!--end col-md-3-->
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- END PAGE CONTENT-->
 				</div>
+				<!-- END PAGE CONTENT-->
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<!-- css dosyalarini include eden satirlar -->
@@ -286,15 +287,15 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<script src="assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
 	<script>
 		function Editqry(id) {
-			
-				window.location.href = 'editRecipe.php?del_id=' + id + '';
-				return true;
-			
+
+			window.location.href = 'editRecipe.php?del_id=' + id + '';
+			return true;
+
 		}
 	</script>
 	<script>
 		function Deleteqry(id) {
-			if (confirm("Do you want Delete!")) {
+			if (confirm("Tarifi silmek istiyor musunuz?")) {
 				window.location.href = 'delete.php?del_id=' + id + '';
 				return true;
 			}
@@ -307,13 +308,22 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 			Demo.init(); // init demo features
 		});
 	</script>
-		<script>
+	<script type=text/javascript>
 		function myFunction() {
 
-			var x;
-
-			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
-
+			var days = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
+			//console.log(days);
+            			
+			$.ajax({
+				url: "delDay.php",
+				type: 'POST',
+				data: {days: days},
+				success: function(response) {
+					console.log("success");
+				}
+			});
+		
+			
 		}
 	</script>
 </body>
