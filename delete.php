@@ -12,5 +12,5 @@
 	include 'db.php';
 	$sql="DELETE FROM tarif_tag WHERE tarif_id='".$_GET['del_id']."'";
 	mysqli_query($db, $sql);
-	header("location:anasayfa.php");
+	header("location:tariflerim.php");
 	?>
