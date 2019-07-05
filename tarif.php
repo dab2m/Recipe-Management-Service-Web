@@ -20,7 +20,8 @@
             $photoname = addslashes("fotograflar\\no.png" );
             
         $sql = "INSERT INTO `tarif`(isim,fotograf,date,aciklama,username) VALUES ('$name','$photoname','$date','$desc','$user_name')";
-                    
+		
+		print_r($_FILES["photo"]["tmp_name"],$photoname);
 		if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
 		echo "<script> alert('Uploaded'); </script>";
 		
