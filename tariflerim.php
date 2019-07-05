@@ -80,6 +80,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 
 					<ul class="nav navbar-nav pull-right">
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
+							<i class='far fa-sun' style='font-size:19px;color:red'></i>
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
 								<i class="icon-power"></i>
 							</a>
