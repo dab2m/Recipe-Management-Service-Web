@@ -3,10 +3,9 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
-
+$user_name=$_SESSION['username'];
 ?>
 <!DOCTYPE html>
-
 <html lang="tr">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
@@ -123,7 +122,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 							</a>
 						</li>
 						<li class="start ">
-							<a href="tariflerim.php">
+						<a href="tariflerim.php">
 								<i class="icon-book-open"></i>
 								<span class="title">Tariflerim</span>
 							</a>

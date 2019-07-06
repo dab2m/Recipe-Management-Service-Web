@@ -3,28 +3,24 @@
     if(!isset($_SESSION['username']))
         header("location:login.php");
 	include 'db.php';
-	date_default_timezone_set('Europe/Istanbul');
+	$user_name=$_SESSION['username'];
     if(isset($_POST['name']))
     {
         $name = $_POST['name'];
         $tags = $_POST['select2tags'];
         $tags = $myArray = explode(',', $tags);
 		$desc = $_POST['editor1'];
-		$user_name=$_SESSION['username'];
-		$date = date('Y-m-d');
+		
 		//echo "$user_name";
+		
         
         if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
             $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
         else 
             $photoname = addslashes("fotograflar\\no.png" );
             
-        $sql = "INSERT INTO `tarif`(isim,fotograf,date,aciklama,username) VALUES ('$name','$photoname','$date','$desc','$user_name')";
-		
-		print_r($_FILES["photo"]);
-		if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
-		echo "<script> alert('Uploaded'); </script>";
-		
+        $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username,creation_date) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
+        
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
             echo "<script> alert('Could not record...'); </script>";
         else // sorguyu calistirabilirse
@@ -40,7 +36,9 @@
                 //echo "<script> console.log('$sql') </script>";
                 mysqli_query($db, $sql);
             }
-
+            
+            if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
+                echo "<script> alert('Uploaded'); </script>";
         }
     }
 ?>
