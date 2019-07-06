@@ -311,9 +311,9 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 		function myFunction() {
 
 			var x;
-
 			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
-
+			
+  });
 		}
 	</script>
 </body>
