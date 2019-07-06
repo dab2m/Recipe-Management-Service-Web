@@ -200,7 +200,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 												while ($row = mysqli_fetch_assoc($result)) {
 
 													?>
-                                                     <p><button class="myButton" onkeyup="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
+                                                     <p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
 													<div class="row">
 														<div class="col-md-4 blog-img blog-tag-data">
 
