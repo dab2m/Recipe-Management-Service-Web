@@ -11,8 +11,38 @@
         $tags = $myArray = explode(',', $tags);
 		$desc = $_POST['editor1'];
 		
-
-    if(isset($_GET['name']))
+		//echo "$user_name";
+		
+        
+        if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
+            $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
+        else 
+            $photoname = addslashes("fotograflar\\no.png" );
+            
+        $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username,creation_date) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
+        
+        if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
+            echo "<script> alert('Could not record...'); </script>";
+        else // sorguyu calistirabilirse
+        {
+            $tarif_id = $db -> insert_id; //yeni tarif kaydinin idsi
+            foreach ($tags as $tag)
+            {
+                $sql = "INSERT INTO `tag`(isim) VALUES ('$tag')";
+                mysqli_query($db, $sql);
+                $tag_id = $db -> insert_id; //yeni tagin idsi
+                $sql = "INSERT INTO `tarif_tag`(`tarif_id`,`tag_id`) VALUES ($tarif_id,$tag_id)";
+                
+                //echo "<script> console.log('$sql') </script>";
+                mysqli_query($db, $sql);
+            }
+            
+            if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
+                echo "<script> alert('Uploaded'); </script>";
+        }
+    }
+	
+	if(isset($_GET['name']))
     {
         $name = $_GET['name'];
         $tags = $_GET['select2tags'];
@@ -25,8 +55,8 @@
         if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
             $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
         else 
-            $photoname = addslashes("fotograflar\\no.png" );            	
-			
+            $photoname = addslashes("fotograflar\\no.png" );
+            
         $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username,creation_date) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
         
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
