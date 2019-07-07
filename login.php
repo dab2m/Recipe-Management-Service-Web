@@ -16,8 +16,8 @@
     }
 	if(isset($_GET['username'])&& isset($_GET['password']))
 	{
-		$username = $_POST['username'];
-        $password = $_POST['password'];
+		$username = $_GET['username'];
+        $password = $_GET['password'];
         $sql = "SELECT * FROM `kullanici` WHERE `username` = '$username' AND `password` = '$password'";
         mysqli_query($db, $sql);
         if(mysqli_affected_rows($db) > 0) {
