@@ -11,14 +11,22 @@
         $tags = $myArray = explode(',', $tags);
 		$desc = $_POST['editor1'];
 		
+
+    if(isset($_GET['name']))
+    {
+        $name = $_GET['name'];
+        $tags = $_GET['select2tags'];
+        $tags = $myArray = explode(',', $tags);
+		$desc = $_GET['editor1'];
+		
 		//echo "$user_name";
 		
         
         if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
             $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
         else 
-            $photoname = addslashes("fotograflar\\no.png" );
-            
+            $photoname = addslashes("fotograflar\\no.png" );            	
+			
         $sql = "INSERT INTO `tarif`(isim,fotograf,aciklama,username,creation_date) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
         
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
