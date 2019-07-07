@@ -14,6 +14,19 @@
             header("location:anasayfa.php");
         }
     }
+	if(isset($_GET['username'])&& isset($_GET['password']))
+	{
+		$username = $_POST['username'];
+        $password = $_POST['password'];
+        $sql = "SELECT * FROM `kullanici` WHERE `username` = '$username' AND `password` = '$password'";
+        mysqli_query($db, $sql);
+        if(mysqli_affected_rows($db) > 0) {
+            session_start();
+            $_SESSION['username'] = $username;
+            $_SESSION['password'] = $password;
+            header("location:anasayfa.php");
+        }
+	}
 ?>
 
 <!DOCTYPE html>
