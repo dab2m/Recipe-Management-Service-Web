@@ -42,13 +42,19 @@ $user_name=$_SESSION['username'];
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="favicon.ico" />
 	<script type="text/javascript">
-		function search() {
+				function search() {
 			var key = $('#yemeksearchbar').val();
+            var user = "<?php echo $user_name; ?>";
+			var page= "anasayfa";
+
 			$.ajax({
 				url: "arama.php",
 				type: 'POST',
 				data: {
-					"key": key
+					"key": key,
+					"user" : user,
+					"page" : page
+					
 				},
 				success: function(response) {
 					$('#tarifler').empty();

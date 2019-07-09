@@ -1,6 +1,6 @@
 <?php
-    include 'db.php';
-    
+	include 'db.php';
+    global $sql;
     
     function searchKeyWord($row,$key) //ismin icerisinde $key varsa ya da aciklamanin icerisinde varsa true donuyor
     {
@@ -21,13 +21,19 @@
         return false;
     }
 
-    if(isset($_POST['key']))
+    if(isset($_POST['key']) && isset($_POST['page']) && isset($_POST['user']))
     {
-        $key = $_POST['key'];
         
+		$key = $_POST['key'];
+		$page= $_POST['page'];
+        $user_name= $_POST['user'];
+
         if($key == "")
         {
-            $sql = "SELECT * FROM `tarif`";
+			if($page == 'anasayfa'){$sql = "SELECT * FROM `tarif`";}
+			
+			else if($page == 'tariflerim'){$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'";}
+			//$sql = "SELECT * FROM `tarif`";
             $result = mysqli_query($db, $sql);
             if(mysqli_affected_rows($db) > 0)
                 while($row = mysqli_fetch_assoc($result))
@@ -72,7 +78,9 @@
         }
         else 
         {
-            $sql = "SELECT * FROM `tarif`";
+			if($page == 'anasayfa'){$sql = "SELECT * FROM `tarif`";}
+			//$sql = "SELECT * FROM `tarif`";
+			else if($page == 'tariflerim'){$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'";}
             $result = mysqli_query($db, $sql);
             if(mysqli_affected_rows($db) > 0)
                 while($row = mysqli_fetch_assoc($result))

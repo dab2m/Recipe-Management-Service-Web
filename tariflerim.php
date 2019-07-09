@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
+$user_name = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 
@@ -47,11 +48,16 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<script type="text/javascript">
 		function search() {
 			var key = $('#yemeksearchbar').val();
+			var user = "<?php echo $user_name; ?>";
+			var page= "tariflerim";
+
 			$.ajax({
 				url: "arama.php",
 				type: 'POST',
 				data: {
-					"key": key
+					"key": key,
+					"user" : user,
+					"page" : page
 				},
 				success: function(response) {
 					$('#tarifler').empty();
@@ -59,7 +65,6 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 				}
 			});
 		}
-		
 	</script>
 </head>
 
@@ -189,8 +194,6 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 										<div id="tarifler" class="col-md-9 col-sm-8 article-block">
 																				
 											<?php
-											//Burası degisecek
-											$user_name = $_SESSION['username'];
 											$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'"; // sorgu
 											$result = mysqli_query($db, $sql); //sorgu sonucu
 
@@ -311,12 +314,6 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<script type=text/javascript>
 		function myFunction() {
 
-<<<<<<< HEAD
-			var x;
-			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
-			
-  });
-=======
 			var days = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
 			//console.log(days);
             			
@@ -330,7 +327,6 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 			});
 		
 			
->>>>>>> 77d201ca74a30e2547ac00fd2c447f38bed7052b
 		}
 	</script>
 </body>
