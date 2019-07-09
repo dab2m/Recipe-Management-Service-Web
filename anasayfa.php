@@ -230,6 +230,39 @@ $user_name=$_SESSION['username'];
 															<p>
 																<?php echo $row['aciklama']; ?>
 															</p>
+															<?php 
+															     if($_SESSION['username'] != $row['username']) /* Eger tiklanan tarif kullanicinin kendisine ait degilse begenilebilir */
+															     {
+															         $like_sql = "SELECT * FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id']." AND `tarif_id` = ".$row['id']; 
+															         mysqli_query($db, $like_sql);
+															         if(mysqli_affected_rows($db) == 0)
+															         {
+															         
+															?>
+            															<a class="btn red" href=" <?php echo "begen.php?tarif_id_like=".$row['id']."&anasayfa=1"; ?>">
+            																<i class="icon-like"></i> &nbsp Begen
+            															</a>
+															<?php 
+															         }
+															         else 
+															         {
+															             ?>
+    															             <a class="btn blue" href=" <?php echo "begen.php?tarif_id_dislike=".$row['id']."&anasayfa=1"; ?>">
+                																<i class="icon-dislike"></i> &nbsp Begeniyi Kaldir
+                															</a>
+															             <?php 
+															         }
+											                     }
+											                     else /* Kendi tarifi ise begenemez */
+											                     {
+											                         
+															?>
+																<button class="btn red disabled" title="Kendi tarifinizi begenemezsiniz...">
+    																<i class="glyphicon glyphicon-heart"></i> &nbsp Begen
+    															</button>
+    														<?php 
+											                     }
+    														?>
 															<!--<div class="like-content">
 																		<button class="btn-secondary like-review">
 																			<i class="fa fa-heart" aria-hidden="true"></i> Like

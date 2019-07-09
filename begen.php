@@ -14,10 +14,13 @@
         {
             echo "<script> alert('Begenildi...'); </script>";
         }
-        header("location:tektarif.php?tarif_id=".$_GET['tarif_id_like']);
+        if(isset($_GET['anasayfa']))
+            header("location:anasayfa.php");
+        else
+            header("location:tektarif.php?tarif_id=".$_GET['tarif_id_like']);
         
     }
-    if(isset($_GET['tarif_id_dislike'])) /* Begen butonuna basildiysa */
+    if(isset($_GET['tarif_id_dislike'])) /* Begeniyi kaldirma butonuna basildiysa */
     {
         $sql = "DELETE FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id'];
         $res = mysqli_query($db, $sql);
@@ -25,7 +28,10 @@
         {
             echo "<script> alert('Begeni geri cekildi...'); </script>";
         }
-        header("location:tektarif.php?tarif_id=".$_GET['tarif_id_dislike']);
+        if(isset($_GET['anasayfa']))
+            header("location:anasayfa.php");
+        else
+            header("location:tektarif.php?tarif_id=".$_GET['tarif_id_dislike']);
         
     }
     

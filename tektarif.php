@@ -203,7 +203,18 @@
 															<!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id']; ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
 														
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
-
+															<ul class="list-inline">
+            													<li>
+            														<i class="fa fa-heart"></i>
+            														<a href="javascript:;">
+            														 	<?php 
+            														 	    $begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = ".$row['id'];
+            														 	    mysqli_query($db, $begeni_sayisi_sql);
+            														 	    echo mysqli_affected_rows($db) . " Begeni";
+            														 	?>
+            														</a>
+            													</li>
+            												</ul>
 															<ul class="list-inline blog-tags">
 																<li>
 																	<i class="fa fa-tags"></i>
