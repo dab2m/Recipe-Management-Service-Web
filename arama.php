@@ -12,7 +12,7 @@
         
         while($tagrow = mysqli_fetch_assoc($tagres))
         {
-            $innersql = "SELECT * FROM `tag` WHERE id = ".$tagrow['tag_id'];
+            $innersql = "SELECT * FROM `tag` WHERE tag_id = ".$tagrow['tag_id'];
             $innerres = mysqli_query($db, $innersql);
             $innerrow = mysqli_fetch_assoc($innerres);
             if(strpos($innerrow['isim'], $key) !== false)
@@ -24,7 +24,7 @@
     if(isset($_POST['key']))
     {
         $key = $_POST['key'];
-        
+        echo $key;
         if($key == "")
         {
             $sql = "SELECT * FROM `tarif`";
@@ -44,7 +44,7 @@
     								      $tagres = mysqli_query($db, $tagsql);
     								      while($tagrow = mysqli_fetch_assoc($tagres))
     								      {
-    								          $innersql = "SELECT * FROM `tag` WHERE id = ".$tagrow['tag_id'];
+    								          $innersql = "SELECT * FROM `tag` WHERE tag_id = ".$tagrow['tag_id'];
     								          $innerres = mysqli_query($db, $innersql);
     								          $innerrow = mysqli_fetch_assoc($innerres);
     								          echo "<a href=\"javascript:;\"> ". $innerrow['isim'] ." </a>";
@@ -91,7 +91,7 @@
     								      $tagres = mysqli_query($db, $tagsql);
     								      while($tagrow = mysqli_fetch_assoc($tagres))
     								      {
-    								          $innersql = "SELECT * FROM `tag` WHERE id = ".$tagrow['tag_id'];
+    								          $innersql = "SELECT * FROM `tag` WHERE tag_id = ".$tagrow['tag_id'];
     								          $innerres = mysqli_query($db, $innersql);
     								          $innerrow = mysqli_fetch_assoc($innerres);
     								          echo "<a href=\"javascript:;\"> ". $innerrow['isim'] ." </a>";
@@ -103,7 +103,7 @@
     					</div>
     					<div class="col-md-8 blog-article">
     						<h3>
-    						<a href="#">
+    						<a href="tektarif.php?tarif_id=<?php echo $row['id']; ?>">
     							<?php echo $row['isim'];?></a>
     						</h3>
     						<p>

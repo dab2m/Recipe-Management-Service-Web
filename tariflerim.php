@@ -227,15 +227,13 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 														</div>
 														<div class="col-md-8 blog-article">
 															<h3>
-																<a href="#">
+																<a href="tektarif.php?tarif_id=<?php echo $row['id']; ?>">
 																	<?php echo $row['isim']; ?></a>
-
 															</h3>
 
 															<p>
 																<?php echo $row['aciklama']; ?>
 															</p>
-
 															<!--<div class="like-content">
 																				<button class="btn-secondary like-review">
 																					<i class="fa fa-heart" aria-hidden="true"></i> Like

@@ -1,18 +1,20 @@
 <?php
-session_start();
-if (!isset($_SESSION['username']))
-	header("location:login.php");
-include 'db.php';  // db scriptini bu scripte ekliyor
-$user_name=$_SESSION['username'];
+    session_start();
+    if (!isset($_SESSION['username']))
+        header("location:login.php");
+    
+    include 'db.php';  // db scriptini bu scripte ekliyor
+
 ?>
 <!DOCTYPE html>
+
 <html lang="tr">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 
 <head>
 	<meta charset="utf-8">
-	<title>Anasayfa</title>
+	<title>Tarif</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
@@ -20,17 +22,19 @@ $user_name=$_SESSION['username'];
 	<meta content="" name="author" />
 	<!-- BEGIN GLOBAL MANDATORY STYLES -->
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 	<!-- END GLOBAL MANDATORY STYLES -->
 	<!-- BEGIN PAGE LEVEL STYLES -->
 	<link href="assets/admin/pages/css/blog.css" rel="stylesheet" type="text/css" />
-	<link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css" />
 	<link href="assets/global/css/likeButton.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/css/editButton.css" rel="stylesheet" type="text/css">
+	<link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- END PAGE LEVEL STYLES -->
 	<!-- BEGIN THEME STYLES -->
@@ -41,6 +45,7 @@ $user_name=$_SESSION['username'];
 	<link href="assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
 	<link rel="shortcut icon" href="favicon.ico" />
+
 	<script type="text/javascript">
 		function search() {
 			var key = $('#yemeksearchbar').val();
@@ -56,6 +61,7 @@ $user_name=$_SESSION['username'];
 				}
 			});
 		}
+		
 	</script>
 </head>
 
@@ -77,6 +83,9 @@ $user_name=$_SESSION['username'];
 				<div class="top-menu">
 
 					<ul class="nav navbar-nav pull-right">
+						<li>
+							<i class='far fa-sun' onclick="myFunction()" style='font-size:19px;color:red;margin-top:31px;'></i>
+						</li>
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
 								<i class="icon-power"></i>
@@ -122,7 +131,7 @@ $user_name=$_SESSION['username'];
 							</a>
 						</li>
 						<li class="start ">
-						<a href="tariflerim.php">
+							<a href="tariflerim.php">
 								<i class="icon-book-open"></i>
 								<span class="title">Tariflerim</span>
 							</a>
@@ -136,6 +145,7 @@ $user_name=$_SESSION['username'];
 			<!-- BEGIN CONTENT -->
 			<div class="page-content-wrapper">
 				<div class="page-content">
+
 					<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 					<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
@@ -163,9 +173,12 @@ $user_name=$_SESSION['username'];
 						<ul class="page-breadcrumb">
 							<li>
 								<i class="fa fa-home"></i>
-								<a href="#">Anasayfa</a>
+								<a href="anasayfa.php">Ana Sayfa</a>
+								<i class="fa fa-angle-right"></i>
 							</li>
-
+							<li>
+								<a href="#">Tariflerim</a>
+							</li>
 						</ul>
 					</div>
 					<!-- END PAGE HEADER-->
@@ -176,36 +189,21 @@ $user_name=$_SESSION['username'];
 								<div class="col-md-12 blog-page">
 									<div class="row">
 										<div id="tarifler" class="col-md-9 col-sm-8 article-block">
-											<?php
-											$sql = "SELECT * FROM `tarif`"; // sorgu
+																				
+											<?php										
+											$user_name = $_SESSION['username'];
+											$sql = "SELECT * FROM `tarif` WHERE id = ". $_GET['tarif_id']; // sorgu
 											$result = mysqli_query($db, $sql); //sorgu sonucu
-										
+                                            $row = mysqli_fetch_assoc($result);
 											if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
 											{
-												while ($row = mysqli_fetch_assoc($result)) {
-													?>
+											?>                                            
 													<div class="row">
-														<div class="col-md-4 blog-img blog-tag-data">
-															<!-- 	<form action="editRecipe.php" id="form_sample_3" class="form-horizontal" method="post" enctype="multipart/form-data">-->
-															<!-- 		<input type="hidden" name="id" value="<?php echo $row['id']; ?>" />-->
-
-															<!--<p><button class="myButton" ><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
-															<!-- </form>-->
-															<!--<button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>-->
-															
+														<div class="col-md-4 blog-img blog-tag-data">		
+															<!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id']; ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
+														
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
-															<ul class="list-inline">
-            													<li>
-            														<i class="fa fa-heart"></i>
-            														<a href="javascript:;">
-            														 	<?php 
-            														 	    $begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = ".$row['id'];
-            														 	    mysqli_query($db, $begeni_sayisi_sql);
-            														 	    echo mysqli_affected_rows($db) . " Begeni";
-            														 	?>
-            														</a>
-            													</li>
-            												</ul>
+
 															<ul class="list-inline blog-tags">
 																<li>
 																	<i class="fa fa-tags"></i>
@@ -224,39 +222,79 @@ $user_name=$_SESSION['username'];
 														</div>
 														<div class="col-md-8 blog-article">
 															<h3>
-																<a href="tektarif.php?tarif_id=<?php echo $row['id']; ?>">
+																<a href="#">
 																	<?php echo $row['isim']; ?></a>
+
 															</h3>
+
 															<p>
 																<?php echo $row['aciklama']; ?>
 															</p>
+															<?php 
+															     $tarif_sql = "SELECT * FROM `tarif` WHERE `id` = ". $_GET['tarif_id'];
+															     $tarif_res = mysqli_query($db, $tarif_sql);
+															     $tarif_row = mysqli_fetch_assoc($tarif_res);
+															     if($_SESSION['username'] != $tarif_row['username']) /* Eger tiklanan tarif kullanicinin kendisine ait degilse begenilebilir */
+															     {
+															         $like_sql = "SELECT * FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id']." AND `tarif_id` = ".$_GET['tarif_id']; 
+															         mysqli_query($db, $like_sql);
+															         if(mysqli_affected_rows($db) == 0)
+															         {
+															         
+															?>
+            															<a class="btn red" href=" <?php echo "begen.php?tarif_id_like=".$_GET['tarif_id']; ?>">
+            																<i class="icon-like"></i> &nbsp Begen
+            															</a>
+															<?php 
+															         }
+															         else 
+															         {
+															             ?>
+    															             <a class="btn blue" href=" <?php echo "begen.php?tarif_id_dislike=".$_GET['tarif_id']; ?>">
+                																<i class="icon-dislike"></i> &nbsp Begeniyi Kaldir
+                															</a>
+															             <?php 
+															         }
+											                     }
+											                     else /* Kendi tarifi ise begenemez */
+											                     {
+											                         
+															?>
+																<button class="btn red disabled" title="Kendi tarifinizi begenemezsiniz...">
+    																<i class="glyphicon glyphicon-heart"></i> &nbsp Begen
+    															</button>
+    														<?php 
+											                     }
+    														?>
 															<!--<div class="like-content">
-																		<button class="btn-secondary like-review">
-																			<i class="fa fa-heart" aria-hidden="true"></i> Like
-																		</button>
-																	</div>-->
+																				<button class="btn-secondary like-review">
+																					<i class="fa fa-heart" aria-hidden="true"></i> Like
+																				</button>-->
 														</div>
 													</div>
-													<hr>
-												<?php
-												}
-											} else {
-												echo "<h1>Gosterilecek tarif yok...</h1>";
-											}
-											?>
-										</div>
-										<!--end col-md-9-->
 
-										<!--end col-md-3-->
+											
+												<hr>
+										<?php											
+										} 
+										else {
+											echo "<h1>Gosterilecek tarif yok...</h1>";
+										}
+
+										?>
 									</div>
+									<!--end col-md-9-->
+
+									<!--end col-md-3-->
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- END PAGE CONTENT-->
 				</div>
+				<!-- END PAGE CONTENT-->
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<!-- css dosyalarini include eden satirlar -->
@@ -278,8 +316,16 @@ $user_name=$_SESSION['username'];
 	<script src="assets/admin/layout2/scripts/layout.js" type="text/javascript"></script>
 	<script src="assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
 	<script>
+		function Editqry(id) {
+
+			window.location.href = 'editRecipe.php?del_id=' + id + '';
+			return true;
+
+		}
+	</script>
+	<script>
 		function Deleteqry(id) {
-			if (confirm("Do you want Delete!")) {
+			if (confirm("Tarifi silmek istiyor musunuz?")) {
 				window.location.href = 'delete.php?del_id=' + id + '';
 				return true;
 			}
@@ -291,6 +337,31 @@ $user_name=$_SESSION['username'];
 			Layout.init(); // init current layout
 			Demo.init(); // init demo features
 		});
+	</script>
+	<script type=text/javascript>
+		function myFunction() {
+
+<<<<<<< HEAD
+			var x;
+			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
+			
+  });
+=======
+			var days = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
+			//console.log(days);
+            			
+			$.ajax({
+				url: "delDay.php",
+				type: 'POST',
+				data: {days: days},
+				success: function(response) {
+					console.log("success");
+				}
+			});
+		
+			
+>>>>>>> 77d201ca74a30e2547ac00fd2c447f38bed7052b
+		}
 	</script>
 </body>
 
