@@ -200,7 +200,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 												while ($row = mysqli_fetch_assoc($result)) {
 
 													?>
-                                                     <p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>
+                                                     <p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash"></i></button></p>
 													<div class="row">
 														<div class="col-md-4 blog-img blog-tag-data">
 
@@ -208,7 +208,18 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 
 
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
-
+															<ul class="list-inline">
+            													<li>
+            														<i class="fa fa-heart"></i>
+            														<a href="javascript:;">
+            														 	<?php 
+            														 	    $begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = ".$row['id'];
+            														 	    mysqli_query($db, $begeni_sayisi_sql);
+            														 	    echo mysqli_affected_rows($db) . " Begeni";
+            														 	?>
+            														</a>
+            													</li>
+            												</ul>
 															<ul class="list-inline blog-tags">
 																<li>
 																	<i class="fa fa-tags"></i>
