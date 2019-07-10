@@ -2,7 +2,8 @@
 session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
-include 'db.php';  // db scriptini bu scripte ekliyor
+include 'db.php';  // db scriptini bu scripte ekliyors
+$user_name = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 
@@ -33,6 +34,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 	<link href="assets/global/css/likeButton.css" rel="stylesheet" type="text/css">
 	<link href="assets/global/css/editButton.css" rel="stylesheet" type="text/css">
 	<link href="assets/admin/pages/css/news.css" rel="stylesheet" type="text/css" />
+	<link href="assets/global/css/popup.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- END PAGE LEVEL STYLES -->
 	<!-- BEGIN THEME STYLES -->
@@ -59,8 +61,33 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 				}
 			});
 		}
-		
 	</script>
+	<script type=text/javascript> 
+	function myFunction() {
+		 var days=$('#Nday').val(); 
+		 $.ajax({
+			  url: "delDay.php" , 
+			  type: 'POST' ,
+			  data: { "days" : days}, 
+			  success: function(response) {
+				   console.log("success"); 
+				   } 
+				});
+	} 
+	</script>
+</head> 
+	<div class="form-popup" id="myForm">
+	<form action="tariflerim.php" class="form-container">
+    <h1 style="font-size:24px;">Tarifleriniz kaç gün içinde silinsin?</h1>
+
+    <label for="day"></label>
+    <input id="Nday" type="text" placeholder="Gün.." name="day" required>
+
+    <button type="submit" class="btn" onclick="myFunction()">Submit</button>
+    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+  </form>
+</div>
+
 </head>
 
 <body class="page-boxed page-header-fixed page-container-bg-solid page-sidebar-closed-hide-logo ">
@@ -82,7 +109,7 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 
 					<ul class="nav navbar-nav pull-right">
 						<li>
-							<i class='far fa-sun' onclick="myFunction()" style='font-size:19px;color:red;margin-top:31px;'></i>
+							<i class='far fa-sun' onclick="openForm()" style='font-size:19px;color:red;margin-top:31px;'></i>
 						</li>
 						<li class="dropdown dropdown-extended dropdown-tasks ms-hover" id="header_task_bar">
 							<a href="logout.php" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" onclick="window.location.href='logout.php';">
@@ -189,78 +216,76 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 										<div id="tarifler" class="col-md-9 col-sm-8 article-block">
 																				
 											<?php
-											//Burası degisecek
-											$user_name = $_SESSION['username'];
 											$sql = "SELECT * FROM `tarif` WHERE username= '$user_name'"; // sorgu
 											$result = mysqli_query($db, $sql); //sorgu sonucu
 
 											if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
 											{
-                                            
+
 												while ($row = mysqli_fetch_assoc($result)) {
 
 													?>
-                                                     <p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash"></i></button></p>
-													<div class="row">
-														<div class="col-md-4 blog-img blog-tag-data">
+                                                     		<p><button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash"></i></button></p>
+															<div class="row">
+																<div class="col-md-4 blog-img blog-tag-data">
 
-															<!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
+																	<!--<p><button class="myButton" onclick="return Editqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
 
 
-															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
-															<ul class="list-inline">
-            													<li>
-            														<i class="fa fa-heart"></i>
-            														<a href="javascript:;">
-            														 	<?php 
-            														 	    $begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = ".$row['id'];
-            														 	    mysqli_query($db, $begeni_sayisi_sql);
-            														 	    echo mysqli_affected_rows($db) . " Begeni";
-            														 	?>
-            														</a>
-            													</li>
-            												</ul>
-															<ul class="list-inline blog-tags">
-																<li>
-																	<i class="fa fa-tags"></i>
-																	<?php
-																	$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
-																	$tagres = mysqli_query($db, $tagsql);
-																	while ($tagrow = mysqli_fetch_assoc($tagres)) {
-																		$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
-																		$innerres = mysqli_query($db, $innersql);
-																		$innerrow = mysqli_fetch_assoc($innerres);
-																		echo "<a href=\"javascript:;\"> " . $innerrow['isim'] . " </a>";
-																	}
-																	?>
-																</li>
-															</ul>
-														</div>
-														<div class="col-md-8 blog-article">
-															<h3>
-																<a href="tektarif.php?tarif_id=<?php echo $row['id']; ?>">
-																	<?php echo $row['isim']; ?></a>
-															</h3>
+																	<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
+																	<ul class="list-inline">
+            															<li>
+            																<i class="fa fa-heart"></i>
+            																<a href="javascript:;">
+            														 			<?php
+																					$begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = " . $row['id'];
+																					mysqli_query($db, $begeni_sayisi_sql);
+																					echo mysqli_affected_rows($db) . " Begeni";
+																					?>
+            																</a>
+            															</li>
+            														</ul>
+																	<ul class="list-inline blog-tags">
+																		<li>
+																			<i class="fa fa-tags"></i>
+																			<?php
+																			$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
+																			$tagres = mysqli_query($db, $tagsql);
+																			while ($tagrow = mysqli_fetch_assoc($tagres)) {
+																				$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
+																				$innerres = mysqli_query($db, $innersql);
+																				$innerrow = mysqli_fetch_assoc($innerres);
+																				echo "<a href=\"javascript:;\"> " . $innerrow['isim'] . " </a>";
+																			}
+																			?>
+																		</li>
+																	</ul>
+																</div>
+																<div class="col-md-8 blog-article">
+																	<h3>
+																		<a href="tektarif.php?tarif_id=<?php echo $row['id']; ?>">
+																			<?php echo $row['isim']; ?></a>
+																	</h3>
 
-															<p>
-																<?php echo $row['aciklama']; ?>
-															</p>
-															<!--<div class="like-content">
-																				<button class="btn-secondary like-review">
-																					<i class="fa fa-heart" aria-hidden="true"></i> Like
-																				</button>-->
-														</div>
-													</div>
+																	<p>
+																		<?php echo $row['aciklama']; ?>
+																	</p>
+																	<!--<div class="like-content">
+																						<button class="btn-secondary like-review">
+																							<i class="fa fa-heart" aria-hidden="true"></i> Like
+																						</button>-->
+																</div>
+															</div>
 
 											
-												<hr>
-											<?php
+														<hr>
+												<?php
+												}
+											} else {
+												echo "<h1>Gosterilecek tarif yok...</h1>";
 											}
-										} else {
-											echo "<h1>Gosterilecek tarif yok...</h1>";
-										}
 
-										?>
+											?>
 									</div>
 									<!--end col-md-9-->
 
@@ -311,37 +336,23 @@ include 'db.php';  // db scriptini bu scripte ekliyor
 		}
 	</script>
 	<script>
+		function openForm() {
+			document.getElementById("myForm").style.display = "block";
+		}
+
+		function closeForm() {
+			document.getElementById("myForm").style.display = "none";
+		}
+	</script>
+
+	<script>
 		jQuery(document).ready(function() {
 			Metronic.init(); // init metronic core components
 			Layout.init(); // init current layout
 			Demo.init(); // init demo features
 		});
 	</script>
-	<script type=text/javascript>
-		function myFunction() {
 
-<<<<<<< HEAD
-			var x;
-			var site = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
-			
-  });
-=======
-			var days = prompt("Tarifleriniz kaç gün sonra silinsin?", "Gün..");
-			//console.log(days);
-            			
-			$.ajax({
-				url: "delDay.php",
-				type: 'POST',
-				data: {days: days},
-				success: function(response) {
-					console.log("success");
-				}
-			});
-		
-			
->>>>>>> 77d201ca74a30e2547ac00fd2c447f38bed7052b
-		}
-	</script>
-</body>
+	</body>
 
 </html>
