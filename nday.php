@@ -1,5 +1,5 @@
 <?php
-include db.php;
+include "db.php";
 $days = "SELECT * FROM 'n_gun'";
 $result = mysqli_query($db, $mysql);
 if(mysqli_affected_rows($db) > 0)
