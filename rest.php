@@ -19,8 +19,13 @@
 					$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
 					$innerres = mysqli_query($db, $innersql);
 					$innerrow = mysqli_fetch_assoc($innerres);
-					array_push($tags,$innerrow["isim"]);
-				}
+                    array_push($tags,$innerrow["isim"]);
+                }
+                
+                $innersql = "SELECT * FROM begeni WHERE tarif_id = " . $row["id"];
+                $innerres = mysqli_query($db, $innersql);
+                $likecount = mysqli_affected_rows($db);
+                
                 $recipes[$counter] = array(
                     "recipeId" => $row["id"],
                     "recipeName" => $row["isim"],
@@ -29,8 +34,10 @@
                     "recipeTags" => $tags,
                     "created" => $row["username"],
                     "recipeDate" => $row["creation_date"],
+                    "likes" => $likecount,
                 );
                 $counter++;
+                $tags = array(); //arrayi bosalt her seferinde
             }
         }
         $outjson = array(
@@ -51,11 +58,49 @@
 
     function myRecipes($username)
     {
-        global $recipes;
+        $counter = 0; // Birden cok tarifi varsa diye counter
+        global $recipes, $db;
         allRecipes();
+        $recipesByUser = array();
+        $tags = array();
+        $sql = "SELECT * FROM `tarif` WHERE username= '$username'";
+        $result = mysqli_query($db, $sql); //sorgu sonucu
+        if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
+        {
+            while ($row = mysqli_fetch_assoc($result))
+            {
+                $tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
+				$tagres = mysqli_query($db, $tagsql);
+				while ($tagrow = mysqli_fetch_assoc($tagres)) {
+					$innersql = "SELECT * FROM `tag` WHERE tag_id = " . $tagrow['tag_id'];
+					$innerres = mysqli_query($db, $innersql);
+					$innerrow = mysqli_fetch_assoc($innerres);
+                    array_push($tags,$innerrow["isim"]);
+                }
+                
+                $innersql = "SELECT * FROM begeni WHERE tarif_id = " . $row["id"];
+                $innerres = mysqli_query($db, $innersql);
+                $likecount = mysqli_affected_rows($db);
+                
+                $recipesByUser[$counter] = array(
+                    "recipeId" => $row["id"],
+                    "recipeName" => $row["isim"],
+                    "recipeImage" => $row["fotograf"],
+                    "recipeDescription" => $row["aciklama"],
+                    "recipeTags" => $tags,
+                    "created" => $row["username"],
+                    "recipeDate" => $row["creation_date"],
+                    "likes" => $likecount,
+                );
+                $counter++;
+                $tags = array(); //arrayi bosalt her seferinde
+            }
+        }
+
         $outjson = array(
-            "Recipes" => $recipes[array_search($username, array_column($recipes,"created"))],
+                    "Recipes" => $recipesByUser,
         );
+
         return json_encode($outjson);
     }
 
@@ -63,7 +108,7 @@
         echo allRecipes();
     if(isset($_GET["tarif"]))
         echo recipe($_GET["tarif"]);
-    if(isset($_GET["tariflerim"]) && empty($_GET["list"]))
-        echo myRecipes($_SESSION["username"]);
+    if(isset($_GET["tariflerim"]))
+        echo myRecipes($_GET["tariflerim"]);
 
 ?>
