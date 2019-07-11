@@ -54,14 +54,27 @@ if (isset($_POST['key']) && isset($_POST['page']) && isset($_POST['user'])) {
 			<div class="row">
 				<div class="col-md-4 blog-img blog-tag-data">
 					<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
-					<ul class="list-inline blog-tags">
+					<ul class="list-inline">
+						<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
 
+							<?php echo $row['username']; ?>
+							<?php echo " bu tarifi ekledi" ?>
+						</p>
+					</ul>
+					<ul class="list-inline">
 						<li>
-							<p class="userInfo" style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
-
-								<?php echo $row['username']; ?>
-								<?php echo " bu tarifi ekledi" ?>
-							</p>
+							<i class="fa fa-heart"></i>
+							<a href="javascript:;">
+								<?php
+								$begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = " . $row['id'];
+								mysqli_query($db, $begeni_sayisi_sql);
+								echo mysqli_affected_rows($db) . " Begeni";
+								?>
+							</a>
+						</li>
+					</ul>
+					<ul class="list-inline blog-tags">
+						<li>
 							<i class="fa fa-tags"></i>
 							<?php
 							$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
@@ -120,13 +133,27 @@ if (isset($_POST['key']) && isset($_POST['page']) && isset($_POST['user'])) {
 				<div class="row">
 					<div class="col-md-4 blog-img blog-tag-data">
 						<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
+						<ul class="list-inline">
+							<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
+
+								<?php echo $row['username']; ?>
+								<?php echo " bu tarifi ekledi" ?>
+							</p>
+						</ul>
+						<ul class="list-inline">
+							<li>
+								<i class="fa fa-heart"></i>
+								<a href="javascript:;">
+									<?php
+									$begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = " . $row['id'];
+									mysqli_query($db, $begeni_sayisi_sql);
+									echo mysqli_affected_rows($db) . " Begeni";
+									?>
+								</a>
+							</li>
+						</ul>
 						<ul class="list-inline blog-tags">
 							<li>
-								<p class="userInfo" style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
-
-									<?php echo $row['username']; ?>
-									<?php echo " bu tarifi ekledi" ?>
-								</p>
 								<i class="fa fa-tags"></i>
 								<?php
 								$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];

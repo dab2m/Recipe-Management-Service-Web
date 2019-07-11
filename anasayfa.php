@@ -199,6 +199,13 @@ $user_name = $_SESSION['username'];
 
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
 															<ul class="list-inline">
+																<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
+
+																	<?php echo $row['username']; ?>
+																	<?php echo " bu tarifi ekledi" ?>
+																</p>
+															</ul>
+															<ul class="list-inline">
 																<li>
 																	<i class="fa fa-heart"></i>
 																	<a href="javascript:;">
@@ -212,11 +219,6 @@ $user_name = $_SESSION['username'];
 															</ul>
 															<ul class="list-inline blog-tags">
 																<li>
-																	<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
-
-																		<?php echo $row['username']; ?>
-																		<?php echo " bu tarifi ekledi" ?>
-																	</p>
 																	<i class="fa fa-tags"></i>
 																	<?php
 																	$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
