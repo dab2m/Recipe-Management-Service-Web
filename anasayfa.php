@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
-$user_name=$_SESSION['username'];
+$user_name = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -122,7 +122,7 @@ $user_name=$_SESSION['username'];
 							</a>
 						</li>
 						<li class="start ">
-						<a href="tariflerim.php">
+							<a href="tariflerim.php">
 								<i class="icon-book-open"></i>
 								<span class="title">Tariflerim</span>
 							</a>
@@ -179,7 +179,7 @@ $user_name=$_SESSION['username'];
 											<?php
 											$sql = "SELECT * FROM `tarif`"; // sorgu
 											$result = mysqli_query($db, $sql); //sorgu sonucu
-										
+
 											if (mysqli_affected_rows($db) > 0) //sorgu sonucunda sonuc donuyorsa
 											{
 												while ($row = mysqli_fetch_assoc($result)) {
@@ -192,22 +192,27 @@ $user_name=$_SESSION['username'];
 															<!--<p><button class="myButton" ><i class="w3-margin-left fa fa-trash">Edit</i></button></p>-->
 															<!-- </form>-->
 															<!--<button class="myButton" onclick="return Deleteqry(<?php echo $row['id'] ?>);"><i class="w3-margin-left fa fa-trash">Delete</i></button></p>-->
-															
+
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
 															<ul class="list-inline">
-            													<li>
-            														<i class="fa fa-heart"></i>
-            														<a href="javascript:;">
-            														 	<?php 
-            														 	    $begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = ".$row['id'];
-            														 	    mysqli_query($db, $begeni_sayisi_sql);
-            														 	    echo mysqli_affected_rows($db) . " Begeni";
-            														 	?>
-            														</a>
-            													</li>
-            												</ul>
+																<li>
+																	<i class="fa fa-heart"></i>
+																	<a href="javascript:;">
+																		<?php
+																		$begeni_sayisi_sql = "SELECT * FROM `begeni` WHERE `tarif_id` = " . $row['id'];
+																		mysqli_query($db, $begeni_sayisi_sql);
+																		echo mysqli_affected_rows($db) . " Begeni";
+																		?>
+																	</a>
+																</li>
+															</ul>
 															<ul class="list-inline blog-tags">
 																<li>
+																	<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
+
+																		<?php echo $row['username']; ?>
+																		<?php echo " bu tarifi ekledi" ?>
+																	</p>
 																	<i class="fa fa-tags"></i>
 																	<?php
 																	$tagsql = "SELECT * FROM `tarif_tag` WHERE tarif_id = " . $row['id'];
@@ -230,44 +235,38 @@ $user_name=$_SESSION['username'];
 															<p>
 																<?php echo $row['aciklama']; ?>
 															</p>
-															<?php 
-															     if($_SESSION['username'] != $row['username']) /* Eger tiklanan tarif kullanicinin kendisine ait degilse begenilebilir */
-															     {
-															         $like_sql = "SELECT * FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id']." AND `tarif_id` = ".$row['id']; 
-															         mysqli_query($db, $like_sql);
-															         if(mysqli_affected_rows($db) == 0)
-															         {
-															         
-															?>
-            															<a class="btn red" href=" <?php echo "begen.php?tarif_id_like=".$row['id']."&anasayfa=1"; ?>">
-            																<i class="icon-like"></i> &nbsp Begen
-            															</a>
-															<?php 
-															         }
-															         else 
-															         {
-															             ?>
-    															             <a class="btn blue" href=" <?php echo "begen.php?tarif_id_dislike=".$row['id']."&anasayfa=1"; ?>">
-                																<i class="icon-dislike"></i> &nbsp Begeniyi Kaldir
-                															</a>
-															             <?php 
-															         }
-											                     }
-											                     else /* Kendi tarifi ise begenemez */
-											                     {
-											                         
-															?>
+															<?php
+															if ($_SESSION['username'] != $row['username']) /* Eger tiklanan tarif kullanicinin kendisine ait degilse begenilebilir */ {
+																$like_sql = "SELECT * FROM `begeni` WHERE `kullanici_id` = " . $_SESSION['user_id'] . " AND `tarif_id` = " . $row['id'];
+																mysqli_query($db, $like_sql);
+																if (mysqli_affected_rows($db) == 0) {
+
+																	?>
+																	<a class="btn red" href=" <?php echo "begen.php?tarif_id_like=" . $row['id'] . "&anasayfa=1"; ?>">
+																		<i class="icon-like"></i> &nbsp Begen
+																	</a>
+																<?php
+																} else {
+																	?>
+																	<a class="btn blue" href=" <?php echo "begen.php?tarif_id_dislike=" . $row['id'] . "&anasayfa=1"; ?>">
+																		<i class="icon-dislike"></i> &nbsp Begeniyi Kaldir
+																	</a>
+																<?php
+																}
+															} else /* Kendi tarifi ise begenemez */ {
+
+																?>
 																<button class="btn red disabled" title="Kendi tarifinizi begenemezsiniz...">
-    																<i class="glyphicon glyphicon-heart"></i> &nbsp Begen
-    															</button>
-    														<?php 
-											                     }
-    														?>
+																	<i class="glyphicon glyphicon-heart"></i> &nbsp Begen
+																</button>
+															<?php
+															}
+															?>
 															<!--<div class="like-content">
-																		<button class="btn-secondary like-review">
-																			<i class="fa fa-heart" aria-hidden="true"></i> Like
-																		</button>
-																	</div>-->
+																				<button class="btn-secondary like-review">
+																					<i class="fa fa-heart" aria-hidden="true"></i> Like
+																				</button>
+																			</div>-->
 														</div>
 													</div>
 													<hr>
