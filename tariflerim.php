@@ -49,11 +49,15 @@ $user_name = $_SESSION['username'];
 	<script type="text/javascript">
 		function search() {
 			var key = $('#yemeksearchbar').val();
+			var user = "<?php echo $user_name; ?>";
+			var page= "tariflerim";
 			$.ajax({
 				url: "arama.php",
 				type: 'POST',
 				data: {
-					"key": key
+					"key": key,
+					"user" : user,
+					"page" : page
 				},
 				success: function(response) {
 					$('#tarifler').empty();
