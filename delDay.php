@@ -41,6 +41,6 @@ if (isset($_POST['days'])) {
 	}
 
 	//$mysql = "DELETE FROM `tarif` WHERE `creation_date` < " . strtotime('-$key month');
-	$mysql = "DELETE FROM `tarif` WHERE `creation_date` < DATE_SUB(NOW(), INTERVAL $key DAY) AND username='$user_name'";
-	mysqli_query($db, $mysql);
+	//$mysql = "DELETE FROM `tarif` WHERE `creation_date` < DATE_SUB(NOW(), INTERVAL $key DAY) AND username='$user_name'";
+	//mysqli_query($db, $mysql);
 }
