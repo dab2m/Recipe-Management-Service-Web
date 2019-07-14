@@ -204,6 +204,13 @@
 														
 															<img src="<?php echo $row['fotograf']; ?>" alt="" class="img-responsive">
 															<ul class="list-inline">
+																<p style="color:#0099cc" ;><i class="fa fa-check" aria-hidden="true"></i>
+
+																	<?php echo $row['username']; ?>
+																	<?php echo " bu tarifi ekledi" ?>
+																</p>
+															</ul>
+															<ul class="list-inline">
             													<li>
             														<i class="fa fa-heart"></i>
             														<a href="javascript:;">

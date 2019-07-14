@@ -125,7 +125,7 @@
 </div>
 <div class="container">
 
-	<div class="page-container">
+	<div class="page-container" style="position:fixed;height:100%;width:64.6%">
 
 		<div class="page-sidebar-wrapper">
 
@@ -259,7 +259,7 @@
 
 	<div class="page-footer">
 		<div class="page-footer-inner">
-			 2014 &copy; Metronic by keenthemes.
+		
 		</div>
 		<div class="scroll-to-top">
 			<i class="icon-arrow-up"></i>
