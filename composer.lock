@@ -4,21 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a82e9f1bd04b03d60b7d0d385a37ed2",
-    "packages": [],
-    "packages-dev": [
+    "content-hash": "d7b50f4ec63efd6249c00d4a3e9b87f3",
+    "packages": [
         {
-            "name": "heroku/heroku-buildpack-php",
-            "version": "v157",
+            "name": "cloudinary/cloudinary_php",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/heroku/heroku-buildpack-php.git",
-                "reference": "62a691bf5937d35a7236c581734352208037d710"
+                "url": "https://github.com/cloudinary/cloudinary_php.git",
+                "reference": "d4c947f6728c339649a10999a6a6362e5c7b9490"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/62a691bf5937d35a7236c581734352208037d710",
-                "reference": "62a691bf5937d35a7236c581734352208037d710",
+                "url": "https://api.github.com/repos/cloudinary/cloudinary_php/zipball/d4c947f6728c339649a10999a6a6362e5c7b9490",
+                "reference": "d4c947f6728c339649a10999a6a6362e5c7b9490",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ],
+                "files": [
+                    "src/Helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cloudinary",
+                    "homepage": "https://github.com/cloudinary/cloudinary_php/graphs/contributors"
+                }
+            ],
+            "description": "Cloudinary PHP SDK",
+            "homepage": "https://github.com/cloudinary/cloudinary_php",
+            "keywords": [
+                "cdn",
+                "cloud",
+                "cloudinary",
+                "image management",
+                "sdk"
+            ],
+            "time": "2019-05-13T14:27:40+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "heroku/heroku-buildpack-php",
+            "version": "v158",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heroku/heroku-buildpack-php.git",
+                "reference": "26be51dee125027ac81bac756c3f27279623912d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/26be51dee125027ac81bac756c3f27279623912d",
+                "reference": "26be51dee125027ac81bac756c3f27279623912d",
                 "shasum": ""
             },
             "bin": [
@@ -49,7 +102,7 @@
                 "nginx",
                 "php"
             ],
-            "time": "2019-06-13T20:23:59+00:00"
+            "time": "2019-07-04T10:43:37+00:00"
         }
     ],
     "aliases": [],
