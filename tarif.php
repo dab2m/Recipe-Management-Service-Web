@@ -1,5 +1,5 @@
 <?php 
-	require "vendor\autoload.php";
+	require "../../../../vendor/autload.php";
 	
     session_start();
     if(!isset($_SESSION['username']))
