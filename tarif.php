@@ -1,10 +1,18 @@
 <?php 
-    
+	require "vendor\autoload.php";
+	
     session_start();
     if(!isset($_SESSION['username']))
         header("location:login.php");
 	include 'db.php';
-	
+
+	\Cloudinary::config(array(
+		"cloud_name" => "dewae3den",
+		"api_key" => "464216752894627",
+		"api_secret" => "nZRgekbC44lEsk88nDzYAlxV0RA",
+		"secure" => true
+	));
+
 	$user_name=$_SESSION['username'];
     if(isset($_POST['name']))
     {
@@ -16,9 +24,11 @@
 		//echo "$user_name";
 		
         
-        if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != "")
-            $photoname = addslashes("fotograflar\\"). basename($_FILES["photo"]["name"]); //fotograf uzantisini olusturuyor
-        else 
+		if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != ""){
+			$photo = \Cloudinary\Uploader::upload($_FILES["photo"]["tmp_name"]);
+			//$photoname = $photo['url'] . $photo['version'] . "/" . $photo['public_id'] . $photo['format'];
+			$photoname = $photo['secure_url'];
+		}else 
             $photoname = addslashes("fotograflar\\no.png" );
             
         $sql = "INSERT INTO `tarif`(`isim`,`fotograf`,`aciklama`,`username`,`creation_date`) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
@@ -43,7 +53,7 @@
                 mysqli_query($db, $sql);
             }
             
-            if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
+            //if(move_uploaded_file($_FILES["photo"]["tmp_name"], $photoname))
                 echo "<script> alert('Uploaded'); </script>";
         }
     }

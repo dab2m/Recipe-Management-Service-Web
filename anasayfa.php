@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
+require 'vendor/autoload.php';
 $user_name = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
