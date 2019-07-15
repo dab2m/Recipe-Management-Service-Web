@@ -1,6 +1,5 @@
 <?php 
-
-	include 'autoload.php';
+	include 'foto.php';
 	include 'db.php';
 
 	session_start();
@@ -14,10 +13,6 @@
 		"secure" => true
 	));
 
-	//$sql = "SELECT fotograf FROM tarif WHERE id='".$_GET['del_id']."'";
-	//$result = mysqli_query($db,$sql);
-	//$photoURL = mysqli_fetch_assoc($result);
-	//$photo = substr($photoURL['fotograf'] , strripos($photoURL['fotograf'] ,'/')+1);
 	$sql="DELETE FROM tarif WHERE id='".$_GET['del_id']."'";
 	mysqli_query($db, $sql);
 	$sql="DELETE FROM tag t INNER JOIN tarif_tag tt ON t.tag_id=tt.tag_id WHERE tt.tarif_id='".$_GET['del_id']."'";
@@ -25,6 +20,6 @@
 	mysqli_query($db, $sql);
 	$sql="DELETE FROM tarif_tag WHERE tarif_id='".$_GET['del_id']."'";
 	mysqli_query($db, $sql);
-	//\Cloudinary\Uploader::destroy($photo);
 	header("location:tariflerim.php");
+	//removeCloud($_GET['del_id']);
 	?>

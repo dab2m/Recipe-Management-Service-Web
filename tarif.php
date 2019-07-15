@@ -1,17 +1,9 @@
 <?php 
-	include 'autoload.php';
-	
     session_start();
     if(!isset($_SESSION['username']))
         header("location:login.php");
 	include 'db.php';
-
-	\Cloudinary::config(array(
-		"cloud_name" => "dewae3den",
-		"api_key" => "464216752894627",
-		"api_secret" => "nZRgekbC44lEsk88nDzYAlxV0RA",
-		"secure" => true
-	));
+	include 'foto.php';
 
 	$user_name=$_SESSION['username'];
     if(isset($_POST['name']))
@@ -25,9 +17,8 @@
 		
         
 		if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != ""){
-			$photo = \Cloudinary\Uploader::upload($_FILES["photo"]["tmp_name"]);
-			//$photoname = $photo['url'] . $photo['version'] . "/" . $photo['public_id'] . $photo['format'];
-			$photoname = $photo['secure_url'];
+			$photoname = uploadCloud($_FILES["photo"]["tmp_name"]);
+			echo $photoname;
 		}else 
             $photoname = addslashes("fotograflar\\no.png" );
             
