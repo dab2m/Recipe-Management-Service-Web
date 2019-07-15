@@ -1,6 +1,6 @@
 <?php 
 
-	require "../../../../vendor/autload.php";
+	require "../../../../vendor/autoload.php";
 	include 'db.php';
 
 	session_start();
