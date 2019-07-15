@@ -2,6 +2,18 @@
     include 'db.php';  // db scriptini bu scripte ekliyor
     $recipes = array();
     header("Content-type: application/json");
+
+    function info(){
+        $outjson = array(
+            "How-to" => "Basic usage information",
+            "GET-All" => "tarif.php?list will return all recipes as json file",
+            "GET-my" => "tarif.php?tariflerim?username will return all recipes created by user named username",
+            "GET-one" => "rest.php?tarif=t_id will return one recipe with id equal to t_id",
+            "POST-one" => "Send json file with tarif, and array called tags and aciklama. Do not use any other name for tarif,tags or aciklama",
+        );
+        return json_encode($outjson);
+    }
+    
     function allRecipes()
     {
         global $db, $recipes;
@@ -104,11 +116,57 @@
         return json_encode($outjson);
     }
 
+    function readPost()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $name = $data['tarif'];
+        $tags = $data['tags'];
+        $tags = $myArray = explode(',', $tags);
+        $desc = $data['aciklama'];
+
+        //if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != ""){
+		//	$photoname = uploadCloud($_FILES["photo"]["tmp_name"]);
+		//	echo $photoname;
+		//}else 
+            $photoname = addslashes("fotograflar\\no.png" );
+            
+        $sql = "INSERT INTO `tarif`(`isim`,`fotograf`,`aciklama`,`username`,`creation_date`) VALUES ('$name','$photoname','$desc','$user_name',CURDATE())";
+        
+        if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
+        {
+            $outjson = array(
+                "alert" => "Could not record",
+                "error" => mysqli_error($db),
+                "user" => $username,
+            );
+        }
+        else // sorguyu calistirabilirse
+        {
+            $outjson = array(
+                "success" => "Recipe is added",
+            );
+            $tarif_id = $db -> insert_id; //yeni tarif kaydinin idsi
+            foreach ($tags as $tag)
+            {
+                $sql = "INSERT INTO `tag`(isim) VALUES ('$tag')";
+                mysqli_query($db, $sql);
+                $tag_id = $db -> insert_id; //yeni tagin idsi
+                $sql = "INSERT INTO `tarif_tag`(`tarif_id`,`tag_id`) VALUES ($tarif_id,$tag_id)";
+                
+                //echo "<script> console.log('$sql') </script>";
+                mysqli_query($db, $sql);
+            }
+        }
+        return json_encode($outjson);
+    }
+
     if(isset($_GET["list"]) && empty($_GET["list"]))
         echo allRecipes();
-    if(isset($_GET["tarif"]))
+    elseif(isset($_GET["tarif"]))
         echo recipe($_GET["tarif"]);
-    if(isset($_GET["tariflerim"]))
+    elseif(isset($_GET["tariflerim"]))
         echo myRecipes($_GET["tariflerim"]);
+    else
+        echo info();
 
 ?>
