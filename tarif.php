@@ -126,7 +126,7 @@
 </div>
 <div class="container">
 
-	<div class="page-container" style="position:fixed;height:100%;width:64.6%">
+	<div class="page-container" >
 
 		<div class="page-sidebar-wrapper">
 
