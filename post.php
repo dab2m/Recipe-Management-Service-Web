@@ -79,10 +79,13 @@ include 'db.php';
         return json_encode($outjson);
     }
 
-    if(isset($_POST["username"]) && isset($_POST["password"]))
-        echo register($_POST["username"],$_POST["password"]);
-    if(isset($_POST["tarif"]) && isset($_POST["tags"]) && isset($_POST["aciklama"]))
-        echo readRecipe($_POST["tarif"],$_POST["tags"],$_POST["aciklama"]);
+    $data = file_get_contents('php://input');
+    $injson = json_decode($data);
+
+    if(isset($injson->username) && isset($injson->password))
+        echo register($injson->username,$injson->password);
+    if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama))
+        echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
     else
         header("location:rest.php");
 ?>
