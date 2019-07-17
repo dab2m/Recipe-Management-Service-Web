@@ -23,5 +23,5 @@
 	$sql="DELETE FROM tarif_tag WHERE tarif_id='".$_GET['del_id']."'";
 	mysqli_query($db, $sql);
 	header("location:tariflerim.php");
-	//removeCloud($_GET['del_id']);
+    removeCloud($_GET['del_id']);
 	?>

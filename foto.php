@@ -1,7 +1,7 @@
 <?php
 include "/app/vendor/autoload.php";  //for heroku
 //include "vendor/autoload.php"; //for localhost
-include "db.php";
+include 'db.php';
 	\Cloudinary::config(array(
 		"cloud_name" => "dewae3den",
 		"api_key" => "464216752894627",
@@ -17,6 +17,7 @@ include "db.php";
 
     function removeCloud($tarif_id)
     {
+        include 'db.php';
         $sql = "SELECT fotograf FROM tarif WHERE id='$tarif_id'";
 	    $result = mysqli_query($db,$sql);
 	    $photoURL = mysqli_fetch_assoc($result);
