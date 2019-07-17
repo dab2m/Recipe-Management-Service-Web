@@ -1,15 +1,24 @@
 <?php
     include 'db.php';  // db scriptini bu scripte ekliyor
+    include 'foto.php';
     $recipes = array();
     header("Content-type: application/json");
 
     function info(){
+        $getjson = array(
+            "GET all" => "rest.php?list",
+            "GET one" => "rest.php?tarif=# where # is equal to id of the recipe",
+            "LOGIN" => "rest.php?username=#&password=# where #'s are equal to matching username and password",
+            "DELETE one" => "rest.php?delete=#&password=## where # is equal to id of the recipe and ## is matching password of the creator user",
+        );
+        $postjson = array(
+            "REGISTER" => "JSON file with 'username' and 'password' values",
+            "POST one" => "JSON file with 'tarif' as name of the recipe, 'tags' as array of tags and 'aciklama' as description of the recipe",
+        );
         $outjson = array(
             "How-to" => "Basic usage information",
-            "GET-All" => "tarif.php?list will return all recipes as json file",
-            "GET-my" => "tarif.php?tariflerim?username will return all recipes created by user named username",
-            "GET-one" => "rest.php?tarif=t_id will return one recipe with id equal to t_id",
-            "POST-one" => "Send json file with tarif, and array called tags and aciklama. Do not use any other name for tarif,tags or aciklama",
+            "GET" => $getjson,
+            "POST" => $postjson,
         );
         return json_encode($outjson);
     }
@@ -52,9 +61,17 @@
                 $tags = array(); //arrayi bosalt her seferinde
             }
         }
-        $outjson = array(
-            "Recipes" => $recipes,
-        );
+        if(empty($recipes))
+        {
+            $outjson = array(
+                "Error" => "Could not show recipes",
+            );
+        }else{
+            $outjson = array(
+                "Recipes" => $recipes,
+            );
+        }
+        
         return json_encode($outjson);
     }
 
@@ -62,9 +79,18 @@
     {
         global $recipes;
         allRecipes();
-        $outjson = array(
-            "Recipes" => $recipes[array_search($recipeID, array_column($recipes,"recipeId"))],
-        );
+        $recipe = $recipes[array_search($recipeID, array_column($recipes,"recipeId"))];
+        if(empty($recipe))
+        {
+            $outjson = array(
+                "Error" => "Recipe with Id" . $recipeID . " is not found",
+            );
+        }else{
+            $outjson = array(
+                "Recipes" => $recipe,
+            );
+        }
+
         return json_encode($outjson);
     }
 
@@ -109,15 +135,23 @@
             }
         }
 
-        $outjson = array(
-                    "Recipes" => $recipesByUser,
-        );
+        if(empty($recipesByUser))
+        {
+            $outjson = array(
+                "Error" => "Could not fetch recipes by username = " .$username,
+            );
+        }else{
+            $outjson = array(
+                "Recipes" => $recipesByUser,
+            );
+        }
 
         return json_encode($outjson);
     }
 
     function readPost()
     {
+        global $db;
         $data = json_decode(file_get_contents("php://input"));
         $name = $data['tarif'];
         $tags = $data['tags'];
@@ -135,16 +169,12 @@
         if(!mysqli_query($db, $sql)) // sorguyu calistiramazsa
         {
             $outjson = array(
-                "alert" => "Could not record",
-                "error" => mysqli_error($db),
-                "user" => $username,
+                "Error" => "Could not record: " . mysqli_error($db),
             );
         }
         else // sorguyu calistirabilirse
         {
-            $outjson = array(
-                "success" => "Recipe is added",
-            );
+
             $tarif_id = $db -> insert_id; //yeni tarif kaydinin idsi
             foreach ($tags as $tag)
             {
@@ -156,7 +186,96 @@
                 //echo "<script> console.log('$sql') </script>";
                 mysqli_query($db, $sql);
             }
+            $recipe = array(
+                "tarif" => $name,
+                "tags" => $tags,
+                "aciklama" => $desc,
+            );
+            $outjson = array(
+                "Success" => "Recipe is created",
+                "Recipe" => $recipe,
+            );
         }
+        return json_encode($outjson);
+    }
+
+    function delete($del_id,$pass)
+    {
+        global $db;
+        $sql = "SELECT username FROM tarif WHERE tarif.id ='".$del_id."'";
+        $result = mysqli_query($db,$sql); 
+        if(mysqli_affected_rows($db) == 0)
+        {
+            $outjson = array(
+                "Error" => "Could not find tarif with id ".$del_id,
+            );
+        }
+        else
+        {
+            $username = mysqli_fetch_assoc($result);
+            $ssql = "SELECT password FROM kullanici WHERE username ='".$username["username"]."'";
+            $result = mysqli_query($db,$ssql);
+
+            if(mysqli_affected_rows($db) > 0)
+            {
+                $password = mysqli_fetch_assoc($result);
+                if($pass == $password["password"])
+                {
+                    removeCloud($del_id);
+	                $sql="DELETE FROM tarif WHERE id='".$del_id."'";
+	                mysqli_query($db, $sql);
+		            $sql="DELETE tag FROM tag INNER JOIN tarif_tag ON tag.tag_id=tarif_tag.tag_id WHERE tarif_id='".$del_id."'";
+	                mysqli_query($db, $sql);
+	                $sql="DELETE FROM tarif_tag WHERE tarif_id='".$del_id."'";
+                    mysqli_query($db, $sql);
+                    $outjson = array(
+                        "Success" => "Recipe succesfully deleted",
+                    );
+                }else
+                {
+                    $outjson = array(
+                        "Error" => "Wrong password for user ".$username["username"],
+                    );
+                }
+            }
+            else
+            {
+                $outjson = array(
+                    "Error" => "Could not find user with name ".$username["username"],
+                );
+            }
+        }
+        return json_encode($outjson);
+    }
+
+    function login($username,$password)
+    {
+        global $db;
+        $sql = "SELECT password FROM kullanici WHERE username ='".$username."'";
+        $result = mysqli_query($db,$sql);
+        if(mysqli_affected_rows($db) > 0)
+        {
+            $pass = mysqli_fetch_assoc($result);
+            if($pass["password"] == $password)
+            {
+                session_start();
+                $_SESSION['username'] = $username;
+                $_SESSION['password'] = $password;
+                header("location:anasayfa.php");
+            }
+            else
+            {
+                $outjson = array(
+                    "Error" => "Wrong password for user ".$username,
+                );
+            }
+        }else
+        {
+            $outjson = array(
+                "Error" => "User named ".$username."is not found",
+            );
+        }
+
         return json_encode($outjson);
     }
 
@@ -166,6 +285,10 @@
         echo recipe($_GET["tarif"]);
     elseif(isset($_GET["tariflerim"]))
         echo myRecipes($_GET["tariflerim"]);
+    elseif(isset($_GET["username"]) && isset($_GET["password"]))
+        echo login($_GET["username"],$_GET["password"]);
+    elseif(isset($_GET["delete"]) && isset($_GET["password"]))
+        echo delete($_GET["delete"],$_GET["password"]);
     else
         echo info();
 
