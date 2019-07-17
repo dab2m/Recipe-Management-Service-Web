@@ -18,7 +18,7 @@
         
 		if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != ""){
 			$photoname = uploadCloud($_FILES["photo"]["tmp_name"]);
-			echo $photoname;
+			
 		}else 
             $photoname = addslashes("fotograflar\\no.png" );
             

@@ -20,8 +20,11 @@ include 'db.php';
         include 'db.php';
         $sql = "SELECT fotograf FROM tarif WHERE id='$tarif_id'";
 	    $result = mysqli_query($db,$sql);
-	    $photoURL = mysqli_fetch_assoc($result);
+        $photoURL = mysqli_fetch_assoc($result);
+        echo "slm";
+        echo $photoURL+"\n";
         $photo = substr($photoURL['fotograf'] , strripos($photoURL['fotograf'] ,'/')+1);
+        echo $photo;
         \Cloudinary\Uploader::destroy($photo);
     }
 ?>
