@@ -82,10 +82,20 @@ include 'db.php';
     $data = file_get_contents('php://input');
     $injson = json_decode($data);
 
-    if(isset($injson->username) && isset($injson->password))
-        echo register($injson->username,$injson->password);
-    if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama))
-        echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
+    if(!empty($injson))
+    {
+        print_r($injson);
+        if(isset($injson->username) && isset($injson->password))
+            echo register($injson->username,$injson->password);
+        if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama))
+            echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
+        else
+            header("location:rest.php");
+    }
     else
-        header("location:rest.php");
+    {
+        $outjson = array(
+            "Error" => "Could not get json file",
+        );
+    }
 ?>
