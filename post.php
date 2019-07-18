@@ -84,13 +84,13 @@ include 'db.php';
 
     if(!empty($injson))
     {
-        print_r($injson);
+        echo json_encode($injson);
         if(isset($injson->username) && isset($injson->password))
             echo register($injson->username,$injson->password);
         if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama))
             echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
-        else
-            header("location:rest.php");
+        //else
+        //    header("location:rest.php");
     }
     else
     {
