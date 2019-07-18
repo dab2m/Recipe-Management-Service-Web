@@ -87,7 +87,7 @@ include 'db.php';
         if(isset($injson->username) && isset($injson->password))
             echo register($injson->username,$injson->password);
         if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama) && isset($injson->username))
-            echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
+            echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama,$injson->username);
     }
     else
     {
