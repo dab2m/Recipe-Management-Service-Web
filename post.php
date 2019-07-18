@@ -1,5 +1,6 @@
 <?php
 include 'db.php';
+header("Content-type: application/json");
 
     function readRecipe($tarif,$tagler,$acik,$user)
     {
@@ -8,6 +9,7 @@ include 'db.php';
         $tags = $tagler;
         $tags = $tagler;
         $desc = $acik;
+        $user_name = $user;
 
         $photoname = addslashes("fotograflar\\no.png" );
             
@@ -37,6 +39,7 @@ include 'db.php';
                 "tarif" => $name,
                 "tags" => $tags,
                 "aciklama" => $desc,
+                "username" => $user,
             );
             $outjson = array(
                 "Success" => "Recipe is created",
