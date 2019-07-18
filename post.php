@@ -1,12 +1,12 @@
 <?php
 include 'db.php';
 
-    function readRecipe($tarif,$tagler,$acik)
+    function readRecipe($tarif,$tagler,$acik,$user)
     {
         global $db;
         $name = $tarif;
         $tags = $tagler;
-        $tags = $myArray = explode(',', $tags);
+        $tags = $tagler;
         $desc = $acik;
 
         $photoname = addslashes("fotograflar\\no.png" );
@@ -52,7 +52,7 @@ include 'db.php';
         $username = $user;
         $password = $pass;
 
-        $check = "SELECT username FROM kullanici WHERE username = " . $username;
+        $check = "SELECT username FROM kullanici WHERE username='". $username."'";
         $result = mysqli_query($db,$check);
         if(mysqli_affected_rows($db) > 0)
         {
@@ -84,13 +84,10 @@ include 'db.php';
 
     if(!empty($injson))
     {
-        echo json_encode($injson);
         if(isset($injson->username) && isset($injson->password))
             echo register($injson->username,$injson->password);
-        if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama))
+        if(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama) && isset($injson->username))
             echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama);
-        //else
-        //    header("location:rest.php");
     }
     else
     {
