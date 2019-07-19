@@ -129,95 +129,18 @@
 
         return json_encode($outjson);
     }
-    function delete($del_id,$pass)
-    {
-        global $db;
-        $sql = "SELECT username FROM tarif WHERE tarif.id ='".$del_id."'";
-        $result = mysqli_query($db,$sql); 
-        if(mysqli_affected_rows($db) == 0)
-        {
-            $outjson = array(
-                "Error" => "Could not find tarif with id ".$del_id,
-            );
-        }
-        else
-        {
-            $username = mysqli_fetch_assoc($result);
-            $ssql = "SELECT password FROM kullanici WHERE username ='".$username["username"]."'";
-            $result = mysqli_query($db,$ssql);
-
-            if(mysqli_affected_rows($db) > 0)
-            {
-                $password = mysqli_fetch_assoc($result);
-                if($pass == $password["password"])
-                {
-                    removeCloud($del_id);
-	                $sql="DELETE FROM tarif WHERE id='".$del_id."'";
-	                mysqli_query($db, $sql);
-		            $sql="DELETE tag FROM tag INNER JOIN tarif_tag ON tag.tag_id=tarif_tag.tag_id WHERE tarif_id='".$del_id."'";
-	                mysqli_query($db, $sql);
-	                $sql="DELETE FROM tarif_tag WHERE tarif_id='".$del_id."'";
-                    mysqli_query($db, $sql);
-                    $outjson = array(
-                        "Success" => "Recipe succesfully deleted",
-                    );
-                }else
-                {
-                    $outjson = array(
-                        "Error" => "Wrong password for user ".$username["username"],
-                    );
-                }
-            }
-            else
-            {
-                $outjson = array(
-                    "Error" => "Could not find user with name ".$username["username"],
-                );
-            }
-        }
-        return json_encode($outjson);
-    }
-
-    function login($username,$password)
-    {
-        global $db;
-        $sql = "SELECT password FROM kullanici WHERE username ='".$username."'";
-        $result = mysqli_query($db,$sql);
-        if(mysqli_affected_rows($db) > 0)
-        {
-            $pass = mysqli_fetch_assoc($result);
-            if($pass["password"] == $password)
-            {
-                session_start();
-                $_SESSION['username'] = $username;
-                $_SESSION['password'] = $password;
-                header("location:anasayfa.php");
-            }
-            else
-            {
-                $outjson = array(
-                    "Error" => "Wrong password for user ".$username,
-                );
-            }
-        }else
-        {
-            $outjson = array(
-                "Error" => "User named ".$username."is not found",
-            );
-        }
-
-        return json_encode($outjson);
-    }
+    
     if(isset($_GET["list"]) && empty($_GET["list"]))
         echo allRecipes();
     elseif(isset($_GET["tarif"]))
         echo recipe($_GET["tarif"]);
     elseif(isset($_GET["tariflerim"]))
         echo myRecipes($_GET["tariflerim"]);
-    elseif(isset($_GET["username"]) && isset($_GET["password"]))
-        echo login($_GET["username"],$_GET["password"]);
-    elseif(isset($_GET["delete"]) && isset($_GET["password"]))
-        echo delete($_GET["delete"],$_GET["password"]);
-    else
-        header("location:anasayfa.php");
+    else{
+            $outjson = array(
+                "Status" => "Error",
+                "Trace" => "No correct arguments are found check you json file",
+            );
+            return json_encode($outjson);
+    }
 ?>
