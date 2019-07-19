@@ -183,7 +183,7 @@ header("Content-type: application/json");
         if(!empty($injson))
         {
             if(isset($injson->register))
-                if($injson->register == true)
+                if($injson->register)
                     if(isset($injson->username) && isset($injson->password))
                         echo register($injson->username,$injson->password);
                 else
