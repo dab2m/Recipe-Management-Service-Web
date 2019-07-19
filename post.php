@@ -180,8 +180,6 @@ header("Content-type: application/json");
     $data = file_get_contents('php://input');
     $injson = json_decode($data);
 
-    function json()
-    {
         if(!empty($injson))
         {
             if(isset($injson->register))
@@ -204,7 +202,7 @@ header("Content-type: application/json");
                     "Status" => "Error",
                     "Trace" => "No correct arguments are found check you json file",
                 );
-                return json_encode($outjson);
+                echo json_encode($outjson);
             }
         }
         else
@@ -213,11 +211,6 @@ header("Content-type: application/json");
                 "Status" => "Error",
                 "Trace" => "Could not get json file",
             );
-            return json_encode($outjson);
+            echo json_encode($outjson);
         }
-
-    }
-
-    echo json();
-
 ?>
