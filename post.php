@@ -187,22 +187,23 @@ header("Content-type: application/json");
 
         if(!empty($injson))
         {
-            if(isset($injson->register))
+            if(isset($injson->register)){
                 if($injson->register){
                     if(isset($injson->username) && isset($injson->password))
                         echo register($injson->username,$injson->password);
-                }else
+                }else{
                     if(isset($injson->username) && isset($injson->password))
                         echo login($injson->username,$injson->password);
-
-            elseif(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama) && isset($injson->username))
-                if(isset($injson->image))
+                }
+            }elseif(isset($injson->tarif) && isset($injson->tags) && isset($injson->aciklama) && isset($injson->username)){
+                if(isset($injson->image)){
                     echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama,$injson->username,$injson->image);
-                else
+                }else{
                     echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama,$injson->username,null);
-            elseif(isset($injson->delete) && isset($injson->password))
+                }
+            }elseif(isset($injson->delete) && isset($injson->password)){
                 echo delete($injson->delete,$injson->password);
-            else{
+            }else{
                 $outjson = array(
                     "Status" => "Error",
                     "Trace" => "No correct arguments are found check you json file",
