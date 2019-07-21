@@ -11,6 +11,8 @@ header("Content-type: application/json");
         $desc = $acik;
         $user_name = $user;
 
+        print_r($tags); //delete later
+
         if(isset($url))
             $photoname = $url;
         else
@@ -27,10 +29,12 @@ header("Content-type: application/json");
         }
         else // sorguyu calistirabilirse
         {
+            echo "inside else"; //delete later
 
             $tarif_id = $db -> insert_id; //yeni tarif kaydinin idsi
             foreach ($tags as $tag)
             {
+                echo "inside foreach"; //delete later
                 $sql = "INSERT INTO `tag`(isim) VALUES ('$tag')";
                 mysqli_query($db, $sql);
                 $tag_id = $db -> insert_id; //yeni tagin idsi
@@ -95,14 +99,7 @@ header("Content-type: application/json");
         global $db;
         $sql = "SELECT username FROM tarif WHERE tarif.id ='".$del_id."'";
         $result = mysqli_query($db,$sql); 
-        if(mysqli_affected_rows($db) == 0)
-        {
-            $outjson = array(
-                "Status" => "Error",
-                "Trace" => "Could not find tarif with id ".$del_id,
-            );
-        }
-        else
+        if(mysqli_affected_rows($db) > 0)
         {
             $username = mysqli_fetch_assoc($result);
             $ssql = "SELECT password FROM kullanici WHERE username ='".$username["username"]."'";
@@ -139,6 +136,14 @@ header("Content-type: application/json");
                     "Trace" => "Could not find user with name ".$username["username"],
                 );
             }
+            
+        }
+        else
+        {
+            $outjson = array(
+                "Status" => "Error",
+                "Trace" => "Could not find tarif with id ".$del_id,
+            );
         }
         return json_encode($outjson);
     }
