@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-include 'foto.php'
+include 'foto.php';
 header("Content-type: application/json");
 
     function readRecipe($tarif,$tagler,$acik,$user,$url)
