@@ -1,5 +1,6 @@
 <?php
 include 'db.php';
+include 'foto.php'
 header("Content-type: application/json");
 
     function readRecipe($tarif,$tagler,$acik,$user,$url)
@@ -10,8 +11,6 @@ header("Content-type: application/json");
         $tags = $tagler;
         $desc = $acik;
         $user_name = $user;
-
-        print_r($tags); //delete later
 
         if(isset($url))
             $photoname = $url;
@@ -29,12 +28,11 @@ header("Content-type: application/json");
         }
         else // sorguyu calistirabilirse
         {
-            echo "inside else"; //delete later
 
             $tarif_id = $db -> insert_id; //yeni tarif kaydinin idsi
             foreach ($tags as $tag)
             {
-                echo "inside foreach"; //delete later
+
                 $sql = "INSERT INTO `tag`(isim) VALUES ('$tag')";
                 mysqli_query($db, $sql);
                 $tag_id = $db -> insert_id; //yeni tagin idsi
