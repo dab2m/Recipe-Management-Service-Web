@@ -180,6 +180,51 @@ header("Content-type: application/json");
         return json_encode($outjson);
     }
 
+    function like($tarif_id,$username)
+    {
+        global $db;
+        $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$username.")";    
+        $res = mysqli_query($db, $sql);
+		if ($res) {
+            $outjson = array(
+                "Status" => "Success",
+                "Trace" => $username . " liked the recipe with id: " . $tarif_id,
+            );
+            return json_encode($outjson);
+        }
+        else
+        {
+            $outjson = array(
+                "Status" => "Error",
+                "Trace" => "Could not like the recipe: " . $tarif_id,
+            );
+            return json_encode($outjson);
+        }
+    }
+
+    function dislike($tarif_id,$username)
+    {
+        global $db;
+        $sql = "DELETE FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id'];
+        $res = mysqli_query($db, $sql);
+        if($res)
+        {
+            $outjson = array(
+                "Status" => "Success",
+                "Trace" => $username. " disliked the recipe with id: " .$tarif_id,
+            );
+            return json_encode($outjson);
+        }
+        else
+        {
+            $outjson = array(
+                "Status" => "Error",
+                "Trace" => $username. " didnt like the recipe to dislike it",
+            );
+            return json_encode($outjson);
+        }
+    }
+
     $data = file_get_contents('php://input');
     $injson = json_decode($data);
 
@@ -201,6 +246,10 @@ header("Content-type: application/json");
                 }
             }elseif(isset($injson->delete) && isset($injson->password)){
                 echo delete($injson->delete,$injson->password);
+            }elseif(isset($injson->like) && isset($injson->username)){
+                echo like($injson->like,$injson->username);
+            }elseif(isset($injson->dislike) && isset($injson->username)){
+                echo dislike($injson->dislike,$injson->username);
             }else{
                 $outjson = array(
                     "Status" => "Error",
