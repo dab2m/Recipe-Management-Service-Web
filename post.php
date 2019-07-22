@@ -183,20 +183,34 @@ header("Content-type: application/json");
     function like($tarif_id,$username)
     {
         global $db;
-        $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$username.")";    
-        $res = mysqli_query($db, $sql);
-		if ($res) {
-            $outjson = array(
-                "Status" => "Success",
-                "Trace" => $username . " liked the recipe with id: " . $tarif_id,
-            );
-            return json_encode($outjson);
+        $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
+        $res = mysqli_query($db,$sql);
+        if($res)
+        {
+            $user = mysqli_fetch_assoc($res);
+            $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$user.")";    
+            $res = mysqli_query($db, $sql);
+		    if ($res) {
+                $outjson = array(
+                    "Status" => "Success",
+                    "Trace" => $username . " liked the recipe with id: " . $tarif_id,
+                );
+                return json_encode($outjson);
+            }
+            else
+            {
+                $outjson = array(
+                    "Status" => "Error",
+                    "Trace" => "Could not like the recipe: " . $tarif_id,
+                );
+                return json_encode($outjson);
+            }
         }
         else
         {
             $outjson = array(
                 "Status" => "Error",
-                "Trace" => "Could not like the recipe: " . $tarif_id,
+                "Trace" => "User ".$username." does not exist in database",
             );
             return json_encode($outjson);
         }
@@ -205,21 +219,35 @@ header("Content-type: application/json");
     function dislike($tarif_id,$username)
     {
         global $db;
-        $sql = "DELETE FROM `begeni` WHERE `kullanici_id` = ".$_SESSION['user_id'];
-        $res = mysqli_query($db, $sql);
+        $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
+        $res = mysqli_query($db,$sql);
         if($res)
         {
-            $outjson = array(
-                "Status" => "Success",
-                "Trace" => $username. " disliked the recipe with id: " .$tarif_id,
-            );
-            return json_encode($outjson);
+            $user = mysqli_fetch_assoc($res);
+            $sql = "DELETE FROM begeni WHERE kullanici_id='".$user."'";
+            $res = mysqli_query($db, $sql);
+            if($res)
+            {
+                $outjson = array(
+                    "Status" => "Success",
+                    "Trace" => $username. " disliked the recipe with id: " .$tarif_id,
+                );
+                return json_encode($outjson);
+            }
+            else
+            {
+                $outjson = array(
+                    "Status" => "Error",
+                    "Trace" => $username. " didnt like the recipe to dislike it",
+                );
+                return json_encode($outjson);
+            }
         }
         else
         {
             $outjson = array(
                 "Status" => "Error",
-                "Trace" => $username. " didnt like the recipe to dislike it",
+                "Trace" => "User ".$username." does not exist in database",
             );
             return json_encode($outjson);
         }
