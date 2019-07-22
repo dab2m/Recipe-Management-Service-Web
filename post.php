@@ -183,12 +183,12 @@ header("Content-type: application/json");
     function like($tarif_id,$username)
     {
         global $db;
-        $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
+        $sql = "SELECT * FROM kullanici WHERE username='".$username."'";
         $res = mysqli_query($db,$sql);
         if(mysqli_affected_rows($db) > 0)
         {
             $user = mysqli_fetch_assoc($res);
-            $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$user.")";    
+            $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$user['id'].")";    
             $res = mysqli_query($db, $sql);
 		    if (mysqli_affected_rows($db) > 0) {
                 $outjson = array(
@@ -219,12 +219,12 @@ header("Content-type: application/json");
     function dislike($tarif_id,$username)
     {
         global $db;
-        $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
+        $sql = "SELECT * FROM kullanici WHERE username='".$username."'";
         $res = mysqli_query($db,$sql);
         if(mysqli_affected_rows($db) > 0)
         {
             $user = mysqli_fetch_assoc($res);
-            $sql = "DELETE FROM begeni WHERE kullanici_id='".$user."'";
+            $sql = "DELETE FROM begeni WHERE kullanici_id='".$user['id']."'";
             $res = mysqli_query($db, $sql);
             if(mysqli_affected_rows($db) > 0)
             {
