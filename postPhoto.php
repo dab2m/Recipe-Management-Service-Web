@@ -1,12 +1,9 @@
 <?php
     include 'foto.php';
     header("Content-type: application/json");
-    
-    $image = file_get_contents('php://input');
-
     $outjson = array(
-        "Image" => $image,
-        "var_dump" => var_dump($image),
+        "isset" => isset($_FILES),
+        "content" => var_dump($_FILES),
     );
 
     echo json_encode($outjson);
