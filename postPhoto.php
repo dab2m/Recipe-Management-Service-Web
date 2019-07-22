@@ -3,8 +3,17 @@
     header("Content-type: application/json");
     
     $image = file_get_contents('php://input');
-    $url = uploadCloud($image);
-    if(!empty($url))
+
+    $outjson = array(
+        "Image" => $image,
+        "var_dump" => var_dump($image),
+    );
+
+    echo json_encode($outjson);
+    
+    //$url = uploadCloud($image);
+
+    /*if(!empty($url))
     {
         $outjson = array(
             "Status" => "Success",
@@ -20,6 +29,6 @@
             "Trace" => "Image could not be uploaded",
         );
         echo json_encode($outjson);
-    }
+    }*/
 
 ?>
