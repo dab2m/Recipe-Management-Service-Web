@@ -185,12 +185,12 @@ header("Content-type: application/json");
         global $db;
         $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
         $res = mysqli_query($db,$sql);
-        if($res)
+        if(mysqli_affected_rows($db) > 0)
         {
             $user = mysqli_fetch_assoc($res);
             $sql = "INSERT INTO `begeni` (`tarif_id`,`kullanici_id`) VALUES (".$tarif_id.",".$user.")";    
             $res = mysqli_query($db, $sql);
-		    if ($res) {
+		    if (mysqli_affected_rows($db) > 0) {
                 $outjson = array(
                     "Status" => "Success",
                     "Trace" => $username . " liked the recipe with id: " . $tarif_id,
@@ -221,12 +221,12 @@ header("Content-type: application/json");
         global $db;
         $sql = "SELECT id FROM kullanici WHERE username='".$username."'";
         $res = mysqli_query($db,$sql);
-        if($res)
+        if(mysqli_affected_rows($db) > 0)
         {
             $user = mysqli_fetch_assoc($res);
             $sql = "DELETE FROM begeni WHERE kullanici_id='".$user."'";
             $res = mysqli_query($db, $sql);
-            if($res)
+            if(mysqli_affected_rows($db) > 0)
             {
                 $outjson = array(
                     "Status" => "Success",
