@@ -5,7 +5,7 @@
     if(isset($_FILES["photo"]) && $_FILES["photo"]["name"] != ""){
         $photoname = uploadCloud($_FILES["photo"]["tmp_name"]);
 
-    if(!empty($photoname))
+    }if(!empty($photoname))
     {
         $outjson = array(
             "Status" => "Success",
