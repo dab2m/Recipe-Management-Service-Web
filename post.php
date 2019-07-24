@@ -92,7 +92,7 @@ header("Content-type: application/json");
         return json_encode($outjson);
     }
 
-    function delete($del_id,$pass)
+    function delete($del_id,$user)
     {
         global $db;
         $sql = "SELECT username FROM tarif WHERE tarif.id ='".$del_id."'";
@@ -100,13 +100,7 @@ header("Content-type: application/json");
         if(mysqli_affected_rows($db) > 0)
         {
             $username = mysqli_fetch_assoc($result);
-            $ssql = "SELECT password FROM kullanici WHERE username ='".$username["username"]."'";
-            $result = mysqli_query($db,$ssql);
-
-            if(mysqli_affected_rows($db) > 0)
-            {
-                $password = mysqli_fetch_assoc($result);
-                if($pass == $password["password"])
+            if($user == $username["username"])
                 {
                     removeCloud($del_id);
 	                $sql="DELETE FROM tarif WHERE id='".$del_id."'";
@@ -123,7 +117,7 @@ header("Content-type: application/json");
                 {
                     $outjson = array(
                         "Status" => "Error",
-                        "Trace" => "Wrong password for user ".$username["username"],
+                        "Trace" => "This recipe's creator is not ".$user,
                     );
                 }
             }
@@ -253,6 +247,56 @@ header("Content-type: application/json");
         }
     }
 
+    function nday($day,$user)
+    {
+        global $db;
+        $sql "SELECT * from n_gun WHERE username='".$user."'";
+        $res = mysqli_query($db,$sql);
+        if(mysqli_affected_rows($db) > 0)
+        {
+            //found n_gun info for this user
+            $sql = "UPDATE n_gun SET gun='".$day."' WHERE username='".$user."'";
+            $res = mysqli_query($db,$sql);
+            if(mysqli_affected_rows($db) > 0)
+            {
+                $outjson = array(
+                    "Status" => "Success",
+                    "Trace" => "Updated n_gun for user ".$user,
+                );
+                return json_encode($outjson);
+            }
+            else
+            {
+                $outjson = array(
+                    "Status" => "Error",
+                    "Trace" => "Could not update n_gun for user ".$user,
+                );
+                return json_encode($outjson);
+            }
+        }
+        else
+        {
+            $sql = "INSERT INTO n_gun (username,gun) VALUES('$user_name','$key') ";
+            $res = mysqli_query($$db,$sql);
+            if(mysqli_affected_rows($db) > 0)
+            {
+                $outjson = array(
+                    "Status" => "Success",
+                    "Trace" => "Created gun value for user ".$user,
+                );
+                return json_encode($outjson);
+            }
+            else
+            {
+                $outjson = array(
+                    "Status" => "Error",
+                    "Trace" =>"Could not created gun value for user ".$user,
+                );
+                return json_encode($outjson);
+            }
+        }
+    }
+
     $data = file_get_contents('php://input');
     $injson = json_decode($data);
 
@@ -272,12 +316,14 @@ header("Content-type: application/json");
                 }else{
                     echo readRecipe($injson->tarif,$injson->tags,$injson->aciklama,$injson->username,null);
                 }
-            }elseif(isset($injson->delete) && isset($injson->password)){
-                echo delete($injson->delete,$injson->password);
+            }elseif(isset($injson->delete) && isset($injson->username)){
+                echo delete($injson->delete,$injson->username);
             }elseif(isset($injson->like) && isset($injson->username)){
                 echo like($injson->like,$injson->username);
             }elseif(isset($injson->dislike) && isset($injson->username)){
                 echo dislike($injson->dislike,$injson->username);
+            }elseif(isset($injson->ngun) && isset($injson->username)){
+                echo nday($injson->ngun,$injson->username);
             }else{
                 $outjson = array(
                     "Status" => "Error",
