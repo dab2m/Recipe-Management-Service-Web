@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION['username']))
 	header("location:login.php");
 include 'db.php';  // db scriptini bu scripte ekliyor
+include 'notification.php';
 $user_name = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
@@ -246,7 +247,7 @@ $user_name = $_SESSION['username'];
 																$like_sql = "SELECT * FROM `begeni` WHERE `kullanici_id` = " . $_SESSION['user_id'] . " AND `tarif_id` = " . $row['id'];
 																mysqli_query($db, $like_sql);
 																if (mysqli_affected_rows($db) == 0) {
-
+																	send_notif($row["username"],$row["id"])	
 																	?>
 																	<a class="btn red" href=" <?php echo "begen.php?tarif_id_like=" . $row['id'] . "&anasayfa=1"; ?>">
 																		<i class="icon-like"></i> &nbsp Begen

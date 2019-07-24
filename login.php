@@ -142,5 +142,25 @@ jQuery(document).ready(function() {
   Demo.init();
 });
 </script>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.3.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+	 https://firebase.google.com/docs/web/setup#config-web-app -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+	   apiKey: "AIzaSyA076zh9_4yCBQJzxkJ4EsDGvdsr6hN_g4",
+	authDomain: "bil495-dab2mm.firebaseapp.com",
+	databaseURL: "https://bil495-dab2mm.firebaseio.com",
+	projectId: "bil495-dab2mm",
+	storageBucket: "",
+	messagingSenderId: "363743013122",
+	appId: "1:363743013122:web:ef983e0a27193b59"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
 </body>
 </html>
