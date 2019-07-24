@@ -271,7 +271,7 @@ header("Content-type: application/json");
         }
         else
         {
-            $sql = "INSERT INTO n_gun (username,gun) VALUES('$user_name','$key') ";
+            $sql = "INSERT INTO n_gun (username,gun) VALUES('$user','$day') ";
             $res = mysqli_query($$db,$sql);
             if(mysqli_affected_rows($db) > 0)
             {
