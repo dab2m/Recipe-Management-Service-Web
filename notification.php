@@ -16,7 +16,7 @@
     
             $fields = array(
                 // NEED token from android
-                "to" => "AAAAVLDF6QI:APA91bGqXgqqC2oDWWkGbUV_GA6YkzD9BOAysMUH3-ZaUu2JHi72duKmBjxiNuOXYQc_SCFNMX92MMm9R9ahmGPJwfXmes2bJ2PqZacn63VZdJ4-idXEeBTvt3_qz82jwXoWptBeIK00",
+                "to" => "dYINa_QJFnM:APA91bGmIMQ21giJaAeDuPFhFtUQhPabS14bse4TsfnKMR0-zVHoQJvKWMxejZbl1yGoPN5bpFUt8Z-CtL3JUxwdumcmYh6ZoOvnoLZU39eKVPHw4MYqsWIp0a5kLD10CYDe4bt_pU_O",
                 "notification" => $message,
             );
     
