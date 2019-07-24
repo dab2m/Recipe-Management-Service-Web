@@ -101,7 +101,7 @@ header("Content-type: application/json");
         {
             $username = mysqli_fetch_assoc($result);
             if($user == $username["username"])
-                {
+            {
                     removeCloud($del_id);
 	                $sql="DELETE FROM tarif WHERE id='".$del_id."'";
 	                mysqli_query($db, $sql);
@@ -109,26 +109,22 @@ header("Content-type: application/json");
 	                mysqli_query($db, $sql);
 	                $sql="DELETE FROM tarif_tag WHERE tarif_id='".$del_id."'";
                     mysqli_query($db, $sql);
-                    $outjson = array(
-                        "Status" => "Success",
-                        "Trace" => "Recipe succesfully deleted",
-                    );
-                }else
-                {
-                    $outjson = array(
-                        "Status" => "Error",
-                        "Trace" => "This recipe's creator is not ".$user,
-                    );
-                }
-            }
-            else
+                    if(mysqli_affected_rows($db) > 0)
+                    {
+                        $outjson = array(
+                            "Status" => "Success",
+                            "Trace" => "Recipe succesfully deleted",
+                        );
+                        return json_encode($outjson);
+                    }
+            }else
             {
                 $outjson = array(
                     "Status" => "Error",
-                    "Trace" => "Could not find user with name ".$username["username"],
+                    "Trace" => "This recipe's creator is not ".$user,
                 );
+                return json_encode($outjson);
             }
-            
         }
         else
         {
@@ -136,10 +132,9 @@ header("Content-type: application/json");
                 "Status" => "Error",
                 "Trace" => "Could not find tarif with id ".$del_id,
             );
+            return json_encode($outjson);
         }
-        return json_encode($outjson);
     }
-
     
     function login($username,$password)
     {
@@ -210,21 +205,21 @@ header("Content-type: application/json");
         }
     }
 
-    function dislike($tarif_id,$username)
+    function dislike($tarif_id,$user)
     {
         global $db;
-        $sql = "SELECT * FROM kullanici WHERE username='".$username."'";
+        $sql = "SELECT * FROM kullanici WHERE username='".$user."'";
         $res = mysqli_query($db,$sql);
         if(mysqli_affected_rows($db) > 0)
         {
-            $user = mysqli_fetch_assoc($res);
-            $sql = "DELETE FROM begeni WHERE kullanici_id='".$user['id']."'";
+            $username = mysqli_fetch_assoc($res);
+            $sql = "DELETE FROM begeni WHERE kullanici_id='".$username['id']."'";
             $res = mysqli_query($db, $sql);
             if(mysqli_affected_rows($db) > 0)
             {
                 $outjson = array(
                     "Status" => "Success",
-                    "Trace" => $username. " disliked the recipe with id: " .$tarif_id,
+                    "Trace" => $user. " disliked the recipe with id: " .$tarif_id,
                 );
                 return json_encode($outjson);
             }
@@ -232,7 +227,7 @@ header("Content-type: application/json");
             {
                 $outjson = array(
                     "Status" => "Error",
-                    "Trace" => $username. " didnt like the recipe to dislike it",
+                    "Trace" => $user. " didnt like the recipe to dislike it",
                 );
                 return json_encode($outjson);
             }
@@ -241,7 +236,7 @@ header("Content-type: application/json");
         {
             $outjson = array(
                 "Status" => "Error",
-                "Trace" => "User ".$username." does not exist in database",
+                "Trace" => "User ".$user." does not exist in database",
             );
             return json_encode($outjson);
         }
@@ -250,7 +245,7 @@ header("Content-type: application/json");
     function nday($day,$user)
     {
         global $db;
-        $sql "SELECT * from n_gun WHERE username='".$user."'";
+        $sql = "SELECT * from n_gun WHERE username='".$user."'";
         $res = mysqli_query($db,$sql);
         if(mysqli_affected_rows($db) > 0)
         {
