@@ -33,13 +33,7 @@
             curl_setopt( $ch, CURLOPT_SSL_VERIFPEER, false);
             curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $fields ) );
             $result = curl_exec($ch);
-            echo $result;
             curl_close($ch);
         }
-        else
-        {
-            echo "SQL QUERY ERROR";
-        }
-        
     }
 ?>
